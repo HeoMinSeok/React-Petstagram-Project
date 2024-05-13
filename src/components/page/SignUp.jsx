@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./SignUp.css";
 import Button from "../ui/Button";
 
@@ -7,9 +9,26 @@ const SignUp = () => {
     const [userName, setUserName] = useState("");
     const [userId, setUserId] = useState("");
     const [userPw, setUserPw] = useState("");
+    const navigate = useNavigate();
 
-    const handleSignUp = () => {
-        // 회원가입 로직
+    const handleSignUp = async () => {
+        const userData = {
+            email: userEmail,
+            name: userName,
+            id: userId,
+            password: userPw,
+        };
+
+        axios
+            .post("/api/users/signup", userData) 
+            .then((response) => {
+                console.log(response.data); 
+                // 회원가입 성공 시 처리
+            })
+            .catch((error) => {
+                console.error("Error during signup:", error);
+                // 회원가입 실패 시 처리
+            });
     };
 
     return (
