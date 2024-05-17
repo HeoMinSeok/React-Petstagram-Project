@@ -2,20 +2,34 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./LoginForm.css";
 import facebook_logo from "/src/assets/facebook.png";
-import { useAuth } from "../contexts/AuthContext";
+import UserService from "../service/UserService";
 
-const LoginForm = () => {
-    const [username, setUsername] = useState("");
+const LoginForm = ({ setIsLoggedIn }) => {
+    const [email, setUserEmail] = useState("");
     const [password, setPassword] = useState("");
-    const { login } = useAuth();
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
-    const handleLogin = async () => {
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
         try {
-            await login(username, password);
-            navigate("/userinfo");
+            const userData = await UserService.login(email, password);
+            console.log(userData);
+            if (userData.token) {
+                localStorage.setItem("token", userData.token);
+                localStorage.setItem("role", userData.role);
+
+                setIsLoggedIn(true);
+            } else {
+                setError(userData.message);
+            }
         } catch (error) {
-            console.error("로그인 실패:", error.message);
+            console.log(error);
+            setError("로그인 실패", error.message);
+            setTimeout(() => {
+                setError("");
+            }, 5000);
         }
     };
 
@@ -24,13 +38,13 @@ const LoginForm = () => {
             <div className="login-container">
                 <div className="login-form">
                     <h1>Petstagram</h1>
-                    <form>
+                    <form onSubmit={handleLogin}>
                         <div className="form-group">
                             <input
                                 type="text"
                                 placeholder="전화번호, 사용자 이름 또는 이메일"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
+                                value={email}
+                                onChange={(e) => setUserEmail(e.target.value)}
                             />
                         </div>
                         <div className="form-group">
@@ -41,9 +55,8 @@ const LoginForm = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
-                        <button type="button" onClick={handleLogin}>
-                            로그인
-                        </button>
+                        {error && <p className="error-message">{error}</p>}
+                        <button type="submit">로그인</button>
                     </form>
                     <div className="or-separator">
                         <div className="line"></div>

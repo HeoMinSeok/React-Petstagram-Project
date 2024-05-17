@@ -1,0 +1,150 @@
+.frame-11 {
+    height: 686px;
+    left: 1400px;
+    position: absolute;
+    top: 0;
+    width: 391px;
+}
+
+.frame-12 {
+    height: 53px;
+    left: 0;
+    position: absolute;
+    top: 66px;
+    width: 391px;
+}
+
+.ellipse-3 {
+    background-color: #d9d9d9;
+    border-radius: 26.5px;
+    height: 53px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 53px;
+}
+
+.frame-13 {
+    height: 53px;
+    left: 60px;
+    position: absolute;
+    top: 0;
+    width: 197px;
+}
+
+.frame-14 {
+    align-items: flex-start;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 2px;
+    position: relative;
+    top: 9px;
+}
+
+.text-wrapper-8 {
+    color: #000000;
+    font-family: "Inter", Helvetica;
+    font-size: 13.6px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: normal;
+    margin-top: -1px;
+    position: relative;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+.text-wrapper-9 {
+    color: #afafaf;
+    font-family: "Inter", Helvetica;
+    font-size: 13.6px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: normal;
+    position: relative;
+    white-space: nowrap;
+    width: fit-content;
+}
+
+.frame-15 {
+    height: 53px;
+    left: 257px;
+    position: absolute;
+    top: 0;
+    width: 134px;
+}
+
+.text-wrapper-10 {
+    color: #00a3ff;
+    font-family: "Inter", Helvetica;
+    font-size: 13.6px;
+    font-weight: 700;
+    left: 6px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 17px;
+    white-space: nowrap;
+}
+
+.frame-16 {
+    height: 56px;
+    left: 10px;
+    position: absolute;
+    top: 119px;
+    width: 401px;
+}
+
+.frame-17 {
+    height: auto;
+    left: 0;
+    position: absolute;
+    top: 1px;
+    width: 257px;
+}
+
+.frame-18 {
+    align-items: flex-start;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 2px;
+    position: relative;
+    top: 18px;
+}
+
+.frame-19 {
+    height: auto;
+    right: 0px;
+    position: absolute;
+    top: 1px;
+    width: 134px;
+}
+
+.text-wrapper-11 {
+    color: #000000;
+    font-family: "Inter", Helvetica;
+    font-size: 13.6px;
+    font-weight: 700;
+    left: 6px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 17px;
+    white-space: nowrap;
+}
+
+.frame-20 {
+    align-items: flex-start;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 11px;
+    left: 0;
+    position: absolute;
+    top: 175px;
+}
+
+.frame-21 {
+    height: 53px;
+    position: relative;
+    width: 391px;
+}

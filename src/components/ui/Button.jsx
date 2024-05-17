@@ -18,6 +18,7 @@ const Button = ({
     color,
     borderStyle,
     borderColor,
+    type,
 }) => {
     return (
         <StyledButton
@@ -26,6 +27,7 @@ const Button = ({
             color={color}
             borderStyle={borderStyle}
             borderColor={borderColor}
+            type={type}
         >
             {children}
         </StyledButton>

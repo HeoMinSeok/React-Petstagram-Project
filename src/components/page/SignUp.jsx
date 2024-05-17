@@ -1,34 +1,39 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import "./SignUp.css";
 import Button from "../ui/Button";
+import UserService from "../service/UserService";
 
 const SignUp = () => {
-    const [userEmail, setUserEmail] = useState("");
-    const [userName, setUserName] = useState("");
-    const [userId, setUserId] = useState("");
-    const [userPw, setUserPw] = useState("");
+    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
-    const handleSignUp = async () => {
-        const userData = {
-            email: userEmail,
-            name: userName,
-            id: userId,
-            password: userPw,
-        };
+    const [userData, setUserData] = useState({
+        email: "",
+        name: "",
+        password: "",
+    });
 
-        axios
-            .post("/api/users/signup", userData) 
-            .then((response) => {
-                console.log(response.data); 
-                // 회원가입 성공 시 처리
-            })
-            .catch((error) => {
-                console.error("Error during signup:", error);
-                // 회원가입 실패 시 처리
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setUserData({ ...userData, [name]: value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            await UserService.signup(userData);
+            setUserData({
+                name: "",
+                email: "",
+                password: "",
             });
+            alert("회원가입 완료");
+            navigate("/");
+        } catch (error) {
+            setErrorMessage(error.response.data);
+        }
     };
 
     return (
@@ -49,41 +54,46 @@ const SignUp = () => {
                         <div className="or-text">또는</div>
                         <div className="line"></div>
                     </div>
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <div className="form-group">
                             <input
                                 type="text"
+                                name="email"
                                 placeholder="휴대폰 번호 또는 이메일 주소"
-                                value={userEmail}
-                                onChange={(e) => setUserEmail(e.target.value)}
+                                value={userData.email}
+                                onChange={handleInputChange}
+                                required
                             />
                         </div>
                         <div className="form-group">
                             <input
                                 type="text"
-                                placeholder="성명"
-                                value={userName}
-                                onChange={(e) => setUserName(e.target.value)}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <input
-                                type="text"
+                                name="name"
                                 placeholder="사용자 이름"
-                                value={userId}
-                                onChange={(e) => setUserId(e.target.value)}
+                                value={userData.name}
+                                onChange={handleInputChange}
+                                required
                             />
                         </div>
+                        {/* <div className="form-group">
+                              <input
+                                  type="text"
+                                  placeholder="사용자 이름"
+                                  value={userId}
+                                  onChange={(e) => setUserId(e.target.value)}
+                              />
+                          </div> */}
                         <div className="form-group">
                             <input
                                 type="password"
+                                name="password"
                                 placeholder="비밀번호"
-                                value={userPw}
-                                onChange={(e) => setUserPw(e.target.value)}
+                                value={userData.password}
+                                onChange={handleInputChange}
+                                required
                             />
                         </div>
-
-                        <Button onClick={handleSignUp}>가입</Button>
+                        <Button type="submit">가입</Button>
                     </form>
                 </div>
             </div>
@@ -91,7 +101,7 @@ const SignUp = () => {
                 <div className="login-box">
                     <p>
                         계정이 있으신가요?
-                        <a href="#" className="login-link">
+                        <a href="/" className="login-link">
                             로그인
                         </a>
                     </p>

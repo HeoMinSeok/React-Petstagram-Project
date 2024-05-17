@@ -24,6 +24,12 @@
     margin-bottom: 20px;
 }
 
+input[type="text"].error,
+input[type="password"].error {
+    border: 1px solid #FF0000; /* 빨간색 테두리 */
+}
+
+
 input[type="text"],
 input[type="password"] {
     width: 270px;

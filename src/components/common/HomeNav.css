@@ -1,0 +1,22 @@
+.div-wrapper {
+  height: 1117px;
+  left: 20px;
+  position: fixed;
+  top: 0px;
+  width: 270px;
+  border-right: 1px solid rgb(237, 237, 237);
+}
+
+.frame-8 {
+  align-items: flex-start;
+  display: inline-flex;
+  flex-direction: column;
+  position: relative;
+  top: 30px;
+}
+
+.pethome {
+  /* 기존 스타일 유지 */
+  margin-left: 20px; /* 좌측 여백 설정 */
+  margin-top: 50px;
+}
