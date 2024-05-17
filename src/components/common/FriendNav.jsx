@@ -3,36 +3,7 @@ import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import UserService from "../service/UserService";
 
-const FriendNav = ({ setIsLoggedIn }) => {
-    const [profileInfo, setProfileInfo] = useState({});
-
-    // 로드 될때마다 토큰과 로그인 유지
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            const decodedToken = jwtDecode(token);
-            const currentTime = Date.now() / 1000;
-            if (decodedToken.exp < currentTime) {
-                // 토큰 만료 시 로그아웃 처리
-                alert("세션이 만료되었습니다. 다시 로그인해주세요."); // 알림 표시
-                UserService.logout();
-                setIsLoggedIn(false);
-                return;
-            }
-        }
-        fetchProfileInfo();
-    }, [setIsLoggedIn]);
-
-    const fetchProfileInfo = async () => {
-        try {
-            const token = localStorage.getItem("token"); // Retrieve the token from localStorage
-            const response = await UserService.getYourProfile(token);
-            setProfileInfo(response.userEntity);
-        } catch (error) {
-            console.error("프로필 정보를 가져오는 중 오류 발생:", error);
-        }
-    };
-
+const FriendNav = ({ setIsLoggedIn, profileInfo, allUserProfiles }) => {
     const handleLogout = () => {
         const confirmDelete = window.confirm("로그아웃 하시겠습니까?");
         if (confirmDelete) {
@@ -43,26 +14,31 @@ const FriendNav = ({ setIsLoggedIn }) => {
     };
 
     return (
-        <div className="frame-11">
-            <div className="frame-12">
-                <div className="ellipse-3" />
-                <div className="frame-13">
-                    <div className="frame-14">
-                        <div className="text-wrapper-8">
+        <div className="friendnav">
+            <div className="friendnav-user-info">
+                <img className="ellipse-3" />
+                <div className="friendnav-user-profile">
+                    <div className="friendnav-user-profile-wrapper">
+                        <div className="friendnav-user-email">
                             {profileInfo.email}
                         </div>
-                        <div className="text-wrapper-9">{profileInfo.name}</div>
+                        <div className="friendnav-user-name">
+                            {profileInfo.name}
+                        </div>
                     </div>
                 </div>
-                <div className="frame-15">
-                    <div className="text-wrapper-10" onClick={handleLogout}>
+                <div className="friendnav-logout">
+                    <div
+                        className="friendnav-logout-btn"
+                        onClick={handleLogout}
+                    >
                         로그아웃
                     </div>
                 </div>
             </div>
-            <div className="frame-16">
-                <div className="frame-17">
-                    <div className="frame-18">
+            <div className="friendnav-recommend">
+                <div className="friendnav-recommend-wrapper">
+                    <div className="friendnav-recommend-text">
                         <div className="text-wrapper-8">회원님을 위한 추천</div>
                     </div>
                 </div>

@@ -1,8 +1,8 @@
 import "./HomeNavItem.css";
 
-const HomeNavItem = ({ text, imgSrc, imgAlt }) => {
+const HomeNavItem = ({ text, imgSrc, imgAlt, onClick}) => {
     return (
-        <div className="frame-9">
+        <div className="frame-9" onClick={onClick}>
             <div className="frame-10">
                 <div className="text-wrapper-6">{text}</div>
             </div>

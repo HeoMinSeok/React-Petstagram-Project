@@ -1,6 +1,5 @@
 import React from "react";
 import "./App.css";
-import { useState } from "react";
 import {
     BrowserRouter as Router,
     Route,
@@ -9,14 +8,16 @@ import {
 } from "react-router-dom";
 import LoginForm from "./components/page/LoginForm";
 import SignUp from "./components/page/SignUp";
-import UserService from "./components/service/UserService";
 import HomeNav from "./components/common/HomeNav";
 import Feed from "./components/page/Feed";
 import FriendNav from "./components/common/FriendNav";
 import MockData from "./mockdata";
+import useUserProfile from "./components/hook/useUserProfile";
+import useAllUserProfile from "./components/hook/useAllUserProfile";
 
 const App = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(UserService.isAuthenticated);
+    const { isLoggedIn, setIsLoggedIn, profileInfo } = useUserProfile();
+    const { allUserProfiles } = useAllUserProfile();
 
     return (
         <Router>
@@ -55,8 +56,12 @@ const App = () => {
                                             postdate={data.postdate}
                                         />
                                     ))}
-                                    <HomeNav />
-                                    <FriendNav setIsLoggedIn={setIsLoggedIn} />
+                                    <FriendNav
+                                        setIsLoggedIn={setIsLoggedIn}
+                                        profileInfo={profileInfo}
+                                        allUserProfiles={allUserProfiles}
+                                    />
+                                    <HomeNav profileInfo={profileInfo} />
                                 </div>
                             </div>
                         ) : (

@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import "./HomeNav.css";
 import HomeNavItem from "./HomeNavItem";
 import homeIcon from "../../assets/homenav/menu-home-click.png";
@@ -6,8 +7,17 @@ import searchIcon from "../../assets/homenav/menu-search.png";
 import profileIcon from "../../assets/homenav/menu-profile.png";
 import questIcon from "../../assets/homenav/menu-quest.png";
 import createIcon from "../../assets/homenav/menu-create.png";
+import { UploadModal } from "./UploadModal";
 
-const HomeNav = () => {
+const HomeNav = ({ profileInfo }) => {
+    // 모달의 열림/닫힘 상태를 관리하는 상태
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    // 모달을 열기 위한 함수
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
     return (
         <div className="div-wrapper">
             <h2 className="pethome">Petstagram</h2>
@@ -24,6 +34,7 @@ const HomeNav = () => {
                     text="만들기"
                     imgSrc={createIcon}
                     imgAlt="Create"
+                    onClick={openModal}
                 />
                 <HomeNavItem
                     text="프로필"
@@ -31,6 +42,12 @@ const HomeNav = () => {
                     imgAlt="Profile"
                 />
             </div>
+            {isModalOpen && (
+                <UploadModal
+                    onClose={() => setIsModalOpen(false)}
+                    profileInfo={profileInfo}
+                />
+            )}
         </div>
     );
 };
