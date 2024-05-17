@@ -32,33 +32,41 @@ const App = () => {
                         )
                     }
                 />
-                <Route path="/signup" element={<SignUp />} />
+                <Route
+                    path="/signup"
+                    element={
+                        isLoggedIn ? (
+                            <Navigate to="/" />
+                        ) : (
+                            <SignUp setIsLoggedIn={setIsLoggedIn} />
+                        )
+                    }
+                />
+                <Route
+                    path="/"
+                    element={
+                        isLoggedIn ? (
+                            <div className="app">
+                                <div className="div">
+                                    {MockData.map((data, index) => (
+                                        <Feed
+                                            key={index}
+                                            username={data.username}
+                                            postdate={data.postdate}
+                                        />
+                                    ))}
+                                    <HomeNav />
+                                    <FriendNav setIsLoggedIn={setIsLoggedIn} />
+                                </div>
+                            </div>
+                        ) : (
+                            <Navigate to="/login" />
+                        )
+                    }
+                />
             </Routes>
-            <PrivateRoute
-                path="/"
-                element={
-                    <div className="app">
-                        <div className="div">
-                            {MockData.map((data, index) => (
-                                <Feed
-                                    key={index}
-                                    username={data.username}
-                                    postdate={data.postdate}
-                                />
-                            ))}
-                            <HomeNav />
-                            <FriendNav />
-                        </div>
-                    </div>
-                }
-                isLoggedIn={isLoggedIn}
-            />
         </Router>
     );
-};
-
-const PrivateRoute = ({ element, isLoggedIn }) => {
-    return isLoggedIn ? element : <Navigate to="/login" />;
 };
 
 export default App;
