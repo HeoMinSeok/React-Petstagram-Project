@@ -27,10 +27,10 @@
 .post-frame {
     background-color: #ffffff;
     border-radius: 20px;
-    height: 90%;  /* 수정: 고정된 높이 대신 화면 크기에 비례 */
-    width: 90%;  /* 수정: 고정된 너비 대신 화면 크기에 비례 */
-    max-height: 910px;  /* 최대 높이 설정 */
-    max-width: 1300px;  /* 최대 너비 설정 */
+    height: 90%;  
+    width: 90%;  
+    max-height: 910px;  
+    max-width: 1300px;  
     overflow: hidden;
     display: flex;
     flex-direction: column;

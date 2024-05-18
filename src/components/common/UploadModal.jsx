@@ -78,11 +78,6 @@ const EmojiButton = styled.button`
     display: inline-block !important;
 `;
 
-const EmojiPickerContainer = styled.div`
-    position: relative;
-    display: inline-block;
-`;
-
 const EmojiTitle = styled.div`
     font-size: 14px;
     font-weight: bold;

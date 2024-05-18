@@ -1,26 +1,47 @@
-.div-wrapper {
-  height: 1117px;
-  left: 20px;
-  position: fixed;
-  top: 0px;
-  width: 270px;
-  border-right: 1px solid rgb(237, 237, 237);
+.home-nav-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
 }
 
-.div-wrapper.hidden {
-  display: none;
-}
-
-.frame-8 {
-  align-items: flex-start;
-  display: inline-flex;
-  flex-direction: column;
-  position: relative;
-  top: 30px;
+.sidebar-wrapper {
+    width: 100%;
+    height: 100%;
+    border-right: 1px solid rgb(237, 237, 237);
 }
 
 .pethome {
-  /* 기존 스타일 유지 */
-  margin-left: 20px; /* 좌측 여백 설정 */
-  margin-top: 50px;
+    margin-left: 20px;
+    margin-top: 50px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.menu-wrapper {
+    margin-top: 30px;
+}
+
+.menu-icon {
+    width: 35px;
+    height: 35px;
+    margin-right: 20px;
+}
+
+.menu-item {
+    margin-bottom: 20px; /* 메뉴 아이템 간의 간격 조정 */
+    font-size: 20px;
+}
+
+.menu-item.active {
+  font-weight: bold;
+  color: #000; /* 원하는 색상으로 변경 */
+}
+
+
+.menu-item:last-child {
+    margin-bottom: 0; /* 마지막 메뉴 아이템의 간격 제거 */
 }

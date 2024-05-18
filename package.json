@@ -17,6 +17,7 @@
     "jwt-decode": "^4.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-pro-sidebar": "^1.1.0",
     "react-router-dom": "^6.23.1",
     "styled-components": "^6.1.11"
   },

@@ -1,0 +1,35 @@
+.explore {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 794px;
+    margin: 0 auto;
+    position: relative;
+    height: auto;
+}
+
+.explore-frame {
+    left: 50px;
+    position: relative;
+    top: 30px;
+    width: 560px;
+    height: auto;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px; /* 그리드 아이템 간의 간격 */
+}
+
+.grid-item {
+    width: 400px;
+    height: 400px;
+    overflow: hidden;
+}
+
+.grid-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
