@@ -1,6 +1,7 @@
 import "./UploadModal.css";
 import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
+import PostService from "../service/PostService";
 
 // 삭제 확인 모달 스타일
 const DeleteConfirmModal = styled.div`
@@ -152,6 +153,20 @@ export const UploadModal = ({ onClose, profileInfo }) => {
         setShowEmojiPicker(false);
     };
 
+    const handleSubmit = async () => {
+        try {
+            const postData = {
+                imageList: selectedImage ? [selectedImage] : [],
+                postContent: text,
+            };
+            const token = localStorage.getItem("token");
+            const response = await PostService.createPost(postData, token);
+            onClose(); 
+        } catch (error) {
+            console.error('게시글 업로드 중 오류 발생:', error);
+        }
+    };
+
     return (
         <div className="post-frame-container">
             <button className="post-close-modal" onClick={handleDeleteClick}>
@@ -160,7 +175,7 @@ export const UploadModal = ({ onClose, profileInfo }) => {
             <div className="post-frame">
                 <div className="post-header">
                     <div className="post-text-wrapper">새 게시물 만들기</div>
-                    <div className="post-text-wrapper-2">공유하기</div>
+                    <div className="post-text-wrapper-2" onClick={handleSubmit}>공유하기</div>
                 </div>
                 <div className="post-content">
                     <div className="post-image-section">

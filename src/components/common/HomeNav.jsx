@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { useNavigate } from "react-router-dom";
+import petstagramIcon from "../../assets/petlogo.png";
 import homeIcon from "../../assets/homenav/menu-home-click.png";
 import messageIcon from "../../assets/homenav/menu-message.png";
 import searchIcon from "../../assets/homenav/menu-search.png";
@@ -15,7 +16,7 @@ const HomeNav = ({ profileInfo, handleNavClick, navState }) => {
     const navigate = useNavigate();
 
     const openModal = () => {
-        handleNavClick("none"); // 검색 상태 초기화
+        handleNavClick("none");
         setTimeout(() => {
             setIsModalOpen(true);
         }, 300);
@@ -29,7 +30,22 @@ const HomeNav = ({ profileInfo, handleNavClick, navState }) => {
     return (
         <div className="home-nav-container">
             <Sidebar className="sidebar-wrapper">
-                <div className="pethome">Petstagram</div>
+                {/* {navState.search ? (
+                    <div
+                        className="pethome-icon"
+                        onClick={() => handleMenuClick("home", "/")}
+                    >
+                        <img src={petstagramIcon} alt="Petstagram Icon" />
+                    </div>
+                ) : (
+                    <div
+                        className="pethome"
+                        onClick={() => handleMenuClick("home", "/")}
+                    >
+                        Petstagram
+                    </div>
+                )} */}
+
                 <Menu iconShape="square" className="menu-wrapper">
                     <MenuItem
                         icon={
@@ -52,7 +68,9 @@ const HomeNav = ({ profileInfo, handleNavClick, navState }) => {
                                 className="menu-icon"
                             />
                         }
-                        className={`menu-item ${navState.search ? "active" : ""}`}
+                        className={`menu-item ${
+                            navState.search ? "active" : ""
+                        }`}
                         onClick={() => handleNavClick("search")}
                     >
                         검색
@@ -65,7 +83,9 @@ const HomeNav = ({ profileInfo, handleNavClick, navState }) => {
                                 className="menu-icon"
                             />
                         }
-                        className={`menu-item ${navState.explore ? "active" : ""}`}
+                        className={`menu-item ${
+                            navState.explore ? "active" : ""
+                        }`}
                         onClick={() => handleMenuClick("explore", "/explore")}
                     >
                         탐색 탭
@@ -78,7 +98,9 @@ const HomeNav = ({ profileInfo, handleNavClick, navState }) => {
                                 className="menu-icon"
                             />
                         }
-                        className={`menu-item ${navState.messages ? "active" : ""}`}
+                        className={`menu-item ${
+                            navState.messages ? "active" : ""
+                        }`}
                         onClick={() => handleMenuClick("messages", "/messages")}
                     >
                         메시지
@@ -104,7 +126,9 @@ const HomeNav = ({ profileInfo, handleNavClick, navState }) => {
                                 className="menu-icon"
                             />
                         }
-                        className={`menu-item ${navState.friends ? "active" : ""}`}
+                        className={`menu-item ${
+                            navState.friends ? "active" : ""
+                        }`}
                         onClick={() => handleMenuClick("friends", "/profile")}
                     >
                         프로필

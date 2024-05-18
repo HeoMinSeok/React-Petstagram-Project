@@ -1,9 +1,9 @@
 import "./FriendNav.css";
-import { useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
 import UserService from "../service/UserService";
 
 const FriendNav = ({ setIsLoggedIn, profileInfo, allUserProfiles }) => {
+    const userProfilesArray = Array.isArray(allUserProfiles.userEntityList) ? allUserProfiles.userEntityList : [];
+    
     const handleLogout = () => {
         const confirmDelete = window.confirm("로그아웃 하시겠습니까?");
         if (confirmDelete) {
@@ -12,6 +12,8 @@ const FriendNav = ({ setIsLoggedIn, profileInfo, allUserProfiles }) => {
             setIsLoggedIn(false);
         }
     };
+
+    
 
     return (
         <div className="friendnav">
@@ -47,18 +49,22 @@ const FriendNav = ({ setIsLoggedIn, profileInfo, allUserProfiles }) => {
                 </div>
             </div>
             <div className="frame-20">
-                <div className="frame-21">
-                    <div className="ellipse-3" />
-                    <div className="frame-13">
-                        <div className="frame-14">
-                            <div className="text-wrapper-8">User_Name</div>
-                            <div className="text-wrapper-9">text</div>
+            {userProfilesArray
+                    .filter(user => user.email !== profileInfo.email)
+                    .map((user) => (
+                        <div key={user.email} className="frame-21">
+                            <div className="ellipse-3" />
+                            <div className="frame-13">
+                                <div className="frame-14">
+                                    <div className="text-wrapper-8">{user.email}</div>
+                                    <div className="text-wrapper-9">회원님을 위한 추천</div>
+                                </div>
+                            </div>
+                            <div className="frame-15">
+                                <div className="text-wrapper-10">팔로우</div>
+                            </div>
                         </div>
-                    </div>
-                    <div className="frame-15">
-                        <div className="text-wrapper-10">User_Name</div>
-                    </div>
-                </div>
+                ))}
             </div>
         </div>
     );

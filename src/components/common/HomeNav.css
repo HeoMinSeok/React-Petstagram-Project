@@ -15,24 +15,35 @@
 }
 
 .pethome {
-    margin-left: 20px;
-    margin-top: 50px;
+    margin-bottom: 50px;
     font-size: 24px;
     font-weight: bold;
+    cursor: pointer;
+}
+
+.pethome-icon {
+    cursor: pointer;
+}
+
+.pethome-icon img {
+    width: 65px; 
+    height: 65px;
+  
 }
 
 .menu-wrapper {
-    margin-top: 30px;
+    margin-top: 40px;
+    margin-left: 20px;
 }
 
 .menu-icon {
     width: 35px;
     height: 35px;
-    margin-right: 20px;
+    margin-right: 30px;
 }
 
 .menu-item {
-    margin-bottom: 20px; /* 메뉴 아이템 간의 간격 조정 */
+    margin-bottom: 10px;
     font-size: 20px;
 }
 

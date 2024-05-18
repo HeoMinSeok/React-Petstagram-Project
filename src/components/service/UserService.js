@@ -3,35 +3,31 @@ import axios from "axios";
 class UserService {
     static BASE_URL = "/api";
 
+    // 로그인
     static async login(email, password) {
         const response = await axios.post(
-            `${UserService.BASE_URL}/users/login`,
-            { email, password }
+            `${UserService.BASE_URL}/user/login`,
+            {
+                email,
+                password,
+            }
         );
         return response.data;
     }
 
+    // 회원가입
     static async signup(userData) {
         const response = await axios.post(
-            `${UserService.BASE_URL}/users/signup`,
+            `${UserService.BASE_URL}/user/signup`,
             userData
         );
         return response.data;
     }
 
-    static async getAllUsers(token) {
-        const response = await axios.get(
-            `${UserService.BASE_URL}/admin/get-all-users`,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-            }
-        );
-        return response.data;
-    }
-
+    // 마이페이지
     static async getYourProfile(token) {
         const response = await axios.get(
-            `${UserService.BASE_URL}/adminuser/get-profile`,
+            `${UserService.BASE_URL}/user/profile`,
             {
                 headers: { Authorization: `Bearer ${token}` },
             }
@@ -39,30 +35,44 @@ class UserService {
         return response.data;
     }
 
-    static async getUserById(userId, token) {
-        const response = await axios.get(
-            `${UserService.BASE_URL}/admin/get-users/${userId}`,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-            }
-        );
-        return response.data;
-    }
-
-    static async deleteUser(userId, token) {
-        const response = await axios.delete(
-            `${UserService.BASE_URL}/admin/delete/${userId}`,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-            }
-        );
-        return response.data;
-    }
-
+    // 회원 수정
     static async updateUser(userId, userData, token) {
         const response = await axios.put(
-            `${UserService.BASE_URL}/admin/update/${userId}`,
+            `${UserService.BASE_URL}/user/update/${userId}`,
             userData,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        );
+        return response.data;
+    }
+
+    // 회원 삭제
+    static async deleteUser(userId, token) {
+        const response = await axios.delete(
+            `${UserService.BASE_URL}/user/delete/${userId}`,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        );
+        return response.data;
+    }
+
+    // 모든 회원 조회
+    static async getAllUsers(token) {
+        const response = await axios.get(
+            `${UserService.BASE_URL}/user/getAllUsers`,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        );
+        return response.data;
+    }
+
+    // 회원 한명 조회
+    static async getUserById(userId, token) {
+        const response = await axios.get(
+            `${UserService.BASE_URL}/user/get/${userId}`,
             {
                 headers: { Authorization: `Bearer ${token}` },
             }

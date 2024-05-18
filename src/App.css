@@ -20,12 +20,4 @@
     flex-direction: row;
 }
 
-.main-container.search-open .home-nav-container {
-    width: 60px; 
-}
 
-.content-container {
-    flex-grow: 1;
-    background-color: #f8f8f8;
-    padding: 20px;
-}

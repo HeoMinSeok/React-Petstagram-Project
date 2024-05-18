@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import UserService from "../service/UserService";
+import useUserProfile from "./useUserProfile";
 
 const useAllUserProfile = () => {
     const [allUserProfiles, setAllUserProfiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { isLoggedIn } = useUserProfile();
 
     useEffect(() => {
         const fetchAllUsers = async () => {
@@ -21,7 +23,7 @@ const useAllUserProfile = () => {
         };
 
         fetchAllUsers();
-    }, []);
+    }, [isLoggedIn]);
 
     return { allUserProfiles, loading, error };
 };

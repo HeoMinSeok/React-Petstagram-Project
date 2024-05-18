@@ -27,7 +27,7 @@ const useUserProfile = () => {
         try {
             const token = localStorage.getItem("token");
             const response = await UserService.getYourProfile(token);
-            setProfileInfo(response.userEntity);
+            setProfileInfo(response);
         } catch (error) {
             console.error("프로필 정보를 가져오는 중 오류 발생:", error);
         }

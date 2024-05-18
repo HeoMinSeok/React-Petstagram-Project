@@ -20,7 +20,7 @@ import useAllUserProfile from "./components/hook/useAllUserProfile";
 
 const App = () => {
     const { isLoggedIn, setIsLoggedIn, profileInfo } = useUserProfile();
-    const { allUserProfiles } = useAllUserProfile();
+    const { allUserProfiles, loading, error } = useAllUserProfile();
 
     const [navState, setNavState] = useState({
         home: true,
@@ -84,9 +84,7 @@ const App = () => {
                                             <FriendNav
                                                 setIsLoggedIn={setIsLoggedIn}
                                                 profileInfo={profileInfo}
-                                                allUserProfiles={
-                                                    allUserProfiles
-                                                }
+                                                allUserProfiles={allUserProfiles}
                                             />
                                         </>
                                     )}
@@ -96,7 +94,7 @@ const App = () => {
                                             handleNavClick={handleNavClick}
                                             navState={navState}
                                         />
-                                        {navState.search && <SearchNav />}
+                                        {navState.search && <SearchNav allUserProfiles={allUserProfiles}/>}
                                     </div>
                                 </div>
                             </div>
@@ -119,6 +117,7 @@ const App = () => {
                                             handleNavClick={handleNavClick}
                                             navState={navState}
                                         />
+                                        {navState.search && <SearchNav allUserProfiles={allUserProfiles}/>}
                                     </div>
                                 </div>
                             </div>
