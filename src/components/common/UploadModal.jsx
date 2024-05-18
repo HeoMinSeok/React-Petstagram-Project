@@ -100,10 +100,15 @@ export const UploadModal = ({ onClose, profileInfo }) => {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const maxTextLength = 2200;
 
+
     useEffect(() => {
-        // 모달이 나타날 때 body 요소에 overflow: hidden을 적용하여 스크롤을 막음
-        document.body.style.overflow = "hidden";
-        // 모달이 닫힐 때 body 요소에 overflow: auto로 스크롤을 가능하게 함
+        setTimeout(() => {
+            console.log('fileInputRef.current in useEffect:', fileInputRef.current);
+            // 모달이 나타날 때 body 요소에 overflow: hidden을 적용하여 스크롤을 막음
+            document.body.style.overflow = "hidden";
+            // 모달이 닫힐 때 body 요소에 overflow: auto로 스크롤을 가능하게 함
+        }, 0);
+
         return () => {
             document.body.style.overflow = "auto";
         };
@@ -116,6 +121,7 @@ export const UploadModal = ({ onClose, profileInfo }) => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            console.log("File selected:", file);
             const reader = new FileReader();
             reader.onload = () => {
                 setSelectedImage(reader.result);
@@ -155,13 +161,31 @@ export const UploadModal = ({ onClose, profileInfo }) => {
 
     const handleSubmit = async () => {
         try {
+            if (!fileInputRef.current) {
+                console.error('파일 입력 요소가 존재하지 않습니다.');
+                return;
+            }
+
+            const file = fileInputRef.current.files[0];
+            if (!file) {
+                console.error('파일이 선택되지 않았습니다.');
+                return;
+            }
+
             const postData = {
-                imageList: selectedImage ? [selectedImage] : [],
                 postContent: text,
+                fileName: file.name,
             };
+
+            console.log("File in handleSubmit:", file);
+
+            const formData = new FormData();
+            formData.append('post', new Blob([JSON.stringify(postData)], { type: "application/json" }));
+            formData.append('file', file);
+
             const token = localStorage.getItem("token");
-            const response = await PostService.createPost(postData, token);
-            onClose(); 
+            const response = await PostService.createPost(formData, token);
+            onClose();
         } catch (error) {
             console.error('게시글 업로드 중 오류 발생:', error);
         }
@@ -199,22 +223,17 @@ export const UploadModal = ({ onClose, profileInfo }) => {
                                 사진과 동영상을 끌어다 놓으세요
                             </div>
                         )}
-                        {!selectedImage && (
-                            <div className="post-file-div">
-                                <div
-                                    className="file_section"
-                                    onClick={handleFileButtonClick}
-                                >
-                                    컴퓨터에서 선택
-                                </div>
-                                <input
-                                    type="file"
-                                    ref={fileInputRef}
-                                    style={{ display: "none" }}
-                                    onChange={handleFileChange}
-                                />
+                        <div className="post-file-div" style={{ display: selectedImage ? "none" : "block" }}>
+                            <div className="file_section" onClick={handleFileButtonClick}>
+                                컴퓨터에서 선택
                             </div>
-                        )}
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                style={{ display: "none" }}
+                                onChange={handleFileChange}
+                            />
+                        </div>
                     </div>
                     <div className="post-details-section">
                         <div className="post-user-info">

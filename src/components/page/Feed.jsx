@@ -4,17 +4,21 @@ import heartIcon from "../../assets/feed/feed-heart.png";
 import shareIcon from "../../assets/feed/feed-share.png";
 import bookmarkIcon from "../../assets/feed/feed-save.png";
 import mock1 from "../../assets/7bok1.jpeg";
-import mock2 from "../../assets/7bok2.jpeg";
-import mock3 from "../../assets/7bok3.jpeg";
+import GetRelativeTime from "../../utils/GetRelativeTime";
 
-const Feed = ({ profileimg, username, postdate, postimg }) => {
+const Feed = ({ writer, postdate, postContent, images }) => {
+    const uploadPostTime = GetRelativeTime(postdate);
+    
+    const getImageUrl = (image) => {
+        return `http://localhost:8088/uploads/${image.imageUrl}`; // 이미지 URL 구성
+    };
     return (
         <div className="feed">
             <div className="feed-frame">
                 <div className="feed-info">
                     <img className="feed-profile-img" src={mock1} />
-                    <div className="feed-writer-name">{username}</div>
-                    <div className="feed-writer-date">{postdate}</div>
+                    <div className="feed-writer-name">{writer}</div>
+                    <div className="feed-writer-date">{uploadPostTime}</div>
                     <div className="feed-more">
                         <button className="more-btn">
                             <div className="ellipse" />
@@ -23,7 +27,13 @@ const Feed = ({ profileimg, username, postdate, postimg }) => {
                         </button>
                     </div>
                 </div>
-                <img className="feed-post-photo" src={mock2} />
+                {images && images.length > 0 && (
+                    <div className="feed-post-photos">
+                        {images.map((image, index) => (
+                            <img key={index} className="feed-post-photo" src={getImageUrl(image)} alt={`Post ${index + 1}`} />
+                        ))}
+                    </div>
+                )}
                 <div className="feed-active">
                     <div className="feed-active-btn">
                         <img
@@ -49,8 +59,8 @@ const Feed = ({ profileimg, username, postdate, postimg }) => {
                     <div>
                         {/* 작성자 아이디 추가하기 */}
                         <p className="feed-post-content">
-                            꽁꽁 얼어붙은 한강 위로 강아지가 걸어갑니다...
-                            <span className="feed-post-more">더 보기</span>
+                            {postContent}
+                            <span className="feed-post-more"> 더 보기</span>
                         </p>
                     </div>
 

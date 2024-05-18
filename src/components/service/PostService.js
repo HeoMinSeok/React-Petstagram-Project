@@ -5,17 +5,25 @@ class PostService {
 
     // 게시글 리스트 조회
     static async getPostList() {
-        const response = await axios.post(`${PostService.BASE_URL}/post/list`);
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${PostService.BASE_URL}/post/list`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return response.data;
     }
 
     // 게시글 작성
-    static async createPost(postData, token) {
+    static async createPost(formData, token) {
         const response = await axios.post(
             `${PostService.BASE_URL}/post/write`,
-            postData,
+            formData,
             {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
             }
         );
         return response.data;

@@ -6,7 +6,7 @@ import {
     Routes,
     Navigate,
 } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LoginForm from "./components/page/LoginForm";
 import SignUp from "./components/page/SignUp";
 import HomeNav from "./components/common/HomeNav";
@@ -14,13 +14,27 @@ import SearchNav from "./components/common/SearchNav";
 import Feed from "./components/page/Feed";
 import ExploreFeed from "./components/page/ExploreFeed";
 import FriendNav from "./components/common/FriendNav";
-import MockData from "./mockdata";
 import useUserProfile from "./components/hook/useUserProfile";
 import useAllUserProfile from "./components/hook/useAllUserProfile";
+import PostService from "./components/service/PostService";
 
 const App = () => {
     const { isLoggedIn, setIsLoggedIn, profileInfo } = useUserProfile();
     const { allUserProfiles, loading, error } = useAllUserProfile();
+    const [postList, setPostList] = useState([]);
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                const posts = await PostService.getPostList();
+                setPostList(posts);
+            } catch (error) {
+                console.error("게시글을 가져오는 중 오류 발생:", error);
+            }
+        };
+
+        fetchPosts();
+    }, []);
 
     const [navState, setNavState] = useState({
         home: true,
@@ -74,11 +88,13 @@ const App = () => {
                                 <div className="div">
                                     {!navState.explore && (
                                         <>
-                                            {MockData.map((data, index) => (
+                                            {postList.map((post, index) => (
                                                 <Feed
                                                     key={index}
-                                                    username={data.username}
-                                                    postdate={data.postdate}
+                                                    writer={post.email}
+                                                    postdate={post.regTime}
+                                                    postContent={post.postContent}
+                                                    images={post.imageList}
                                                 />
                                             ))}
                                             <FriendNav
