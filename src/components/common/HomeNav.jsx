@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { useNavigate } from "react-router-dom";
 import petstagramIcon from "../../assets/petlogo.png";
@@ -13,6 +13,7 @@ import "./HomeNav.css";
 
 const HomeNav = ({ profileInfo, handleNavClick, navState }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(window.innerWidth <= 1100);
     const navigate = useNavigate();
 
     const openModal = () => {
@@ -27,25 +28,25 @@ const HomeNav = ({ profileInfo, handleNavClick, navState }) => {
         navigate(path);
     };
 
+    // 화면 크기 감지
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth <= 1100) {
+                setIsCollapsed(true);
+            } else {
+                setIsCollapsed(false);
+            }
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
     return (
         <div className="home-nav-container">
-            <Sidebar className="sidebar-wrapper">
-                {/* {navState.search ? (
-                    <div
-                        className="pethome-icon"
-                        onClick={() => handleMenuClick("home", "/")}
-                    >
-                        <img src={petstagramIcon} alt="Petstagram Icon" />
-                    </div>
-                ) : (
-                    <div
-                        className="pethome"
-                        onClick={() => handleMenuClick("home", "/")}
-                    >
-                        Petstagram
-                    </div>
-                )} */}
-
+            <Sidebar className="sidebar-wrapper" collapsed={isCollapsed}>
                 <Menu iconShape="square" className="menu-wrapper">
                     <MenuItem
                         icon={
@@ -68,9 +69,7 @@ const HomeNav = ({ profileInfo, handleNavClick, navState }) => {
                                 className="menu-icon"
                             />
                         }
-                        className={`menu-item ${
-                            navState.search ? "active" : ""
-                        }`}
+                        className={`menu-item ${navState.search ? "active" : ""}`}
                         onClick={() => handleNavClick("search")}
                     >
                         검색
@@ -83,9 +82,7 @@ const HomeNav = ({ profileInfo, handleNavClick, navState }) => {
                                 className="menu-icon"
                             />
                         }
-                        className={`menu-item ${
-                            navState.explore ? "active" : ""
-                        }`}
+                        className={`menu-item ${navState.explore ? "active" : ""}`}
                         onClick={() => handleMenuClick("explore", "/explore")}
                     >
                         탐색 탭
@@ -98,9 +95,7 @@ const HomeNav = ({ profileInfo, handleNavClick, navState }) => {
                                 className="menu-icon"
                             />
                         }
-                        className={`menu-item ${
-                            navState.messages ? "active" : ""
-                        }`}
+                        className={`menu-item ${navState.messages ? "active" : ""}`}
                         onClick={() => handleMenuClick("messages", "/messages")}
                     >
                         메시지
@@ -126,9 +121,7 @@ const HomeNav = ({ profileInfo, handleNavClick, navState }) => {
                                 className="menu-icon"
                             />
                         }
-                        className={`menu-item ${
-                            navState.friends ? "active" : ""
-                        }`}
+                        className={`menu-item ${navState.friends ? "active" : ""}`}
                         onClick={() => handleMenuClick("profile", "/profile")}
                     >
                         프로필

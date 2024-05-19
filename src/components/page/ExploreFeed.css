@@ -32,3 +32,15 @@
     object-fit: cover;
     display: block;
 }
+
+@media (max-width: 1100px) {
+    .grid-container {
+        grid-template-columns: repeat(2, 1fr); /* 중간 크기 화면에서는 2열 */
+    }
+}
+
+@media (max-width: 768px) {
+    .grid-container {
+        grid-template-columns: 1fr; /* 작은 화면에서는 1열 */
+    }
+}

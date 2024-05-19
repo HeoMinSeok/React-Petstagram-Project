@@ -13,8 +13,6 @@ const FriendNav = ({ setIsLoggedIn, profileInfo, allUserProfiles }) => {
         }
     };
 
-    
-
     return (
         <div className="friendnav">
             <div className="friendnav-user-info">

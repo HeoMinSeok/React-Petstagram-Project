@@ -1,11 +1,11 @@
 .search-nav-container {
     background-color: #fff;
     position: fixed;
-    left: 80px; 
+    left: 80px;
     top: 0;
     height: 100vh;
-    width: 470px; 
-    z-index: 1; 
+    width: 470px;
+    z-index: 1;
     border-right: 1px solid rgb(237, 237, 237);
     border-left: 1px solid rgb(237, 237, 237);
     border-radius: 0 20px;
@@ -21,7 +21,7 @@
 }
 
 .search-nav-container input {
-    width: 90%;
+    width: 100%;
     padding: 10px;
     font-size: 20px;
     border: 1px solid #ddd;
@@ -30,11 +30,25 @@
 
 .recent-searches {
     border-top: 1px solid rgb(237, 237, 237);
-    padding: 30px;
+    padding: 30px 30px 0 30px;
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
 }
+
+.search-all-clear {
+    color: rgb(65, 147, 239);
+}
+
+.search-delete-btn {
+    background-color: transparent;
+    border: none;
+    color: rgb(115, 115, 115);
+    cursor: pointer;
+    font-size: 20px;
+    margin-left: auto;
+}
+
 .search-members {
     padding: 10px;
     display: flex;
@@ -44,16 +58,34 @@
 }
 
 .search-item {
-    padding: 10px;
+    padding: 10px 30px 10px 30px; 
     display: flex;
     align-items: center;
+    cursor: pointer;
+    justify-content: space-between; 
+}
+
+.search-info {
+    display: flex;
+    align-items: center;
+    flex-grow: 1; 
 }
 
 .search-icon-wrapper {
-    margin-right: 10px;
+    margin-right: 10px; 
+    display: flex;
+    align-items: center;
 }
 
 .hidden {
     display: none;
 }
 
+.no-recent-searches {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50%;
+    color: rgb(115, 115, 115);
+    text-align: center;
+}
