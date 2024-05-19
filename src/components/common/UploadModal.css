@@ -65,6 +65,7 @@
     color: #3493ed;
     margin-left: auto;
     padding-left: 20px;
+    cursor: pointer;
 }
 
 .post-frame .post-content {

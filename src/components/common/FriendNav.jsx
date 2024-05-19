@@ -2,8 +2,8 @@ import "./FriendNav.css";
 import UserService from "../service/UserService";
 
 const FriendNav = ({ setIsLoggedIn, profileInfo, allUserProfiles }) => {
-    const userProfilesArray = Array.isArray(allUserProfiles.userEntityList) ? allUserProfiles.userEntityList : [];
-    
+    const userProfilesArray = Array.isArray(allUserProfiles) ? allUserProfiles : [];
+
     const handleLogout = () => {
         const confirmDelete = window.confirm("로그아웃 하시겠습니까?");
         if (confirmDelete) {

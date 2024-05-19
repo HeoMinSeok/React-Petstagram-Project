@@ -8,22 +8,21 @@
 }
 
 .explore-frame {
-    left: 50px;
     position: relative;
     top: 30px;
-    width: 560px;
+    width: 530px;
     height: auto;
 }
 
 .grid-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px; /* 그리드 아이템 간의 간격 */
+    gap: 5px; /* 그리드 아이템 간의 간격 */
 }
 
 .grid-item {
-    width: 400px;
-    height: 400px;
+    width: 365px;
+    height: 365px;
     overflow: hidden;
 }
 

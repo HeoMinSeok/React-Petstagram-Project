@@ -17,6 +17,7 @@ import FriendNav from "./components/common/FriendNav";
 import useUserProfile from "./components/hook/useUserProfile";
 import useAllUserProfile from "./components/hook/useAllUserProfile";
 import PostService from "./components/service/PostService";
+import MyFeed from "./components/page/MyFeed";
 
 const App = () => {
     const { isLoggedIn, setIsLoggedIn, profileInfo } = useUserProfile();
@@ -32,16 +33,17 @@ const App = () => {
                 console.error("게시글을 가져오는 중 오류 발생:", error);
             }
         };
-
-        fetchPosts();
-    }, []);
+        if (isLoggedIn) {
+            fetchPosts();
+        }
+    }, [isLoggedIn]);
 
     const [navState, setNavState] = useState({
         home: true,
         search: false,
         explore: false,
         messages: false,
-        friends: false,
+        profile: false,
     });
 
     const handleNavClick = (menu) => {
@@ -50,7 +52,7 @@ const App = () => {
             search: menu === "search" ? !prevState.search : false,
             explore: false,
             messages: false,
-            friends: false,
+            profile: false,
             [menu]: menu !== "search" || !prevState.search,
         }));
     };
@@ -93,14 +95,18 @@ const App = () => {
                                                     key={index}
                                                     writer={post.email}
                                                     postdate={post.regTime}
-                                                    postContent={post.postContent}
+                                                    postContent={
+                                                        post.postContent
+                                                    }
                                                     images={post.imageList}
                                                 />
                                             ))}
                                             <FriendNav
                                                 setIsLoggedIn={setIsLoggedIn}
                                                 profileInfo={profileInfo}
-                                                allUserProfiles={allUserProfiles}
+                                                allUserProfiles={
+                                                    allUserProfiles
+                                                }
                                             />
                                         </>
                                     )}
@@ -110,7 +116,13 @@ const App = () => {
                                             handleNavClick={handleNavClick}
                                             navState={navState}
                                         />
-                                        {navState.search && <SearchNav allUserProfiles={allUserProfiles}/>}
+                                        {navState.search && (
+                                            <SearchNav
+                                                allUserProfiles={
+                                                    allUserProfiles
+                                                }
+                                            />
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -126,14 +138,58 @@ const App = () => {
                         isLoggedIn ? (
                             <div className="app">
                                 <div className="div">
-                                    <ExploreFeed />
+                                    <ExploreFeed
+                                        images={postList.flatMap(
+                                            (post) => post.imageList
+                                        )}
+                                    />
                                     <div className="main-container">
                                         <HomeNav
                                             profileInfo={profileInfo}
                                             handleNavClick={handleNavClick}
                                             navState={navState}
                                         />
-                                        {navState.search && <SearchNav allUserProfiles={allUserProfiles}/>}
+                                        {navState.search && (
+                                            <SearchNav
+                                                allUserProfiles={
+                                                    allUserProfiles
+                                                }
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <Navigate to="/login" />
+                        )
+                    }
+                />
+
+                <Route
+                    path="/profile"
+                    element={
+                        isLoggedIn ? (
+                            <div className="app">
+                                <div className="div">
+                                    <MyFeed
+                                        images={postList.flatMap(
+                                            (post) => post.imageList
+                                        )}
+                                        profileInfo={profileInfo}
+                                    />
+                                    <div className="main-container">
+                                        <HomeNav
+                                            profileInfo={profileInfo}
+                                            handleNavClick={handleNavClick}
+                                            navState={navState}
+                                        />
+                                        {navState.search && (
+                                            <SearchNav
+                                                allUserProfiles={
+                                                    allUserProfiles
+                                                }
+                                            />
+                                        )}
                                     </div>
                                 </div>
                             </div>

@@ -129,7 +129,7 @@ const HomeNav = ({ profileInfo, handleNavClick, navState }) => {
                         className={`menu-item ${
                             navState.friends ? "active" : ""
                         }`}
-                        onClick={() => handleMenuClick("friends", "/profile")}
+                        onClick={() => handleMenuClick("profile", "/profile")}
                     >
                         프로필
                     </MenuItem>

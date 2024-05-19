@@ -12,6 +12,7 @@ const Feed = ({ writer, postdate, postContent, images }) => {
     const getImageUrl = (image) => {
         return `http://localhost:8088/uploads/${image.imageUrl}`; // 이미지 URL 구성
     };
+    
     return (
         <div className="feed">
             <div className="feed-frame">

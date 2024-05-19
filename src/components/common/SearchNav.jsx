@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./SearchNav.css";
 
 const SearchNav = ({ allUserProfiles }) => {
-    const userProfilesArray = Array.isArray(allUserProfiles.userEntityList)
-        ? allUserProfiles.userEntityList
-        : [];
+    const userProfilesArray = Array.isArray(allUserProfiles) ? allUserProfiles : [];
     const [searchText, setSearchText] = useState("");
 
     const handleSearchChange = (e) => {
