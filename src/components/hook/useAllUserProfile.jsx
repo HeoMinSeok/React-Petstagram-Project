@@ -21,8 +21,11 @@ const useAllUserProfile = () => {
                 setLoading(false);
             }
         };
-
-        fetchAllUsers();
+        
+        if (isLoggedIn) {
+            setLoading(true);
+            fetchAllUsers();
+        }
     }, [isLoggedIn]);
 
     return { allUserProfiles, loading, error };

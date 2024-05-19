@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import "./MyFeed.css";
+import ProfileUpdateModal from "./ProfileUpdateModal";
 import mock1 from "../../assets/7bok1.jpeg";
 
 const MyFeed = ({ images, profileInfo }) => {
+    const [isModalOpen, setModalOpen] = useState(false);
+
     const getImageUrl = (image) => {
         return `http://localhost:8088/uploads/${image.imageUrl}`; // 이미지 URL 구성
     };
@@ -19,9 +22,13 @@ const MyFeed = ({ images, profileInfo }) => {
                             {profileInfo.email}
                         </h2>
                         <div className="myfeed-user-actions">
-                            <button className="myfeed-edit-btn">
+                            <button
+                                className="myfeed-edit-btn"
+                                onClick={() => setModalOpen(true)}
+                            >
                                 프로필 편집
                             </button>
+
                             <button className="myfeed-story-btn">
                                 보관된 스토리 보기
                             </button>
@@ -65,6 +72,9 @@ const MyFeed = ({ images, profileInfo }) => {
                     ))}
                 </div>
             </div>
+            {isModalOpen && (
+                <ProfileUpdateModal onClose={() => setModalOpen(false)} profileInfo={profileInfo}/>
+            )}
         </div>
     );
 };
