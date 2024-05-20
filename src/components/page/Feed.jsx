@@ -32,9 +32,8 @@ const Feed = ({ writer, postdate, postContent, images, allUserProfiles }) => {
                     <div className="feed-writer-date">{uploadPostTime}</div>
                     <div className="feed-more">
                         <button className="more-btn">
-                            <div className="ellipse" />
-                            <div className="ellipse" />
-                            <div className="ellipse" />
+                            <div className="ellipse">없애기</div>
+                            
                         </button>
                     </div>
                 </div>

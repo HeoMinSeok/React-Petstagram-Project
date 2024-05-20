@@ -24,6 +24,7 @@ const App = () => {
     const { isLoggedIn, setIsLoggedIn, profileInfo } = useUserProfile();
     const { allUserProfiles, loading, error } = useAllUserProfile();
     const [postList, setPostList] = useState([]);
+    const [postUserList, setPostUserList] = useState([]);
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -38,6 +39,27 @@ const App = () => {
             fetchPosts();
         }
     }, [isLoggedIn]);
+
+    // 사용자가 작성한 게시물을 가져오는 useEffect
+    useEffect(() => {
+        const fetchUserPosts = async () => {
+            if (isLoggedIn && profileInfo.id) {
+                try {
+                    const postUserList = await PostService.getPostsByUserId(
+                        profileInfo.id
+                    );
+                    setPostUserList(postUserList);
+                } catch (error) {
+                    console.error(
+                        "사용자가 작성한 게시물을 가져오는 중 오류 발생:",
+                        error
+                    );
+                }
+            }
+        };
+
+        fetchUserPosts();
+    }, [isLoggedIn, profileInfo]);
 
     const [navState, setNavState] = useState({
         home: true,
@@ -209,7 +231,7 @@ const App = () => {
                             <div className="app">
                                 <div className="div">
                                     <MyFeed
-                                        images={postList.flatMap(
+                                        images={postUserList.flatMap(
                                             (post) => post.imageList
                                         )}
                                         profileInfo={profileInfo}
