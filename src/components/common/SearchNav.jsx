@@ -79,7 +79,11 @@ const SearchNav = ({ allUserProfiles }) => {
                         >
                             <div className="search-info">
                                 <div className="search-icon-wrapper">
-                                    <img alt="" className="menu-icon" />
+                                    <img
+                                        src={user.profileImageUrl}
+                                        alt="profile_image"
+                                        className="search-profile-image"
+                                    />
                                 </div>
                                 <div>{user.email}</div>
                             </div>
@@ -88,10 +92,17 @@ const SearchNav = ({ allUserProfiles }) => {
                 </div>
             </div>
 
-            <div className={`search-recent-members ${searchText ? "hidden" : ""}`}>
+            <div
+                className={`search-recent-members ${
+                    searchText ? "hidden" : ""
+                }`}
+            >
                 <div className="recent-searches">
                     <span>최근 검색 항목</span>
-                    <span onClick={handleClearSearches} className="search-all-clear">
+                    <span
+                        onClick={handleClearSearches}
+                        className="search-all-clear"
+                    >
                         모두 지우기
                     </span>
                 </div>
@@ -104,14 +115,20 @@ const SearchNav = ({ allUserProfiles }) => {
                         <div key={user.email} className="search-item">
                             <div className="search-info">
                                 <div className="search-icon-wrapper">
-                                    <img alt="" className="menu-icon" />
+                                    <img
+                                        src={user.profileImageUrl}
+                                        alt="프로필"
+                                        className="search-profile-image"
+                                    />
                                 </div>
                                 <div>{user.email}</div>
                             </div>
                             <div>
                                 <button
                                     className="search-delete-btn"
-                                    onClick={() => handleDeleteSearch(user.email)}
+                                    onClick={() =>
+                                        handleDeleteSearch(user.email)
+                                    }
                                 >
                                     X
                                 </button>

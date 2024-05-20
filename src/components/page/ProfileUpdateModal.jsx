@@ -3,6 +3,7 @@ import "./ProfileUpdateModal.css";
 import mock1 from "../../assets/7bok1.jpeg";
 import Select from "react-select";
 import styled from "styled-components";
+import UserService from "../service/UserService";
 
 const ModalBackdrop = styled.div`
     position: fixed;
@@ -63,18 +64,20 @@ const ModalButton = styled.button`
     border-radius: 0;
 `;
 
-const ProfileUpdateModal = ({ onClose, profileInfo }) => {
-    const [bio, setBio] = useState("");
-    const [gender, setGender] = useState("비공개");
-    const [showRecommendations, setShowRecommendations] = useState(false);
+const ProfileUpdateModal = ({ onClose, profileInfo, profileImageUrl }) => {
+    const [bio, setBio] = useState(profileInfo.bio || "");
+    const [gender, setGender] = useState(profileInfo.gender || "비공개");
+    const [showRecommendations, setShowRecommendations] = useState(
+        profileInfo.isRecommend || false
+    );
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
 
-    // 사진 변경 모달
     const [showModal, setShowModal] = useState(false);
     const openModal = () => setShowModal(true);
     const closeModal = () => setShowModal(false);
     const fileInputRef = useRef(null);
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(profileImageUrl);
+    const [selectedFile, setSelectedFile] = useState(null); // 파일 상태 추가
 
     const genderOptions = [
         { value: "비공개", label: "밝히고 싶지 않음" },
@@ -83,33 +86,78 @@ const ProfileUpdateModal = ({ onClose, profileInfo }) => {
     ];
 
     useEffect(() => {
-        // 모든 상태 값이 초기 상태와 다르면 버튼 활성화
-        if (
-            bio !== "" ||
-            gender !== "비공개" ||
-            showRecommendations !== false
-        ) {
-            setIsSubmitDisabled(false);
-        } else {
-            setIsSubmitDisabled(true);
-        }
-    }, [bio, gender, showRecommendations]);
+        setIsSubmitDisabled(true); // 초기에는 제출 버튼 비활성화
+    }, []);
 
-    const handleSubmit = (e) => {
+    const handleInputChange = (setter) => (e) => {
+        setter(e.target.value);
+        setIsSubmitDisabled(false); // 입력이 변경되면 제출 버튼 활성화
+    };
+
+    const handleSelectChange = (setter) => (selectedOption) => {
+        setter(selectedOption.value);
+        setIsSubmitDisabled(false); // 선택이 변경되면 제출 버튼 활성화
+    };
+
+    const handleCheckboxChange = (setter) => (e) => {
+        setter(e.target.checked);
+        setIsSubmitDisabled(false); // 체크박스 상태가 변경되면 제출 버튼 활성화
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // 프로필 업데이트 로직 추가
-        console.log({ bio, gender, showRecommendations });
-        onClose();
+
+        const userData = {};
+
+        if (bio !== profileInfo.bio) {
+            userData.bio = bio;
+        }
+
+        if (gender !== profileInfo.gender) {
+            userData.gender = gender;
+        }
+
+        if (showRecommendations !== profileInfo.isRecommend) {
+            userData.isRecommend = showRecommendations;
+        }
+
+        console.log("전송할 userData:", userData);
+
+        const formData = new FormData();
+        if (Object.keys(userData).length > 0) {
+            formData.append(
+                "user",
+                new Blob([JSON.stringify(userData)], {
+                    type: "application/json",
+                })
+            );
+        }
+        if (selectedFile) {
+            formData.append("file", selectedFile);
+        }
+
+        try {
+            const token = localStorage.getItem("token");
+            const updatedUser = await UserService.updateUser(
+                profileInfo.id,
+                formData,
+                token
+            );
+            console.log("Updated user:", updatedUser);
+            onClose();
+        } catch (error) {
+            console.error("Error updating user:", error);
+        }
     };
 
     const handleFileSelect = () => {
-        fileInputRef.current.click(); // 파일 입력 필드 트리거
+        fileInputRef.current.click();
     };
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            console.log("File selected:", file);
+            setSelectedFile(file);
             const reader = new FileReader();
             reader.onload = () => {
                 setSelectedImage(reader.result);
@@ -136,7 +184,7 @@ const ProfileUpdateModal = ({ onClose, profileInfo }) => {
                     <div className="profile-section">
                         <img
                             className="profile-pic"
-                            src={selectedImage || profileInfo.image}
+                            src={selectedImage || profileInfo.profileImageUrl}
                             alt="Profile"
                         />
                         <div className="profile-info">
@@ -160,7 +208,7 @@ const ProfileUpdateModal = ({ onClose, profileInfo }) => {
                         <label>소개</label>
                         <textarea
                             value={bio}
-                            onChange={(e) => setBio(e.target.value)}
+                            onChange={handleInputChange(setBio)}
                             maxLength={149}
                             placeholder="소개"
                         />
@@ -172,9 +220,7 @@ const ProfileUpdateModal = ({ onClose, profileInfo }) => {
                             value={genderOptions.find(
                                 (option) => option.value === gender
                             )}
-                            onChange={(selectedOption) =>
-                                setGender(selectedOption.value)
-                            }
+                            onChange={handleSelectChange(setGender)}
                             options={genderOptions}
                             className="profile-select"
                             classNamePrefix="profile-select"
@@ -197,11 +243,9 @@ const ProfileUpdateModal = ({ onClose, profileInfo }) => {
                                         type="checkbox"
                                         id="recommendations"
                                         checked={showRecommendations}
-                                        onChange={(e) =>
-                                            setShowRecommendations(
-                                                e.target.checked
-                                            )
-                                        }
+                                        onChange={handleCheckboxChange(
+                                            setShowRecommendations
+                                        )}
                                     />
                                     <span className="profile-slider round"></span>
                                 </label>

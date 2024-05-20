@@ -2,6 +2,13 @@ import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import UserService from "../service/UserService";
 
+const getProfileImageUrl = (profileImage) => {
+    if (profileImage && profileImage.imageUrl) {
+        return `http://localhost:8088/uploads/${profileImage.imageUrl}`;
+    }
+    return ""; // 기본 이미지 URL 또는 대체 이미지
+};
+
 const useUserProfile = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(UserService.isAuthenticated());
     const [profileInfo, setProfileInfo] = useState({});
@@ -27,7 +34,11 @@ const useUserProfile = () => {
         try {
             const token = localStorage.getItem("token");
             const response = await UserService.getYourProfile(token);
-            setProfileInfo(response);
+            const profileWithImageUrl = {
+                ...response,
+                profileImageUrl: getProfileImageUrl(response.profileImage)
+            };
+            setProfileInfo(profileWithImageUrl);
         } catch (error) {
             console.error("프로필 정보를 가져오는 중 오류 발생:", error);
         }

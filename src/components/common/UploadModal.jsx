@@ -174,7 +174,6 @@ export const UploadModal = ({ onClose, profileInfo }) => {
 
             const postData = {
                 postContent: text,
-                fileName: file.name,
             };
 
             console.log("File in handleSubmit:", file);

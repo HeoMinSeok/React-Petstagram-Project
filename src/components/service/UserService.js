@@ -36,16 +36,20 @@ class UserService {
     }
 
     // 회원 수정
-    static async updateUser(userId, userData, token) {
+    static async updateUser(userId, formData, token) {
         const response = await axios.put(
-            `${UserService.BASE_URL}/user/update/${userId}`,
-            userData,
+            `${UserService.BASE_URL}/user/edit/${userId}`,
+            formData,
             {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data",
+                },
             }
         );
         return response.data;
     }
+    
 
     // 회원 삭제
     static async deleteUser(userId, token) {

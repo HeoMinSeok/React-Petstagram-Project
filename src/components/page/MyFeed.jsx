@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./MyFeed.css";
 import ProfileUpdateModal from "./ProfileUpdateModal";
-import mock1 from "../../assets/7bok1.jpeg";
 
 const MyFeed = ({ images, profileInfo }) => {
     const [isModalOpen, setModalOpen] = useState(false);
@@ -14,7 +13,7 @@ const MyFeed = ({ images, profileInfo }) => {
         <div className="myfeed-frame">
             <div className="myfeed-user-info">
                 <div className="myfeed-user-avatar">
-                    <img src={mock1} alt="User Avatar" />
+                    <img src={profileInfo.profileImageUrl} alt="User Avatar" />
                 </div>
                 <div className="myfeed-user-main">
                     <div className="myfeed-user-header">
@@ -56,7 +55,7 @@ const MyFeed = ({ images, profileInfo }) => {
                         <span className="myfeed-user-profile">
                             {profileInfo.name}
                         </span>
-                        나는 지호
+                        {profileInfo.bio}
                     </div>
                 </div>
             </div>
@@ -73,7 +72,7 @@ const MyFeed = ({ images, profileInfo }) => {
                 </div>
             </div>
             {isModalOpen && (
-                <ProfileUpdateModal onClose={() => setModalOpen(false)} profileInfo={profileInfo}/>
+                <ProfileUpdateModal onClose={() => setModalOpen(false)} profileInfo={profileInfo} />
             )}
         </div>
     );

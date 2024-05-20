@@ -6,18 +6,28 @@ import bookmarkIcon from "../../assets/feed/feed-save.png";
 import mock1 from "../../assets/7bok1.jpeg";
 import GetRelativeTime from "../../utils/GetRelativeTime";
 
-const Feed = ({ writer, postdate, postContent, images }) => {
+const Feed = ({ writer, postdate, postContent, images, allUserProfiles }) => {
     const uploadPostTime = GetRelativeTime(postdate);
-    
+
     const getImageUrl = (image) => {
         return `http://localhost:8088/uploads/${image.imageUrl}`; // 이미지 URL 구성
     };
-    
+
+    const getProfileImageUrlForWriter = (email) => {
+        const user = allUserProfiles.find(user => user.email === email);
+        if (user && user.profileImageUrl) {
+            return user.profileImageUrl;
+        }
+        return mock1; // 기본 이미지 URL 또는 대체 이미지
+    };
+
+    const profileImageUrl = getProfileImageUrlForWriter(writer);
+
     return (
         <div className="feed">
             <div className="feed-frame">
                 <div className="feed-info">
-                    <img className="feed-profile-img" src={mock1} />
+                    <img className="feed-profile-img" src={profileImageUrl} />
                     <div className="feed-writer-name">{writer}</div>
                     <div className="feed-writer-date">{uploadPostTime}</div>
                     <div className="feed-more">
@@ -31,7 +41,12 @@ const Feed = ({ writer, postdate, postContent, images }) => {
                 {images && images.length > 0 && (
                     <div className="feed-post-photos">
                         {images.map((image, index) => (
-                            <img key={index} className="feed-post-photo" src={getImageUrl(image)} alt={`Post ${index + 1}`} />
+                            <img
+                                key={index}
+                                className="feed-post-photo"
+                                src={getImageUrl(image)}
+                                alt={`Post ${index + 1}`}
+                            />
                         ))}
                     </div>
                 )}

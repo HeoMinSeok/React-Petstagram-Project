@@ -101,6 +101,9 @@ const App = () => {
                                                         post.postContent
                                                     }
                                                     images={post.imageList}
+                                                    allUserProfiles={
+                                                        allUserProfiles
+                                                    }
                                                 />
                                             ))}
                                             <FriendNav

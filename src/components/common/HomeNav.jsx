@@ -26,6 +26,10 @@ const HomeNav = ({ profileInfo, handleNavClick, navState }) => {
     const handleMenuClick = (menu, path) => {
         handleNavClick(menu);
         navigate(path);
+    
+        if (menu === "messages") {
+            setIsCollapsed(true);
+        }
     };
 
     // 화면 크기 감지
