@@ -236,7 +236,7 @@ export const UploadModal = ({ onClose, profileInfo }) => {
                     </div>
                     <div className="post-details-section">
                         <div className="post-user-info">
-                            <div className="post-ellipse" />
+                            <img className="post-ellipse" src={profileInfo.profileImageUrl}/>
                             <div className="post-text-wrapper-3">
                                 {profileInfo.email}
                             </div>

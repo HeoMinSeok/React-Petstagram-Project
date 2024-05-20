@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import UserService from "../service/UserService";
 import useUserProfile from "./useUserProfile";
+import BasicImage from "../../assets/basic-profile.jpeg";
 
 const useAllUserProfile = () => {
     const [allUserProfiles, setAllUserProfiles] = useState([]);
@@ -12,7 +13,7 @@ const useAllUserProfile = () => {
         if (profileImage && profileImage.imageUrl) {
             return `http://localhost:8088/uploads/${profileImage.imageUrl}`;
         }
-        return ""; // 기본 이미지 URL 또는 대체 이미지
+        return BasicImage; 
     };
 
 

@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import UserService from "../service/UserService";
+import BasicImage from "../../assets/basic-profile.jpeg";
 
 const getProfileImageUrl = (profileImage) => {
     if (profileImage && profileImage.imageUrl) {
         return `http://localhost:8088/uploads/${profileImage.imageUrl}`;
     }
-    return ""; // 기본 이미지 URL 또는 대체 이미지
+    return BasicImage; 
 };
 
 const useUserProfile = () => {
@@ -36,7 +37,7 @@ const useUserProfile = () => {
             const response = await UserService.getYourProfile(token);
             const profileWithImageUrl = {
                 ...response,
-                profileImageUrl: getProfileImageUrl(response.profileImage)
+                profileImageUrl: getProfileImageUrl(response.profileImage),
             };
             setProfileInfo(profileWithImageUrl);
         } catch (error) {

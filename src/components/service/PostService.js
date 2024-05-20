@@ -74,6 +74,31 @@ class PostService {
         );
         return response.data;
     }
+
+    // 게시물 좋아요 추가
+    static async togglePostLike(postId) {
+        const token = localStorage.getItem("token");
+        const response = await axios.post(
+            `${PostService.BASE_URL}/like/post/toggle/${postId}`,
+            {},
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        );
+        return response.data;
+    }
+
+    // 게시물 좋아요 상태
+    static async getPostLikeStatus(postId) {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+            `${PostService.BASE_URL}/like/post/status/${postId}`,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        );
+        return response.data;
+    }
 }
 
 export default PostService;

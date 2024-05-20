@@ -26,6 +26,7 @@ const App = () => {
     const [postList, setPostList] = useState([]);
     const [postUserList, setPostUserList] = useState([]);
 
+    // 모든 게시물 목록을 가져오는 useEffect
     useEffect(() => {
         const fetchPosts = async () => {
             try {
@@ -121,6 +122,10 @@ const App = () => {
                                                     postdate={post.regTime}
                                                     postContent={
                                                         post.postContent
+                                                    }
+                                                    postId={post.id}
+                                                    postLikesCount={
+                                                        post.postLikesCount
                                                     }
                                                     images={post.imageList}
                                                     allUserProfiles={

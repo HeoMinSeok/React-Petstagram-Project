@@ -2,8 +2,6 @@ import "./FriendNav.css";
 import UserService from "../service/UserService";
 
 const FriendNav = ({ setIsLoggedIn, profileInfo, allUserProfiles }) => {
-    const userProfilesArray = Array.isArray(allUserProfiles) ? allUserProfiles : [];
-
     const handleLogout = () => {
         const confirmDelete = window.confirm("로그아웃 하시겠습니까?");
         if (confirmDelete) {
@@ -16,7 +14,7 @@ const FriendNav = ({ setIsLoggedIn, profileInfo, allUserProfiles }) => {
     return (
         <div className="friendnav">
             <div className="friendnav-user-info">
-                <img className="ellipse-3" src={profileInfo.profileImageUrl}/>
+                <img className="ellipse-3" src={profileInfo.profileImageUrl} />
                 <div className="friendnav-user-profile">
                     <div className="friendnav-user-profile-wrapper">
                         <div className="friendnav-user-email">
@@ -47,15 +45,23 @@ const FriendNav = ({ setIsLoggedIn, profileInfo, allUserProfiles }) => {
                 </div>
             </div>
             <div className="frame-20">
-            {allUserProfiles
-                    .filter(user => user.email !== profileInfo.email)
+                {allUserProfiles
+                    .filter((user) => user.email !== profileInfo.email)
                     .map((user) => (
                         <div key={user.email} className="frame-21">
-                            <img src={user.profileImageUrl} className="ellipse-3" alt="프로필 이미지" />
+                            <img
+                                src={user.profileImageUrl}
+                                className="ellipse-3"
+                                alt="프로필 이미지"
+                            />
                             <div className="frame-13">
                                 <div className="frame-14">
-                                    <div className="text-wrapper-8">{user.email}</div>
-                                    <div className="text-wrapper-9">회원님을 위한 추천</div>
+                                    <div className="text-wrapper-8">
+                                        {user.email}
+                                    </div>
+                                    <div className="text-wrapper-9">
+                                        회원님을 위한 추천
+                                    </div>
                                 </div>
                             </div>
                             <div className="frame-15">
