@@ -7,8 +7,10 @@ import moreIcon from "../../assets/feed/feed-more.png";
 import BasicImage from "../../assets/basic-profile.jpeg";
 import GetRelativeTime from "../../utils/GetRelativeTime";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import CommentService from "../service/CommentService";
 import PostService from "../service/PostService";
+import useUserProfile from "../hook/useUserProfile";
 
 const Feed = ({
     writer,
@@ -24,9 +26,11 @@ const Feed = ({
     const [commentText, setCommentText] = useState("");
     const [liked, setLiked] = useState(false);
     const [likesCount, setLikesCount] = useState(postLikesCount);
+    const { profileInfo } = useUserProfile();
+    const navigate = useNavigate();
 
     const getImageUrl = (image) => {
-        return `http://localhost:8088/uploads/${image.imageUrl}`; 
+        return `http://localhost:8088/uploads/${image.imageUrl}`;
     };
 
     const getProfileImageUrlForWriter = (email) => {
@@ -34,7 +38,7 @@ const Feed = ({
         if (user && user.profileImageUrl) {
             return user.profileImageUrl;
         }
-        return BasicImage; 
+        return BasicImage;
     };
 
     const profileImageUrl = getProfileImageUrlForWriter(writer);
@@ -56,7 +60,7 @@ const Feed = ({
         };
 
         updateLikeStatus();
-        fetchComments(); 
+        fetchComments();
     }, [postId]);
 
     // 좋아요 버튼 클릭 처리 함수
@@ -70,6 +74,14 @@ const Feed = ({
             setLikesCount(newLikesCount);
         } catch (error) {
             console.error("좋아요 상태 변경 중 오류가 발생했습니다.", error);
+        }
+    };
+
+    const handleUserClick = () => {
+        if (profileInfo.email == writer) {
+            navigate(`/profile`);
+        } else {
+            navigate(`/friendfeed/${writer}`);
         }
     };
 
@@ -106,12 +118,30 @@ const Feed = ({
         <div className="feed">
             <div className="feed-frame">
                 <div className="feed-info">
-                    <img className="feed-profile-img" src={profileImageUrl} />
-                    <div className="feed-writer-name">{writer}</div>
-                    <div className="feed-writer-date">{uploadPostTime}</div>
+                    <div className="feed-user-info" onClick={handleUserClick}>
+                        <div>
+                            <img
+                                className="feed-profile-img"
+                                src={profileImageUrl}
+                            />
+                        </div>
+                        <div>
+                            <div className="feed-writer-name">{writer}</div>
+                        </div>
+                        <div>
+                            <div className="feed-writer-date">
+                                {"· " + uploadPostTime + " ·"}
+                            </div>
+                        </div>
+
+                        {profileInfo.email !== writer && (
+                            <button className="feed-user-follow">팔로우</button>
+                        )}
+                    </div>
+
                     <div className="feed-more">
-                        <button className="more-btn">
-                            <img className="ellipse" src={moreIcon}></img>
+                        <button className="feed-more-btn">
+                            <img className="feed-more-img" src={moreIcon}></img>
                         </button>
                     </div>
                 </div>

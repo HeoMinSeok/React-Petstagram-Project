@@ -11,6 +11,10 @@ const FriendNav = ({ setIsLoggedIn, profileInfo, allUserProfiles }) => {
         }
     };
 
+    if (!profileInfo || !allUserProfiles) {
+        return <div>로딩 중...</div>; // 데이터를 로드하는 동안 로딩 메시지 표시
+    }
+
     return (
         <div className="friendnav">
             <div className="friendnav-user-info">

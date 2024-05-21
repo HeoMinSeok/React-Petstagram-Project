@@ -92,7 +92,7 @@ const EmojiList = styled.div`
     justify-content: space-between;
 `;
 
-export const UploadModal = ({ onClose, profileInfo }) => {
+export const UploadModal = ({ onClose, profileInfo, setPostSuccess }) => {
     const fileInputRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [text, setText] = useState("");
@@ -184,6 +184,7 @@ export const UploadModal = ({ onClose, profileInfo }) => {
 
             const token = localStorage.getItem("token");
             const response = await PostService.createPost(formData, token);
+            setPostSuccess(true);
             onClose();
         } catch (error) {
             console.error('게시글 업로드 중 오류 발생:', error);

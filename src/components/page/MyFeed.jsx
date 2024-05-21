@@ -1,13 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./MyFeed.css";
 import ProfileUpdateModal from "./ProfileUpdateModal";
 
 const MyFeed = ({ images, profileInfo }) => {
     const [isModalOpen, setModalOpen] = useState(false);
+    const [isUpdateProfile, setIsUpdateProfile] = useState(false);
 
     const getImageUrl = (image) => {
-        return `http://localhost:8088/uploads/${image.imageUrl}`; // 이미지 URL 구성
+        return `http://localhost:8088/uploads/${image.imageUrl}`;
     };
+
+    useEffect(() => {
+        if (isUpdateProfile) {
+            setIsUpdateProfile(false); 
+            window.location.replace("/profile");
+        }
+    }, [isUpdateProfile]);
 
     return (
         <div className="myfeed-frame">
@@ -72,7 +80,11 @@ const MyFeed = ({ images, profileInfo }) => {
                 </div>
             </div>
             {isModalOpen && (
-                <ProfileUpdateModal onClose={() => setModalOpen(false)} profileInfo={profileInfo} />
+                <ProfileUpdateModal
+                    onClose={() => setModalOpen(false)}
+                    profileInfo={profileInfo}
+                    setIsUpdateProfile={setIsUpdateProfile}
+                />
             )}
         </div>
     );

@@ -25,73 +25,74 @@
 }
 
 .feed-info {
-    left: 0;
     position: absolute;
-    top: 0;
-    width: 502px;
+    width: 560px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    justify-content: space-between;
+}
+
+.feed-user-info {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    gap: 10px; /* 요소들 사이에 15px 간격 추가 */
+}
+
+.feed-profile-img {
+    background-color: #d9d9d9;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
 }
 
 .feed-writer-name {
     color: #000000;
     font-family: "Inter-Bold", Helvetica;
-    font-size: 13.6px;
+    font-size: 16px;
     font-weight: 700;
-    left: 51px;
     letter-spacing: 0;
     line-height: normal;
-    position: absolute;
-    top: 23px;
     white-space: nowrap;
+    margin-bottom: 20px;
 }
 
 .feed-writer-date {
     color: rgb(115, 115, 115);
     font-family: "Inter-Bold", Helvetica;
-    font-size: 13.6px;
-    font-weight: 700;
-    left: 146px;
+    font-size: 15px;
+    font-weight: 500;
     letter-spacing: 0;
     line-height: normal;
-    position: absolute;
-    top: 23px;
     white-space: nowrap;
+    margin-bottom: 20px;
+}
+
+.feed-user-follow {
+    font-family: "Inter-Bold", Helvetica;
+    width: auto;
+    border: none;
+    background-color: white;
+    color: #00a3ff;
+    font-size: 15px;
+    margin-bottom: 20px;
 }
 
 .feed-more {
-    height: 24px;
-    left: 525px;
-    position: absolute;
-    top: 20px;
+    margin-bottom: 10px;
 }
 
-.more-btn {
-    align-items: center;
-    display: inline-flex;
-    gap: 3px;
-    justify-content: center;
-    left: 3px;
-    position: relative;
-    top: 0px;
-    background-color: transparent;
+.feed-more-btn {   
+    background-color: white !important;
     border: none;
     cursor: pointer;
 }
 
-.ellipse {
-    border-radius: 2px;
-    height: 4px;
-    position: relative;
-    width: 4px;
-}
-
-.feed-profile-img {
-    background-color: #d9d9d9;
-    border-radius: 21px;
-    height: 42px;
-    left: 0;
-    position: absolute;
-    top: 11px;
-    width: 42px;
+.feed-more-img {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
 }
 
 .feed-active {
@@ -101,6 +102,7 @@
     top: 688px;
     width: 502px;
 }
+
 .feed-active-btn {
     align-items: flex-start;
     display: inline-flex;
@@ -188,6 +190,7 @@
     outline: none !important;
     width: 100% !important;
 }
+
 .feed-comment-regi {
     color: rgb(65, 147, 239);
     font-size: 15.3px;
@@ -200,14 +203,9 @@
 }
 
 @media (max-width: 1400px) {
-    /* 화면이 768px 이하일 때 */
     .feed {
-        width: calc(
-            100% - 30px
-        ); /* 화면 가장자리에 간격을 두기 위해 오른쪽 왼쪽 간격을 제외한 너비 사용 */
-        left: 50%; /* 가운데 정렬을 위해 왼쪽에서 시작 위치를 50%로 설정 */
-        transform: translateX(
-            -50%
-        ); /* 요소의 가운데 정렬을 위해 왼쪽으로 50%만큼 이동 */
+        width: calc(100% - 30px);
+        left: 50%;
+        transform: translateX(-50%);
     }
 }

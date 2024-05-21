@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./ProfileUpdateModal.css";
-import mock1 from "../../assets/7bok1.jpeg";
 import Select from "react-select";
 import styled from "styled-components";
 import UserService from "../service/UserService";
@@ -64,7 +63,7 @@ const ModalButton = styled.button`
     border-radius: 0;
 `;
 
-const ProfileUpdateModal = ({ onClose, profileInfo, profileImageUrl }) => {
+const ProfileUpdateModal = ({ onClose, profileInfo, profileImageUrl, setIsUpdateProfile }) => {
     const [bio, setBio] = useState(profileInfo.bio || "");
     const [gender, setGender] = useState(profileInfo.gender || "비공개");
     const [showRecommendations, setShowRecommendations] = useState(
@@ -121,8 +120,6 @@ const ProfileUpdateModal = ({ onClose, profileInfo, profileImageUrl }) => {
             userData.isRecommend = showRecommendations;
         }
 
-        console.log("전송할 userData:", userData);
-
         const formData = new FormData();
         if (Object.keys(userData).length > 0) {
             formData.append(
@@ -144,6 +141,7 @@ const ProfileUpdateModal = ({ onClose, profileInfo, profileImageUrl }) => {
                 token
             );
             console.log("Updated user:", updatedUser);
+            setIsUpdateProfile(true);
             onClose();
         } catch (error) {
             console.error("Error updating user:", error);

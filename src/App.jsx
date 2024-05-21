@@ -13,6 +13,7 @@ import HomeNav from "./components/common/HomeNav";
 import SearchNav from "./components/common/SearchNav";
 import Feed from "./components/page/Feed";
 import ExploreFeed from "./components/page/ExploreFeed";
+import FriendFeed from "./components/page/FriendFeed";
 import Message from "./components/page/Message";
 import FriendNav from "./components/common/FriendNav";
 import useUserProfile from "./components/hook/useUserProfile";
@@ -23,6 +24,9 @@ import MyFeed from "./components/page/MyFeed";
 const App = () => {
     const { isLoggedIn, setIsLoggedIn, profileInfo } = useUserProfile();
     const { allUserProfiles, loading, error } = useAllUserProfile();
+
+    // postSuccess -> 글 등록시 렌더링 시키기 위해
+    const [postSuccess, setPostSuccess] = useState(false);
     const [postList, setPostList] = useState([]);
     const [postUserList, setPostUserList] = useState([]);
 
@@ -38,8 +42,9 @@ const App = () => {
         };
         if (isLoggedIn) {
             fetchPosts();
+            setPostSuccess(false);
         }
-    }, [isLoggedIn]);
+    }, [isLoggedIn, postSuccess]);
 
     // 사용자가 작성한 게시물을 가져오는 useEffect
     useEffect(() => {
@@ -59,8 +64,10 @@ const App = () => {
             }
         };
 
-        fetchUserPosts();
-    }, [isLoggedIn, profileInfo]);
+        if (isLoggedIn && profileInfo.id) {
+            fetchUserPosts();
+        }
+    }, [isLoggedIn, profileInfo.id]);
 
     const [navState, setNavState] = useState({
         home: true,
@@ -147,6 +154,7 @@ const App = () => {
                                             profileInfo={profileInfo}
                                             handleNavClick={handleNavClick}
                                             navState={navState}
+                                            setPostSuccess={setPostSuccess}
                                         />
                                         {navState.search && (
                                             <SearchNav
@@ -181,6 +189,7 @@ const App = () => {
                                             profileInfo={profileInfo}
                                             handleNavClick={handleNavClick}
                                             navState={navState}
+                                            setPostSuccess={setPostSuccess}
                                         />
                                         {navState.search && (
                                             <SearchNav
@@ -211,6 +220,7 @@ const App = () => {
                                             profileInfo={profileInfo}
                                             handleNavClick={handleNavClick}
                                             navState={navState}
+                                            setPostSuccess={setPostSuccess}
                                         />
                                         {navState.search && (
                                             <SearchNav
@@ -246,6 +256,38 @@ const App = () => {
                                             profileInfo={profileInfo}
                                             handleNavClick={handleNavClick}
                                             navState={navState}
+                                            setPostSuccess={setPostSuccess}
+                                        />
+                                        {navState.search && (
+                                            <SearchNav
+                                                allUserProfiles={
+                                                    allUserProfiles
+                                                }
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <Navigate to="/login" />
+                        )
+                    }
+                />
+
+                {/* 친구 피드 라우트 */}
+                <Route
+                    path="/friendfeed/:userId"
+                    element={
+                        isLoggedIn ? (
+                            <div className="app">
+                                <div className="div">
+                                    <FriendFeed />
+                                    <div className="main-container">
+                                        <HomeNav
+                                            profileInfo={profileInfo}
+                                            handleNavClick={handleNavClick}
+                                            navState={navState}
+                                            setPostSuccess={setPostSuccess}
                                         />
                                         {navState.search && (
                                             <SearchNav

@@ -11,7 +11,7 @@ import createIcon from "../../assets/homenav/menu-create.png";
 import { UploadModal } from "./UploadModal";
 import "./HomeNav.css";
 
-const HomeNav = ({ profileInfo, handleNavClick, navState }) => {
+const HomeNav = ({ profileInfo, handleNavClick, navState, setPostSuccess }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCollapsed, setIsCollapsed] = useState(window.innerWidth <= 1100);
     const navigate = useNavigate();
@@ -127,6 +127,7 @@ const HomeNav = ({ profileInfo, handleNavClick, navState }) => {
                         }
                         className={`menu-item ${navState.friends ? "active" : ""}`}
                         onClick={() => handleMenuClick("profile", "/profile")}
+                        setPostSuccess={setPostSuccess}
                     >
                         프로필
                     </MenuItem>
@@ -135,6 +136,7 @@ const HomeNav = ({ profileInfo, handleNavClick, navState }) => {
                     <UploadModal
                         onClose={() => setIsModalOpen(false)}
                         profileInfo={profileInfo}
+                        setPostSuccess={setPostSuccess}
                     />
                 )}
             </Sidebar>
