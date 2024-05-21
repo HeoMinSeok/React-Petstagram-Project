@@ -1,6 +1,7 @@
 import "./Feed.css";
 import commentIcon from "../../assets/feed/feed-comment.png";
 import heartIcon from "../../assets/feed/feed-heart.png";
+import heartFillIcon from "../../assets/feed/feed-heart-fill.png";
 import shareIcon from "../../assets/feed/feed-share.png";
 import bookmarkIcon from "../../assets/feed/feed-save.png";
 import moreIcon from "../../assets/feed/feed-more.png";
@@ -160,9 +161,9 @@ const Feed = ({
                 <div className="feed-active">
                     <div className="feed-active-btn">
                         <img
-                            className="heart_img"
+                            className={`heart_img ${liked ? 'liked' : ''}`} 
                             alt="좋아요"
-                            src={heartIcon}
+                            src={liked ? heartFillIcon : heartIcon}
                             onClick={handleLikeClick}
                         />
                         <img className="share_img" alt="공유" src={shareIcon} />

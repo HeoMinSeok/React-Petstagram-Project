@@ -120,6 +120,11 @@
     width: 24px;
 }
 
+.heart_img.liked {
+    width: 24px;
+    height: 24px; 
+}
+
 .feed-post-info {
     align-items: flex-start;
     display: inline-flex;

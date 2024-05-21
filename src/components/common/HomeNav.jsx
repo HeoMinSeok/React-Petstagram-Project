@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { useNavigate } from "react-router-dom";
-import petstagramIcon from "../../assets/petlogo.png";
-import homeIcon from "../../assets/homenav/menu-home-click.png";
-import messageIcon from "../../assets/homenav/menu-message.png";
-import searchIcon from "../../assets/homenav/menu-search.png";
-import profileIcon from "../../assets/homenav/menu-profile.png";
-import questIcon from "../../assets/homenav/menu-quest.png";
-import createIcon from "../../assets/homenav/menu-create.png";
 import { UploadModal } from "./UploadModal";
 import "./HomeNav.css";
+
+import homeIcon from "/src/assets/homenav/menu-home.png";
+import homeIconFilled from "/src/assets/homenav/menu-home-filled.png";
+import searchIcon from "/src/assets/homenav/menu-search.png";
+import searchIconFilled from "/src/assets/homenav/menu-search-filled.png";
+import exploreIcon from "/src/assets/homenav/menu-explore.png";
+import exploreIconFilled from "/src/assets/homenav/menu-explore-filled.png";
+import messageIcon from "/src/assets/homenav/menu-message.png";
+import messageIconFilled from "../../assets/homenav/menu-message-filled.png";
+import notiIcon from "/src/assets/homenav/menu-noti.png";
+import notiIconFilled from "/src/assets/homenav/menu-noti-filled.png";
+import createIcon from "/src/assets/homenav/menu-create.png";
+import profileIcon from "/src/assets/homenav/menu-profile.png";
 
 const HomeNav = ({ profileInfo, handleNavClick, navState, setPostSuccess }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -52,10 +58,10 @@ const HomeNav = ({ profileInfo, handleNavClick, navState, setPostSuccess }) => {
         <div className="home-nav-container">
             <Sidebar className="sidebar-wrapper" collapsed={isCollapsed}>
                 <Menu iconShape="square" className="menu-wrapper">
-                    <MenuItem
+                <MenuItem
                         icon={
                             <img
-                                src={homeIcon}
+                                src={navState.home ? homeIconFilled : homeIcon}
                                 alt="Home"
                                 className="menu-icon"
                             />
@@ -68,7 +74,7 @@ const HomeNav = ({ profileInfo, handleNavClick, navState, setPostSuccess }) => {
                     <MenuItem
                         icon={
                             <img
-                                src={searchIcon}
+                                src={navState.search ? searchIconFilled : searchIcon}
                                 alt="Search"
                                 className="menu-icon"
                             />
@@ -81,21 +87,21 @@ const HomeNav = ({ profileInfo, handleNavClick, navState, setPostSuccess }) => {
                     <MenuItem
                         icon={
                             <img
-                                src={questIcon}
-                                alt="Quest"
+                                src={navState.explore ? exploreIconFilled : exploreIcon}
+                                alt="Explore"
                                 className="menu-icon"
                             />
                         }
                         className={`menu-item ${navState.explore ? "active" : ""}`}
                         onClick={() => handleMenuClick("explore", "/explore")}
                     >
-                        탐색 탭
+                        탐색
                     </MenuItem>
                     <MenuItem
                         icon={
                             <img
-                                src={messageIcon}
-                                alt="Message"
+                                src={navState.messages ? messageIconFilled : messageIcon}
+                                alt="Messages"
                                 className="menu-icon"
                             />
                         }
@@ -103,6 +109,19 @@ const HomeNav = ({ profileInfo, handleNavClick, navState, setPostSuccess }) => {
                         onClick={() => handleMenuClick("messages", "/messages")}
                     >
                         메시지
+                    </MenuItem>
+                    <MenuItem
+                        icon={
+                            <img
+                                src={navState.notification ? notiIconFilled : notiIcon}
+                                alt="Notifications"
+                                className="menu-icon"
+                            />
+                        }
+                        className={`menu-item ${navState.notification ? "active" : ""}`}
+                        onClick={() => handleNavClick("notification")}
+                    >
+                        알림
                     </MenuItem>
                     <MenuItem
                         icon={
@@ -120,14 +139,13 @@ const HomeNav = ({ profileInfo, handleNavClick, navState, setPostSuccess }) => {
                     <MenuItem
                         icon={
                             <img
-                                src={profileIcon}
+                                src={profileInfo.profileImageUrl}
                                 alt="Profile"
-                                className="menu-icon"
+                                className="menu-profile-icon"
                             />
                         }
-                        className={`menu-item ${navState.friends ? "active" : ""}`}
+                        className={`menu-item ${navState.profile ? "active" : ""}`}
                         onClick={() => handleMenuClick("profile", "/profile")}
-                        setPostSuccess={setPostSuccess}
                     >
                         프로필
                     </MenuItem>

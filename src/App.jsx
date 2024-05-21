@@ -20,6 +20,7 @@ import useUserProfile from "./components/hook/useUserProfile";
 import useAllUserProfile from "./components/hook/useAllUserProfile";
 import PostService from "./components/service/PostService";
 import MyFeed from "./components/page/MyFeed";
+import NotificationNav from "./components/common/NotificationNav";
 
 const App = () => {
     const { isLoggedIn, setIsLoggedIn, profileInfo } = useUserProfile();
@@ -74,6 +75,7 @@ const App = () => {
         search: false,
         explore: false,
         messages: false,
+        notification: false,
         profile: false,
     });
 
@@ -83,8 +85,9 @@ const App = () => {
             search: menu === "search" ? !prevState.search : false,
             explore: false,
             messages: false,
+            notification: menu === "notification" ? !prevState.notification : false,
             profile: false,
-            [menu]: menu !== "search" || !prevState.search,
+            [menu]: (menu !== "search" && menu !== "notification") || (!prevState.search && !prevState.notification),
         }));
     };
 
@@ -163,6 +166,13 @@ const App = () => {
                                                 }
                                             />
                                         )}
+                                        {navState.notification && (
+                                            <NotificationNav
+                                                allUserProfiles={
+                                                    allUserProfiles
+                                                }
+                                            />
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -193,6 +203,13 @@ const App = () => {
                                         />
                                         {navState.search && (
                                             <SearchNav
+                                                allUserProfiles={
+                                                    allUserProfiles
+                                                }
+                                            />
+                                        )}
+                                        {navState.notification && (
+                                            <NotificationNav
                                                 allUserProfiles={
                                                     allUserProfiles
                                                 }
@@ -229,6 +246,13 @@ const App = () => {
                                                 }
                                             />
                                         )}
+                                        {navState.notification && (
+                                            <NotificationNav
+                                                allUserProfiles={
+                                                    allUserProfiles
+                                                }
+                                            />
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -260,6 +284,13 @@ const App = () => {
                                         />
                                         {navState.search && (
                                             <SearchNav
+                                                allUserProfiles={
+                                                    allUserProfiles
+                                                }
+                                            />
+                                        )}
+                                        {navState.notification && (
+                                            <NotificationNav
                                                 allUserProfiles={
                                                     allUserProfiles
                                                 }
