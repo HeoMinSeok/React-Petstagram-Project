@@ -1,21 +1,30 @@
 import React, { useState, useEffect } from "react";
 import "./MyFeed.css";
 import ProfileUpdateModal from "./ProfileUpdateModal";
+import { UploadModal } from "../common/UploadModal";
 
-const MyFeed = ({ images, profileInfo }) => {
+const MyFeed = ({
+    images,
+    profileInfo,
+    postSuccess,
+    setPostSuccess,
+    fetchProfileInfo,
+}) => {
     const [isModalOpen, setModalOpen] = useState(false);
+    const [isUploadModal, setIsUploadModal] = useState(false);
     const [isUpdateProfile, setIsUpdateProfile] = useState(false);
+
+    useEffect(() => {
+        if (postSuccess || isUpdateProfile) {
+            setPostSuccess(false);
+            setIsUpdateProfile(false);
+            fetchProfileInfo();
+        }
+    }, [postSuccess, isUpdateProfile, setPostSuccess, fetchProfileInfo]);
 
     const getImageUrl = (image) => {
         return `http://localhost:8088/uploads/${image.imageUrl}`;
     };
-
-    useEffect(() => {
-        if (isUpdateProfile) {
-            setIsUpdateProfile(false); 
-            window.location.replace("/profile");
-        }
-    }, [isUpdateProfile]);
 
     return (
         <div className="myfeed-frame">
@@ -47,7 +56,9 @@ const MyFeed = ({ images, profileInfo }) => {
                     <div className="myfeed-user-stats">
                         <div className="myfeed-user-stat">
                             <span className="myfeed-stat-label">게시물</span>
-                            <span className="myfeed-stat-number">4</span>
+                            <span className="myfeed-stat-number">
+                                {images.length}
+                            </span>
                         </div>
                         <div className="myfeed-user-stat">
                             <span className="myfeed-stat-label">팔로워</span>
@@ -68,22 +79,43 @@ const MyFeed = ({ images, profileInfo }) => {
                 </div>
             </div>
             <div className="myfeed-container">
-                <div className="myfeed-grid-container">
-                    {images.map((image, index) => (
-                        <div key={index} className="myfeed-grid-item">
-                            <img
-                                src={getImageUrl(image)}
-                                alt={`grid-${index}`}
-                            />
-                        </div>
-                    ))}
-                </div>
+                {images.length === 0 ? (
+                    <div className="myfeed-empty">
+                        <img src="/path/to/your/image.png" alt="No Photos" />
+                        <p>사진을 공유하면 회원님의 프로필에 표시됩니다.</p>
+                        <button
+                            className="myfeed-upload-btn"
+                            onClick={() => setIsUploadModal(true)}
+                        >
+                            첫 사진 공유하기
+                        </button>
+                    </div>
+                ) : (
+                    <div className="myfeed-grid-container">
+                        {images.map((image, index) => (
+                            <div key={index} className="myfeed-grid-item">
+                                <img
+                                    src={getImageUrl(image)}
+                                    alt={`grid-${index}`}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
             {isModalOpen && (
                 <ProfileUpdateModal
                     onClose={() => setModalOpen(false)}
                     profileInfo={profileInfo}
+                    fetchProfileInfo={fetchProfileInfo}
                     setIsUpdateProfile={setIsUpdateProfile}
+                />
+            )}
+            {isUploadModal && (
+                <UploadModal
+                    onClose={() => setIsUploadModal(false)}
+                    profileInfo={profileInfo}
+                    setPostSuccess={setPostSuccess}
                 />
             )}
         </div>

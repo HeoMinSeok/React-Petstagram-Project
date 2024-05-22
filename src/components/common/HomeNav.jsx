@@ -141,10 +141,10 @@ const HomeNav = ({ profileInfo, handleNavClick, navState, setPostSuccess }) => {
                             <img
                                 src={profileInfo.profileImageUrl}
                                 alt="Profile"
-                                className="menu-profile-icon"
+                                className="menu-item-profile"
                             />
                         }
-                        className={`menu-item ${navState.profile ? "active" : ""}`}
+                        className={`menu-item-profile ${navState.profile ? "active" : ""}`}
                         onClick={() => handleMenuClick("profile", "/profile")}
                     >
                         프로필

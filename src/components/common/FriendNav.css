@@ -212,3 +212,34 @@
     position: relative;
     width: 391px;
 }
+
+.text-wrapper-10-1 {
+    background-color: #cbcaca;
+    width: 70px;
+    font-family: "Inter", Helvetica;
+    font-size: 13.6px;
+    font-weight: 700;
+    left: 6px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 17px;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+
+.text-wrapper-10-2 {
+    background-color: #00a3ff;
+    width: 70px;
+    font-family: "Inter", Helvetica;
+    font-size: 13.6px;
+    font-weight: 700;
+    left: 6px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 17px;
+    white-space: nowrap;
+    cursor: pointer;
+}

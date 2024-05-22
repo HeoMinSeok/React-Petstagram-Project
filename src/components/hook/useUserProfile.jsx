@@ -45,7 +45,7 @@ const useUserProfile = () => {
         }
     };
 
-    return { isLoggedIn, setIsLoggedIn, profileInfo };
+    return { isLoggedIn, setIsLoggedIn, profileInfo, fetchProfileInfo };
 };
 
 export default useUserProfile;

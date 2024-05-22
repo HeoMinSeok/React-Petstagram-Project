@@ -49,7 +49,6 @@ class UserService {
         );
         return response.data;
     }
-    
 
     // 회원 삭제
     static async deleteUser(userId, token) {
@@ -80,6 +79,63 @@ class UserService {
             {
                 headers: { Authorization: `Bearer ${token}` },
             }
+        );
+        return response.data;
+    }
+
+    // 팔로우
+    static async follow(toUserId, token) {
+        const response = await axios.post(
+            `${UserService.BASE_URL}/user/follow/${toUserId}`,
+            {},
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        return response.data;
+    }
+
+    // 언팔로우
+    static async unfollow(toUserId, token) {
+        const response = await axios.delete(
+            `${UserService.BASE_URL}/user/unfollow/${toUserId}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        return response.data;
+    }
+
+    // 팔로우 상태 확인
+    static async getFollowStatus(toUserId, token) {
+        const response = await axios.get(
+            `${UserService.BASE_URL}/user/follow-status/${toUserId}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        return response.data;
+    }
+
+    // 팔로워 수 가져오기
+    static async getFollowersCount(userId, token) {
+        console.log("Requesting followers count with token:", token);
+        const response = await axios.get(
+            `${UserService.BASE_URL}/user/followersCount/${userId}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        return response.data;
+    }
+
+    // 팔로잉 수 가져오기
+    static async getFollowingsCount(userId, token) {
+        console.log("Requesting followings count with token:", token);
+        const response = await axios.get(
+            `${UserService.BASE_URL}/user/followingsCount/${userId}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        return response.data;
+    }
+
+    // 팔로잉 리스트 가져오기
+    static async getFollowings(token) {
+        const response = await axios.get(
+            `${UserService.BASE_URL}/user/following`,
+            { headers: { Authorization: `Bearer ${token}` } }
         );
         return response.data;
     }

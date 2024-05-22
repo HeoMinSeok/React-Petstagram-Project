@@ -20,13 +20,12 @@ const Feed = ({
     images,
     allUserProfiles,
     postId,
-    postLikesCount,
 }) => {
     const uploadPostTime = GetRelativeTime(postdate);
     const [comments, setComments] = useState([]);
     const [commentText, setCommentText] = useState("");
-    const [liked, setLiked] = useState(false);
-    const [likesCount, setLikesCount] = useState(postLikesCount);
+    const [postLiked, setPostLiked] = useState(false);
+    const [postLikesCount, setPostLikesCount] = useState(0);
     const { profileInfo } = useUserProfile();
     const navigate = useNavigate();
 
@@ -48,10 +47,10 @@ const Feed = ({
     useEffect(() => {
         const updateLikeStatus = async () => {
             try {
-                const { liked, likesCount } =
+                const { postLiked, postLikesCount } =
                     await PostService.getPostLikeStatus(postId); // 서버로부터 좋아요 상태와 개수를 받아옴
-                setLiked(liked);
-                setLikesCount(likesCount);
+                setPostLiked(postLiked);
+                setPostLikesCount(postLikesCount);
             } catch (error) {
                 console.error(
                     "좋아요 정보를 불러오는 중 오류가 발생했습니다.",
@@ -61,7 +60,7 @@ const Feed = ({
         };
 
         updateLikeStatus();
-        fetchComments();
+        fetchComments(); // 댓글 목록 불러오기
     }, [postId]);
 
     // 좋아요 버튼 클릭 처리 함수
@@ -70,9 +69,11 @@ const Feed = ({
             await PostService.togglePostLike(postId);
 
             // 좋아요 상태 반전
-            const newLikesCount = !liked ? likesCount + 1 : likesCount - 1;
-            setLiked(!liked);
-            setLikesCount(newLikesCount);
+            const newLikesCount = !postLiked
+                ? postLikesCount + 1
+                : postLikesCount - 1;
+            setPostLiked(!postLiked);
+            setPostLikesCount(newLikesCount);
         } catch (error) {
             console.error("좋아요 상태 변경 중 오류가 발생했습니다.", error);
         }
@@ -161,9 +162,9 @@ const Feed = ({
                 <div className="feed-active">
                     <div className="feed-active-btn">
                         <img
-                            className={`heart_img ${liked ? 'liked' : ''}`} 
+                            className={`heart_img ${postLiked ? "liked" : ""}`}
                             alt="좋아요"
-                            src={liked ? heartFillIcon : heartIcon}
+                            src={postLiked ? heartFillIcon : heartIcon}
                             onClick={handleLikeClick}
                         />
                         <img className="share_img" alt="공유" src={shareIcon} />
@@ -181,7 +182,7 @@ const Feed = ({
                 </div>
                 <div className="feed-post-info">
                     <div className="feed-heart-count">
-                        좋아요 {likesCount}개
+                        좋아요 {postLikesCount}개
                     </div>
                     <div>
                         {/* 작성자 아이디 추가하기 */}
@@ -190,18 +191,18 @@ const Feed = ({
                             <span className="feed-post-more"> 더 보기</span>
                         </p>
                     </div>
-
+                    
                     <div className="feed-comment-more">
                         <span>댓글 {comments.length}개 모두 보기</span>
                     </div>
-                    <div className="feed-comments">
+                    {/* <div className="feed-comments">
                         {comments.map((comment, index) => (
                             <div key={index} className="feed-comment-item">
                                 <span>{comment.commentEmail}</span>:
                                 {comment.commentContent}
                             </div>
                         ))}
-                    </div>
+                    </div> */}
                     <form className="feed-comment" onSubmit={submitComment}>
                         <input
                             type="text"

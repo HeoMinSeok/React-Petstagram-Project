@@ -63,7 +63,7 @@ const ModalButton = styled.button`
     border-radius: 0;
 `;
 
-const ProfileUpdateModal = ({ onClose, profileInfo, profileImageUrl, setIsUpdateProfile }) => {
+const ProfileUpdateModal = ({ onClose, profileInfo, profileImageUrl, setIsUpdateProfile, fetchProfileInfo }) => {
     const [bio, setBio] = useState(profileInfo.bio || "");
     const [gender, setGender] = useState(profileInfo.gender || "비공개");
     const [showRecommendations, setShowRecommendations] = useState(
@@ -76,7 +76,7 @@ const ProfileUpdateModal = ({ onClose, profileInfo, profileImageUrl, setIsUpdate
     const closeModal = () => setShowModal(false);
     const fileInputRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(profileImageUrl);
-    const [selectedFile, setSelectedFile] = useState(null); // 파일 상태 추가
+    const [selectedFile, setSelectedFile] = useState(null); 
 
     const genderOptions = [
         { value: "비공개", label: "밝히고 싶지 않음" },
@@ -85,40 +85,32 @@ const ProfileUpdateModal = ({ onClose, profileInfo, profileImageUrl, setIsUpdate
     ];
 
     useEffect(() => {
-        setIsSubmitDisabled(true); // 초기에는 제출 버튼 비활성화
+        setIsSubmitDisabled(true); 
     }, []);
 
     const handleInputChange = (setter) => (e) => {
         setter(e.target.value);
-        setIsSubmitDisabled(false); // 입력이 변경되면 제출 버튼 활성화
+        setIsSubmitDisabled(false); 
     };
 
     const handleSelectChange = (setter) => (selectedOption) => {
         setter(selectedOption.value);
-        setIsSubmitDisabled(false); // 선택이 변경되면 제출 버튼 활성화
+        setIsSubmitDisabled(false); 
     };
 
     const handleCheckboxChange = (setter) => (e) => {
         setter(e.target.checked);
-        setIsSubmitDisabled(false); // 체크박스 상태가 변경되면 제출 버튼 활성화
+        setIsSubmitDisabled(false); 
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const userData = {};
-
-        if (bio !== profileInfo.bio) {
-            userData.bio = bio;
-        }
-
-        if (gender !== profileInfo.gender) {
-            userData.gender = gender;
-        }
-
-        if (showRecommendations !== profileInfo.isRecommend) {
-            userData.isRecommend = showRecommendations;
-        }
+        const userData = {
+            bio,
+            gender,
+            isRecommend: showRecommendations
+        };
 
         const formData = new FormData();
         if (Object.keys(userData).length > 0) {
@@ -140,8 +132,8 @@ const ProfileUpdateModal = ({ onClose, profileInfo, profileImageUrl, setIsUpdate
                 formData,
                 token
             );
-            console.log("Updated user:", updatedUser);
             setIsUpdateProfile(true);
+            fetchProfileInfo();
             onClose();
         } catch (error) {
             console.error("Error updating user:", error);
@@ -163,6 +155,7 @@ const ProfileUpdateModal = ({ onClose, profileInfo, profileImageUrl, setIsUpdate
             };
             reader.readAsDataURL(file);
         }
+        setIsSubmitDisabled(false); 
     };
 
     return (

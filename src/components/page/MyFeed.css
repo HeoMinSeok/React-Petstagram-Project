@@ -132,3 +132,33 @@
     height: 100%;
     object-fit: cover;
 }
+
+.myfeed-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px; /* 원하는 높이로 조절 */
+    text-align: center;
+    color: #999;
+}
+
+.myfeed-empty img {
+    width: 50px; /* 원하는 크기로 조절 */
+    height: 50px; /* 원하는 크기로 조절 */
+    margin-bottom: 20px;
+}
+
+.myfeed-upload-btn {
+    background-color: #0095f6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.myfeed-upload-btn:hover {
+    background-color: #007bbf;
+}

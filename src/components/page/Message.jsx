@@ -1,10 +1,10 @@
-import React from "react";
+import "./Message.css";
 import MessageList from "../common/MessageList";
 import MessageRoom from "../common/MessageRoom";
 
 const Message = () => {
     return (
-        <div>
+        <div className="message-container">
             <MessageList />
             <MessageRoom />
         </div>

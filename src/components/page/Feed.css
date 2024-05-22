@@ -172,6 +172,7 @@
     line-height: normal;
     position: relative;
     width: auto;
+    margin-bottom: -10px;
 }
 
 .feed-comment {
@@ -179,7 +180,6 @@
     width: 100%;
     display: flex;
     justify-content: space-between !important;
-    padding: 15px 0px;
 }
 
 .feed-comment-input {

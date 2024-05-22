@@ -23,8 +23,10 @@ import MyFeed from "./components/page/MyFeed";
 import NotificationNav from "./components/common/NotificationNav";
 
 const App = () => {
-    const { isLoggedIn, setIsLoggedIn, profileInfo } = useUserProfile();
-    const { allUserProfiles, loading, error } = useAllUserProfile();
+    const { isLoggedIn, setIsLoggedIn, profileInfo, fetchProfileInfo } =
+        useUserProfile();
+    const { allUserProfiles, loading, error, fetchAllUsers } =
+        useAllUserProfile();
 
     // postSuccess -> 글 등록시 렌더링 시키기 위해
     const [postSuccess, setPostSuccess] = useState(false);
@@ -47,7 +49,7 @@ const App = () => {
         }
     }, [isLoggedIn, postSuccess]);
 
-    // 사용자가 작성한 게시물을 가져오는 useEffect
+    // 현재 로그인한 사용자가 작성한 게시물을 가져오는 useEffect
     useEffect(() => {
         const fetchUserPosts = async () => {
             if (isLoggedIn && profileInfo.id) {
@@ -68,7 +70,7 @@ const App = () => {
         if (isLoggedIn && profileInfo.id) {
             fetchUserPosts();
         }
-    }, [isLoggedIn, profileInfo.id]);
+    }, [isLoggedIn, profileInfo.id, postSuccess]);
 
     const [navState, setNavState] = useState({
         home: true,
@@ -85,11 +87,20 @@ const App = () => {
             search: menu === "search" ? !prevState.search : false,
             explore: false,
             messages: false,
-            notification: menu === "notification" ? !prevState.notification : false,
+            notification:
+                menu === "notification" ? !prevState.notification : false,
             profile: false,
-            [menu]: (menu !== "search" && menu !== "notification") || (!prevState.search && !prevState.notification),
+            [menu]:
+                (menu !== "search" && menu !== "notification") ||
+                (!prevState.search && !prevState.notification),
         }));
     };
+
+    // useEffect(() => {
+    //     if (!loading && !error && isLoggedIn) {
+    //         console.log("All user profiles loaded successfully.");
+    //     }
+    // }, [allUserProfiles, loading, error, isLoggedIn]);
 
     return (
         <Router>
@@ -149,6 +160,7 @@ const App = () => {
                                                 allUserProfiles={
                                                     allUserProfiles
                                                 }
+                                                fetchAllUsers={fetchAllUsers}
                                             />
                                         </>
                                     )}
@@ -274,6 +286,9 @@ const App = () => {
                                             (post) => post.imageList
                                         )}
                                         profileInfo={profileInfo}
+                                        postSuccess={postSuccess}
+                                        setPostSuccess={setPostSuccess}
+                                        fetchProfileInfo={fetchProfileInfo}
                                     />
                                     <div className="main-container">
                                         <HomeNav
@@ -322,6 +337,13 @@ const App = () => {
                                         />
                                         {navState.search && (
                                             <SearchNav
+                                                allUserProfiles={
+                                                    allUserProfiles
+                                                }
+                                            />
+                                        )}
+                                        {navState.notification && (
+                                            <NotificationNav
                                                 allUserProfiles={
                                                     allUserProfiles
                                                 }

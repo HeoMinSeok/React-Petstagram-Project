@@ -56,8 +56,8 @@ const FriendFeed = () => {
                 </div>
                 <div className="friendfeed-user-main">
                     <div className="friendfeed-user-header">
-                        <h2 className="friendfeed-user-name">
-                            {userProfile.name}
+                        <h2 className="friendfeed-user-email">
+                            {userProfile.email}
                         </h2>
                         <div className="friendfeed-user-actions">
                             <button className="friendfeed-follow-btn">
@@ -76,7 +76,7 @@ const FriendFeed = () => {
                             <span className="friendfeed-stat-label">
                                 게시물
                             </span>
-                            <span className="friendfeed-stat-number">4</span>
+                            <span className="friendfeed-stat-number">{postUserList.length}</span>
                         </div>
                         <div className="friendfeed-user-stat">
                             <span className="friendfeed-stat-label">

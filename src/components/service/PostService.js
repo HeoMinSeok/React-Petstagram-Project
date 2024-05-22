@@ -79,7 +79,7 @@ class PostService {
     static async togglePostLike(postId) {
         const token = localStorage.getItem("token");
         const response = await axios.post(
-            `${PostService.BASE_URL}/like/post/toggle/${postId}`,
+            `${PostService.BASE_URL}/post/toggle/${postId}`,
             {},
             {
                 headers: { Authorization: `Bearer ${token}` },
@@ -92,7 +92,7 @@ class PostService {
     static async getPostLikeStatus(postId) {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-            `${PostService.BASE_URL}/like/post/status/${postId}`,
+            `${PostService.BASE_URL}/post/status/${postId}`,
             {
                 headers: { Authorization: `Bearer ${token}` },
             }
