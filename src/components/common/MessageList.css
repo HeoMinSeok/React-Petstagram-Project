@@ -12,25 +12,25 @@
     overflow-y: auto; /* 스크롤 가능하게 */
 }
 
-.title_div {
+.Message_title_div {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 30px;
 }
 
-.title_section {
+.Message_title_section {
     font-size: 24px;
     margin: 0;
 }
 
-.message_edit {
+.Message_message_edit {
     width: 24px;
     height: 24px;
     cursor: pointer;
 }
 
-.message_item {
+.Message_message_item {
     padding: 10px 30px;
     display: flex;
     align-items: center;
@@ -43,24 +43,25 @@
 }
 
 
-.ellipse {
+.Message_ellipse {
     height: 53px;
     width: 53px;
+    background-color: #ccc;
     margin-right: 20px;
     border-radius: 50%;
 }
 
-.message_info {
+.Message_message_info {
     flex-grow: 1;
     display: flex;
     flex-direction: column; /* 내용을 위 아래로 정렬 */
 }
 
-.user_name {
+.Message_user_name {
     font-weight: bold;
 }
 
-.message_text {
+.Message_message_text {
     color: #666;
     font-size: 14px;
 }

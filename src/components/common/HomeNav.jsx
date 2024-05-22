@@ -32,7 +32,7 @@ const HomeNav = ({ profileInfo, handleNavClick, navState, setPostSuccess }) => {
     const handleMenuClick = (menu, path) => {
         handleNavClick(menu);
         navigate(path);
-    
+
         if (menu === "messages") {
             setIsCollapsed(true);
         }
@@ -58,7 +58,7 @@ const HomeNav = ({ profileInfo, handleNavClick, navState, setPostSuccess }) => {
         <div className="home-nav-container">
             <Sidebar className="sidebar-wrapper" collapsed={isCollapsed}>
                 <Menu iconShape="square" className="menu-wrapper">
-                <MenuItem
+                    <MenuItem
                         icon={
                             <img
                                 src={navState.home ? homeIconFilled : homeIcon}
@@ -74,12 +74,18 @@ const HomeNav = ({ profileInfo, handleNavClick, navState, setPostSuccess }) => {
                     <MenuItem
                         icon={
                             <img
-                                src={navState.search ? searchIconFilled : searchIcon}
+                                src={
+                                    navState.search
+                                        ? searchIconFilled
+                                        : searchIcon
+                                }
                                 alt="Search"
                                 className="menu-icon"
                             />
                         }
-                        className={`menu-item ${navState.search ? "active" : ""}`}
+                        className={`menu-item ${
+                            navState.search ? "active" : ""
+                        }`}
                         onClick={() => handleNavClick("search")}
                     >
                         검색
@@ -87,12 +93,18 @@ const HomeNav = ({ profileInfo, handleNavClick, navState, setPostSuccess }) => {
                     <MenuItem
                         icon={
                             <img
-                                src={navState.explore ? exploreIconFilled : exploreIcon}
+                                src={
+                                    navState.explore
+                                        ? exploreIconFilled
+                                        : exploreIcon
+                                }
                                 alt="Explore"
                                 className="menu-icon"
                             />
                         }
-                        className={`menu-item ${navState.explore ? "active" : ""}`}
+                        className={`menu-item ${
+                            navState.explore ? "active" : ""
+                        }`}
                         onClick={() => handleMenuClick("explore", "/explore")}
                     >
                         탐색
@@ -100,12 +112,18 @@ const HomeNav = ({ profileInfo, handleNavClick, navState, setPostSuccess }) => {
                     <MenuItem
                         icon={
                             <img
-                                src={navState.messages ? messageIconFilled : messageIcon}
+                                src={
+                                    navState.messages
+                                        ? messageIconFilled
+                                        : messageIcon
+                                }
                                 alt="Messages"
                                 className="menu-icon"
                             />
                         }
-                        className={`menu-item ${navState.messages ? "active" : ""}`}
+                        className={`menu-item ${
+                            navState.messages ? "active" : ""
+                        }`}
                         onClick={() => handleMenuClick("messages", "/messages")}
                     >
                         메시지
@@ -113,12 +131,18 @@ const HomeNav = ({ profileInfo, handleNavClick, navState, setPostSuccess }) => {
                     <MenuItem
                         icon={
                             <img
-                                src={navState.notification ? notiIconFilled : notiIcon}
+                                src={
+                                    navState.notification
+                                        ? notiIconFilled
+                                        : notiIcon
+                                }
                                 alt="Notifications"
                                 className="menu-icon"
                             />
                         }
-                        className={`menu-item ${navState.notification ? "active" : ""}`}
+                        className={`menu-item ${
+                            navState.notification ? "active" : ""
+                        }`}
                         onClick={() => handleNavClick("notification")}
                     >
                         알림
@@ -144,7 +168,9 @@ const HomeNav = ({ profileInfo, handleNavClick, navState, setPostSuccess }) => {
                                 className="menu-item-profile"
                             />
                         }
-                        className={`menu-item-profile ${navState.profile ? "active" : ""}`}
+                        className={`menu-item-profile ${
+                            navState.profile ? "active" : ""
+                        }`}
                         onClick={() => handleMenuClick("profile", "/profile")}
                     >
                         프로필
