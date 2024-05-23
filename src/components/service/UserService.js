@@ -102,6 +102,15 @@ class UserService {
         return response.data;
     }
 
+    // 팔로워 삭제
+    static async deleteFollower(fromUserId, token) {
+        const response = await axios.delete(
+            `${UserService.BASE_URL}/user/deleteFollower/${fromUserId}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        return response.data;
+    }
+
     // 팔로우 상태 확인
     static async getFollowStatus(toUserId, token) {
         const response = await axios.get(
@@ -129,7 +138,7 @@ class UserService {
         return response.data;
     }
 
-    // 팔로잉 리스트 가져오기
+    // 현재 로그인한 사용자의 팔로 리스트 가져오기
     static async getFollowings(token) {
         const response = await axios.get(
             `${UserService.BASE_URL}/user/following`,
@@ -138,7 +147,7 @@ class UserService {
         return response.data;
     }
 
-    // 팔로워 리스트 가져오기
+    // 현재 로그인한 사용자의 팔로워 리스트 가져오기
     static async getFollowers(token) {
         const response = await axios.get(
             `${UserService.BASE_URL}/user/followers`,
@@ -147,6 +156,23 @@ class UserService {
         return response.data;
     }
 
+    // 특정 사용자의 팔로잉 리스트 가져오기
+    static async getFollowingsByUserId(userId, token) {
+        const response = await axios.get(
+            `${this.BASE_URL}/user/${userId}/following`,
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        return response.data;
+    }
+
+    // 특정 사용자의 팔로워 리스트 가져오기
+    static async getFollowersByUserId(userId, token) {
+        const response = await axios.get(
+            `${this.BASE_URL}/user/${userId}/followers`,
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        return response.data;
+    }
 
     /**AUTHENTICATION CHECKER */
     static logout() {

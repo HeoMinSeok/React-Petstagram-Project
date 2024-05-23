@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import useFollowList from "../hook/useFollowList";
 import { useNavigate } from "react-router-dom";
+import FollowCancelModal from "./FollowCancelModal";
 
 const Overlay = styled.div`
     position: fixed;
@@ -13,7 +14,7 @@ const Overlay = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 9999;
 `;
 
 const Container = styled.div`
@@ -124,10 +125,19 @@ const Button = styled.button`
     font-size: 12px;
 `;
 
-const FollowListModal = ({ title, followList, onClose, onButtonClick, buttonLabel }) => {
+const FollowListModal = ({
+    title,
+    followList,
+    onClose,
+    onButtonClick,
+    buttonLabel,
+    fetchFollowCounts,
+    fetchFollowList,
+}) => {
     const [searchText, setSearchText] = useState("");
     const navigate = useNavigate();
-    const followers = useFollowList();
+    const [isCancelModalOpen, setCancelModalOpen] = useState(false); 
+    const [selectedUser, setSelectedUser] = useState([]);
 
     const handleSearchChange = (e) => {
         setSearchText(e.target.value);
@@ -146,6 +156,18 @@ const FollowListModal = ({ title, followList, onClose, onButtonClick, buttonLabe
     };
 
     const filteredFollowList = getFilteredFollowList();
+
+    const handleButtonClick= (user) => {
+        setSelectedUser(user);
+        setCancelModalOpen(true);
+    };
+
+    // const handleConfirmCancel = () => {
+    //     if (selectedUserId) {
+    //         onButtonClick(selectedUserId);
+    //     }
+    //     setCancelModalOpen(false);
+    // };
 
     return (
         <Overlay>
@@ -169,7 +191,11 @@ const FollowListModal = ({ title, followList, onClose, onButtonClick, buttonLabe
                 <List>
                     {filteredFollowList.map((user) => (
                         <Item key={user.id}>
-                            <Info onClick={() => {navigate(`/friendfeed/${user.email}`);}}>
+                            <Info
+                                onClick={() => {
+                                    navigate(`/friendfeed/${user.email}`);
+                                }}
+                            >
                                 <Avatar
                                     src={user.profileImageUrl}
                                     alt="프로필 이미지"
@@ -179,11 +205,23 @@ const FollowListModal = ({ title, followList, onClose, onButtonClick, buttonLabe
                                     <Name>{user.name}</Name>
                                 </UserDetails>
                             </Info>
-                            <Button onClick={() => onButtonClick(user.id)}>{buttonLabel}</Button>
+                            <Button onClick={() => handleButtonClick(user)}>
+                                {buttonLabel}
+                            </Button>
                         </Item>
                     ))}
                 </List>
             </Container>
+            {isCancelModalOpen && (
+                <FollowCancelModal
+                    title={title}
+                    onClose={() => setCancelModalOpen(false)}
+                    user={selectedUser}
+                    onButtonClick={onButtonClick}
+                    fetchFollowCounts={fetchFollowCounts}
+                    fetchFollowList={fetchFollowList}
+                />
+            )}
         </Overlay>
     );
 };

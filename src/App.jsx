@@ -22,7 +22,7 @@ import PostService from "./components/service/PostService";
 import MyFeed from "./components/page/MyFeed";
 import NotificationNav from "./components/common/NotificationNav";
 import useFollowStatus from "./components/hook/useFollowStatus";
-import useFollowCounts from "./components/hook/useFollowCounts";
+import useFollowList from "./components/hook/useFollowList";
 
 const App = () => {
     const { isLoggedIn, setIsLoggedIn, profileInfo, fetchProfileInfo } =
@@ -39,6 +39,9 @@ const App = () => {
         allUserProfiles,
         profileInfo
     );
+
+    const { followers, followings, fetchFollowers, fetchFollowings } =
+        useFollowList();
 
     // 모든 게시물 목록을 가져오는 useEffect
     useEffect(() => {
@@ -152,9 +155,6 @@ const App = () => {
                                                         post.postContent
                                                     }
                                                     postId={post.id}
-                                                    postLikesCount={
-                                                        post.postLikesCount
-                                                    }
                                                     images={post.imageList}
                                                     allUserProfiles={
                                                         allUserProfiles
@@ -302,7 +302,6 @@ const App = () => {
                                         )}
                                         profileInfo={profileInfo}
                                         postSuccess={postSuccess}
-                                        setPostSuccess={setPostSuccess}
                                         fetchProfileInfo={fetchProfileInfo}
                                         allUserProfiles={allUserProfiles}
                                     />
@@ -343,7 +342,12 @@ const App = () => {
                         isLoggedIn ? (
                             <div className="app">
                                 <div className="div">
-                                    <FriendFeed />
+                                    <FriendFeed
+                                        isFollowing={isFollowing}
+                                        handleFollow={handleFollow}
+                                        handleUnfollow={handleUnfollow}
+                                        fetchFollowings={fetchFollowings}
+                                    />
                                     <div className="main-container">
                                         <HomeNav
                                             profileInfo={profileInfo}

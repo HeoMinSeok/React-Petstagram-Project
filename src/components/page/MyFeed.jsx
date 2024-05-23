@@ -21,26 +21,31 @@ const MyFeed = ({
     const [isFollowerModalOpen, setFollowerModalOpen] = useState(false);
     const [isFollowingModalOpen, setFollowingModalOpen] = useState(false);
 
-    const { handleFollow, handleUnfollow } = useFollowStatus(allUserProfiles, profileInfo);
-    const { followersCount, followingsCount } = useFollowCounts(profileInfo.id);
-    const { followers, followings } = useFollowList();
+    const { handleDeleteFollower, handleUnfollow } = useFollowStatus(
+        allUserProfiles,
+        profileInfo
+    );
+
+    const { followersCount, followingsCount, fetchFollowCounts } =
+        useFollowCounts(profileInfo.id);
+    const { followers, followings, fetchFollowers, fetchFollowings } =
+        useFollowList();
 
     useEffect(() => {
-        if (postSuccess || isUpdateProfile) {
-            setPostSuccess(false);
-            setIsUpdateProfile(false);
+        if (postSuccess) {
             fetchProfileInfo();
+            fetchFollowCounts();
         }
-    }, [postSuccess, isUpdateProfile, setPostSuccess, fetchProfileInfo]);
+    }, [postSuccess, fetchProfileInfo, fetchFollowCounts]);
 
-    const handleFollowerButtonClick = (userId) => {
+    const handleFollowerButtonClick = async (userId) => {
         // 팔로워 삭제 로직
-        console.log("팔로워 삭제", userId);
+        await handleDeleteFollower(userId);
     };
 
-    const handleFollowingButtonClick = (userId) => {
+    const handleFollowingButtonClick = async (userId) => {
         // 팔로잉 취소 로직
-        handleUnfollow(userId);
+        await handleUnfollow(userId);
     };
 
     const getImageUrl = (image) => {
@@ -157,6 +162,8 @@ const MyFeed = ({
                     onClose={() => setFollowerModalOpen(false)}
                     onButtonClick={handleFollowerButtonClick}
                     buttonLabel="삭제"
+                    fetchFollowCounts={fetchFollowCounts}
+                    fetchFollowList={fetchFollowers}
                 />
             )}
 
@@ -167,6 +174,8 @@ const MyFeed = ({
                     onClose={() => setFollowingModalOpen(false)}
                     onButtonClick={handleFollowingButtonClick}
                     buttonLabel="팔로잉"
+                    fetchFollowCounts={fetchFollowCounts}
+                    fetchFollowList={fetchFollowings}
                 />
             )}
         </div>

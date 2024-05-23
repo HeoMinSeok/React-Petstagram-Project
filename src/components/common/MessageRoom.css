@@ -126,3 +126,23 @@
     margin-left: 10px;
     cursor: pointer;
 }
+
+/* 준모가 추가한거 */
+.message_list {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .message {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+  }
+  
+  .send {
+    margin-left: auto;
+  }
+  
+  .receive {
+    margin-right: auto;
+  }
