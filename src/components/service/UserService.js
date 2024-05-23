@@ -113,7 +113,6 @@ class UserService {
 
     // 팔로워 수 가져오기
     static async getFollowersCount(userId, token) {
-        console.log("Requesting followers count with token:", token);
         const response = await axios.get(
             `${UserService.BASE_URL}/user/followersCount/${userId}`,
             { headers: { Authorization: `Bearer ${token}` } }
@@ -123,7 +122,6 @@ class UserService {
 
     // 팔로잉 수 가져오기
     static async getFollowingsCount(userId, token) {
-        console.log("Requesting followings count with token:", token);
         const response = await axios.get(
             `${UserService.BASE_URL}/user/followingsCount/${userId}`,
             { headers: { Authorization: `Bearer ${token}` } }
@@ -139,6 +137,16 @@ class UserService {
         );
         return response.data;
     }
+
+    // 팔로워 리스트 가져오기
+    static async getFollowers(token) {
+        const response = await axios.get(
+            `${UserService.BASE_URL}/user/followers`,
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        return response.data;
+    }
+
 
     /**AUTHENTICATION CHECKER */
     static logout() {

@@ -10,10 +10,11 @@ const FriendNav = ({
     profileInfo,
     allUserProfiles,
     fetchAllUsers,
+    isFollowing,
+    handleFollow,
+    handleUnfollow,
 }) => {
     const navigate = useNavigate();
-    const { followedUsers, handleFollow, handleUnfollow, isFollowing } =
-        useFollowStatus(allUserProfiles, profileInfo);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
 

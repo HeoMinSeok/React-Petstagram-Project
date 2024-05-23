@@ -20,6 +20,9 @@ const Feed = ({
     images,
     allUserProfiles,
     postId,
+    isFollowing,
+    handleFollow,
+    handleUnfollow,
 }) => {
     const uploadPostTime = GetRelativeTime(postdate);
     const [comments, setComments] = useState([]);
@@ -41,6 +44,12 @@ const Feed = ({
         return BasicImage;
     };
 
+    const getUserIdByEmail = (email) => {
+        const user = allUserProfiles.find((user) => user.email === email);
+        return user ? user.id : null;
+    };
+
+    const writerId = getUserIdByEmail(writer);
     const profileImageUrl = getProfileImageUrlForWriter(writer);
 
     // 좋아요 상태 및 개수 업데이트
@@ -109,8 +118,8 @@ const Feed = ({
 
         try {
             await CommentService.createPost(commentData, postId);
-            setCommentText(""); // 댓글 입력 필드 비우기
-            fetchComments(); // 댓글 작성 후 목록 새로고침
+            setCommentText("");
+            fetchComments();
         } catch (error) {
             console.log("댓글을 작성하는 중 오류가 발생했습니다.", error);
         }
@@ -136,9 +145,28 @@ const Feed = ({
                             </div>
                         </div>
 
-                        {profileInfo.email !== writer && (
-                            <button className="feed-user-follow">팔로우</button>
-                        )}
+                        {profileInfo.email !== writer && writerId &&
+                            (isFollowing(writerId) ? (
+                                <button
+                                    className="feed-user-following"
+                                    onClick={(e) => {
+                                        e.stopPropagation(); // 상위 div의 onClick 이벤트 전파를 막기 위해 사용
+                                        handleUnfollow(writerId);
+                                    }}
+                                >
+                                    팔로잉
+                                </button>
+                            ) : (
+                                <button
+                                    className="feed-user-follow"
+                                    onClick={(e) => {
+                                        e.stopPropagation(); 
+                                        handleFollow(writerId);
+                                    }}
+                                >
+                                    팔로우
+                                </button>
+                            ))}
                     </div>
 
                     <div className="feed-more">
@@ -191,7 +219,7 @@ const Feed = ({
                             <span className="feed-post-more"> 더 보기</span>
                         </p>
                     </div>
-                    
+
                     <div className="feed-comment-more">
                         <span>댓글 {comments.length}개 모두 보기</span>
                     </div>

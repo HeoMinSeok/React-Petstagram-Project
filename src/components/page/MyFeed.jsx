@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import "./MyFeed.css";
 import ProfileUpdateModal from "./ProfileUpdateModal";
 import { UploadModal } from "../common/UploadModal";
+import FollowListModal from "../common/FollowListModal";
+import useFollowStatus from "../hook/useFollowStatus";
+import useFollowCounts from "../hook/useFollowCounts";
+import useFollowList from "../hook/useFollowList";
 
 const MyFeed = ({
     images,
@@ -9,10 +13,17 @@ const MyFeed = ({
     postSuccess,
     setPostSuccess,
     fetchProfileInfo,
+    allUserProfiles,
 }) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [isUploadModal, setIsUploadModal] = useState(false);
     const [isUpdateProfile, setIsUpdateProfile] = useState(false);
+    const [isFollowerModalOpen, setFollowerModalOpen] = useState(false);
+    const [isFollowingModalOpen, setFollowingModalOpen] = useState(false);
+
+    const { handleFollow, handleUnfollow } = useFollowStatus(allUserProfiles, profileInfo);
+    const { followersCount, followingsCount } = useFollowCounts(profileInfo.id);
+    const { followers, followings } = useFollowList();
 
     useEffect(() => {
         if (postSuccess || isUpdateProfile) {
@@ -21,6 +32,16 @@ const MyFeed = ({
             fetchProfileInfo();
         }
     }, [postSuccess, isUpdateProfile, setPostSuccess, fetchProfileInfo]);
+
+    const handleFollowerButtonClick = (userId) => {
+        // 팔로워 삭제 로직
+        console.log("팔로워 삭제", userId);
+    };
+
+    const handleFollowingButtonClick = (userId) => {
+        // 팔로잉 취소 로직
+        handleUnfollow(userId);
+    };
 
     const getImageUrl = (image) => {
         return `http://localhost:8088/uploads/${image.imageUrl}`;
@@ -60,13 +81,23 @@ const MyFeed = ({
                                 {images.length}
                             </span>
                         </div>
-                        <div className="myfeed-user-stat">
+                        <div
+                            className="myfeed-user-stat"
+                            onClick={() => setFollowerModalOpen(true)}
+                        >
                             <span className="myfeed-stat-label">팔로워</span>
-                            <span className="myfeed-stat-number">0</span>
+                            <span className="myfeed-stat-number">
+                                {followersCount}
+                            </span>
                         </div>
-                        <div className="myfeed-user-stat">
+                        <div
+                            className="myfeed-user-stat"
+                            onClick={() => setFollowingModalOpen(true)}
+                        >
                             <span className="myfeed-stat-label">팔로우</span>
-                            <span className="myfeed-stat-number">0</span>
+                            <span className="myfeed-stat-number">
+                                {followingsCount}
+                            </span>
                         </div>
                     </div>
 
@@ -116,6 +147,26 @@ const MyFeed = ({
                     onClose={() => setIsUploadModal(false)}
                     profileInfo={profileInfo}
                     setPostSuccess={setPostSuccess}
+                />
+            )}
+
+            {isFollowerModalOpen && (
+                <FollowListModal
+                    title="팔로워"
+                    followList={followers}
+                    onClose={() => setFollowerModalOpen(false)}
+                    onButtonClick={handleFollowerButtonClick}
+                    buttonLabel="삭제"
+                />
+            )}
+
+            {isFollowingModalOpen && (
+                <FollowListModal
+                    title="팔로잉"
+                    followList={followings}
+                    onClose={() => setFollowingModalOpen(false)}
+                    onButtonClick={handleFollowingButtonClick}
+                    buttonLabel="팔로잉"
                 />
             )}
         </div>

@@ -79,6 +79,16 @@
     margin-bottom: 20px;
 }
 
+.feed-user-following {
+    font-family: "Inter-Bold", Helvetica;
+    width: auto;
+    border: none;
+    background-color: white;
+    color: #00a3ff;
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
 .feed-more {
     margin-bottom: 10px;
 }

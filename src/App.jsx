@@ -21,6 +21,8 @@ import useAllUserProfile from "./components/hook/useAllUserProfile";
 import PostService from "./components/service/PostService";
 import MyFeed from "./components/page/MyFeed";
 import NotificationNav from "./components/common/NotificationNav";
+import useFollowStatus from "./components/hook/useFollowStatus";
+import useFollowCounts from "./components/hook/useFollowCounts";
 
 const App = () => {
     const { isLoggedIn, setIsLoggedIn, profileInfo, fetchProfileInfo } =
@@ -32,6 +34,11 @@ const App = () => {
     const [postSuccess, setPostSuccess] = useState(false);
     const [postList, setPostList] = useState([]);
     const [postUserList, setPostUserList] = useState([]);
+
+    const { handleFollow, handleUnfollow, isFollowing } = useFollowStatus(
+        allUserProfiles,
+        profileInfo
+    );
 
     // 모든 게시물 목록을 가져오는 useEffect
     useEffect(() => {
@@ -152,6 +159,11 @@ const App = () => {
                                                     allUserProfiles={
                                                         allUserProfiles
                                                     }
+                                                    isFollowing={isFollowing}
+                                                    handleFollow={handleFollow}
+                                                    handleUnfollow={
+                                                        handleUnfollow
+                                                    }
                                                 />
                                             ))}
                                             <FriendNav
@@ -161,6 +173,9 @@ const App = () => {
                                                     allUserProfiles
                                                 }
                                                 fetchAllUsers={fetchAllUsers}
+                                                isFollowing={isFollowing}
+                                                handleFollow={handleFollow}
+                                                handleUnfollow={handleUnfollow}
                                             />
                                         </>
                                     )}
@@ -289,6 +304,7 @@ const App = () => {
                                         postSuccess={postSuccess}
                                         setPostSuccess={setPostSuccess}
                                         fetchProfileInfo={fetchProfileInfo}
+                                        allUserProfiles={allUserProfiles}
                                     />
                                     <div className="main-container">
                                         <HomeNav
