@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./SearchNav.css";
+import { useNavigate } from "react-router-dom";
 
 const SearchNav = ({ allUserProfiles }) => {
     const userProfilesArray = Array.isArray(allUserProfiles)
@@ -7,6 +8,7 @@ const SearchNav = ({ allUserProfiles }) => {
         : [];
     const [searchText, setSearchText] = useState("");
     const [recentSearches, setRecentSearches] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const storedSearches =
@@ -30,13 +32,15 @@ const SearchNav = ({ allUserProfiles }) => {
         );
     };
 
+    // 최근 검색 항목에 추가
     const handleSelectSearch = (user) => {
         const updatedSearches = [
             user,
             ...recentSearches.filter((u) => u.email !== user.email),
-        ].slice(0, 5);
+        ];
         setRecentSearches(updatedSearches);
         localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
+        navigate(`/friendfeed/${user.email}`);
     };
 
     // 검색 기록 전체 지우기
@@ -113,7 +117,7 @@ const SearchNav = ({ allUserProfiles }) => {
                 ) : (
                     recentSearches.map((user) => (
                         <div key={user.email} className="search-item">
-                            <div className="search-info">
+                            <div className="search-info" onClick={() => navigate(`/friendfeed/${user.email}`)}>
                                 <div className="search-icon-wrapper">
                                     <img
                                         src={user.profileImageUrl}

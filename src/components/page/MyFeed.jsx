@@ -35,8 +35,9 @@ const MyFeed = ({
         if (postSuccess) {
             fetchProfileInfo();
             fetchFollowCounts();
+            fetchFollowings();
         }
-    }, [postSuccess, fetchProfileInfo, fetchFollowCounts]);
+    }, [postSuccess, fetchProfileInfo, fetchFollowCounts, fetchFollowings]);
 
     const handleFollowerButtonClick = async (userId) => {
         // 팔로워 삭제 로직

@@ -106,12 +106,6 @@ const App = () => {
         }));
     };
 
-    // useEffect(() => {
-    //     if (!loading && !error && isLoggedIn) {
-    //         console.log("All user profiles loaded successfully.");
-    //     }
-    // }, [allUserProfiles, loading, error, isLoggedIn]);
-
     return (
         <Router>
             <Routes>
@@ -164,6 +158,8 @@ const App = () => {
                                                     handleUnfollow={
                                                         handleUnfollow
                                                     }
+                                                    myFollowers={followers}
+                                                    myFollowings={followings}
                                                 />
                                             ))}
                                             <FriendNav
@@ -346,7 +342,8 @@ const App = () => {
                                         isFollowing={isFollowing}
                                         handleFollow={handleFollow}
                                         handleUnfollow={handleUnfollow}
-                                        fetchFollowings={fetchFollowings}
+                                        myFollowings={followings}
+                                        myFetchFollowList={fetchFollowings}
                                     />
                                     <div className="main-container">
                                         <HomeNav

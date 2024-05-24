@@ -23,6 +23,8 @@ const Feed = ({
     isFollowing,
     handleFollow,
     handleUnfollow,
+    myFollowers,
+    myFollowings,
 }) => {
     const uploadPostTime = GetRelativeTime(postdate);
     const [comments, setComments] = useState([]);
@@ -145,7 +147,8 @@ const Feed = ({
                             </div>
                         </div>
 
-                        {profileInfo.email !== writer && writerId &&
+                        {profileInfo.email !== writer &&
+                            writerId &&
                             (isFollowing(writerId) ? (
                                 <button
                                     className="feed-user-following"
@@ -160,7 +163,7 @@ const Feed = ({
                                 <button
                                     className="feed-user-follow"
                                     onClick={(e) => {
-                                        e.stopPropagation(); 
+                                        e.stopPropagation();
                                         handleFollow(writerId);
                                     }}
                                 >

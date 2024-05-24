@@ -6,20 +6,20 @@ import "./FriendFeed.css";
 import useUserProfile from "../hook/useUserProfile";
 import useFollowCounts from "../hook/useFollowCounts";
 import useFollowList from "../hook/useFollowList";
-import FollowListModal from "../common/FollowListModal";
-import UserService from "../service/UserService"; 
+import FriendFollowModal from "../common/FriendFollowListModal";
 
-
-const FriendFeed = ({ handleFollow, handleUnfollow, isFollowing, fetchFollowings }) => {
+const FriendFeed = ({
+    handleFollow,
+    handleUnfollow,
+    isFollowing,
+    myFollowings,
+    myFetchFollowList,
+}) => {
     const { userId } = useParams();
     const { allUserProfiles } = useAllUserProfile();
     const { profileInfo } = useUserProfile();
-    const [userProfile, setUserProfile] = useState(null);
+    const [friendProfile, setFriendProfile] = useState(null);
     const [postUserList, setPostUserList] = useState([]);
-    const { followersCount, followingsCount } = useFollowCounts(
-        userProfile ? userProfile.id : null
-    );
-    const { followers, followings } = useFollowList(userProfile ? userProfile.id : null);
 
     const [isFollowerModalOpen, setFollowerModalOpen] = useState(false);
     const [isFollowingModalOpen, setFollowingModalOpen] = useState(false);
@@ -32,15 +32,21 @@ const FriendFeed = ({ handleFollow, handleUnfollow, isFollowing, fetchFollowings
         const user = allUserProfiles.find(
             (profile) => profile.email === userId
         );
-        setUserProfile(user);
+        setFriendProfile(user);
     }, [userId, allUserProfiles]);
+
+    const { fetchFollowCounts, followersCount, followingsCount } =
+        useFollowCounts(friendProfile ? friendProfile.id : null);
+
+    const { fetchFollowers, fetchFollowings, followers, followings } =
+        useFollowList(friendProfile ? friendProfile.id : null);
 
     useEffect(() => {
         const fetchUserPosts = async () => {
-            if (userProfile && userProfile.id) {
+            if (friendProfile && friendProfile.id) {
                 try {
                     const postUserList = await PostService.getPostsByUserId(
-                        userProfile.id
+                        friendProfile.id
                     );
                     setPostUserList(postUserList);
                 } catch (error) {
@@ -53,18 +59,25 @@ const FriendFeed = ({ handleFollow, handleUnfollow, isFollowing, fetchFollowings
         };
 
         fetchUserPosts();
-    }, [userProfile]);
+    }, [friendProfile]);
 
-    if (!userProfile) {
+    const isCurrentlyFollowing = isFollowing(friendProfile?.id);
+
+    useEffect(() => {
+        fetchFollowCounts();
+    }, [fetchFollowCounts, isCurrentlyFollowing]);
+
+    if (!friendProfile) {
         return <div>Loading...</div>;
     }
 
     const handleFollowClick = () => {
-        if (isFollowing(userProfile.id)) {
-            handleUnfollow(userProfile.id);
+        if (isFollowing(friendProfile.id)) {
+            handleUnfollow(friendProfile.id);
         } else {
-            handleFollow(userProfile.id);
+            handleFollow(friendProfile.id);
         }
+        fetchFollowCounts();
     };
 
     return (
@@ -72,26 +85,26 @@ const FriendFeed = ({ handleFollow, handleUnfollow, isFollowing, fetchFollowings
             <div className="friendfeed-user-info">
                 <div className="friendfeed-user-avatar">
                     <img
-                        src={userProfile.profileImageUrl || ""}
+                        src={friendProfile.profileImageUrl || ""}
                         alt="User Avatar"
                     />
                 </div>
                 <div className="friendfeed-user-main">
                     <div className="friendfeed-user-header">
                         <h2 className="friendfeed-user-email">
-                            {userProfile.email}
+                            {friendProfile.email}
                         </h2>
                         <div className="friendfeed-user-actions">
-                            {profileInfo.email !== userProfile.email && (
+                            {profileInfo.email !== friendProfile.email && (
                                 <button
                                     className={`friendfeed-follow-btn ${
-                                        isFollowing(userProfile.id)
+                                        isFollowing(friendProfile.id)
                                             ? "following"
                                             : ""
                                     }`}
                                     onClick={handleFollowClick}
                                 >
-                                    {isFollowing(userProfile.id)
+                                    {isFollowing(friendProfile.id)
                                         ? "팔로잉"
                                         : "팔로우"}
                                 </button>
@@ -138,9 +151,9 @@ const FriendFeed = ({ handleFollow, handleUnfollow, isFollowing, fetchFollowings
                     </div>
                     <div className="friendfeed-user-bio">
                         <span className="friendfeed-user-profile">
-                            {userProfile.name}
+                            {friendProfile.name}
                         </span>
-                        {userProfile.bio}
+                        {friendProfile.bio}
                     </div>
                 </div>
             </div>
@@ -159,21 +172,32 @@ const FriendFeed = ({ handleFollow, handleUnfollow, isFollowing, fetchFollowings
                     ))}
                 </div>
             </div>
+            {/* 모달 다시 만들기 */}
             {isFollowerModalOpen && (
-                <FollowListModal
+                <FriendFollowModal
+                    myFollowings={myFollowings}
+                    profileInfo={profileInfo}
+                    fetchFollowList={fetchFollowers}
+                    onClose={() => setFollowerModalOpen(false)}
                     title="팔로워"
                     followList={followers}
-                    onClose={() => setFollowerModalOpen(false)}
-                    buttonLabel="팔로잉"
+                    myFetchFollowList={myFetchFollowList}
+                    handleFollow={handleFollow}
+                    handleUnfollow={handleUnfollow}
                 />
             )}
 
             {isFollowingModalOpen && (
-                <FollowListModal
+                <FriendFollowModal
+                    myFollowings={myFollowings}
+                    profileInfo={profileInfo}
+                    fetchFollowList={fetchFollowings}
+                    onClose={() => setFollowingModalOpen(false)}
                     title="팔로잉"
                     followList={followings}
-                    onClose={() => setFollowingModalOpen(false)}
-                    buttonLabel="팔로잉"
+                    myFetchFollowList={myFetchFollowList}
+                    handleFollow={handleFollow}
+                    handleUnfollow={handleUnfollow}
                 />
             )}
         </div>

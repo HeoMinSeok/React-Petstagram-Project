@@ -17,29 +17,33 @@ const NotificationNav = () => {
                     <div className="notification-type">
                         <div className="notification-list-wrapper">
                             <img
-                                src="댓글 단 사람"
+                                src="src/assets/7bok.jpeg"
                                 className="notification-profile-image"
                             />
                         </div>
-                        <div className="notification-comment">Jiho님이 게시글에 댓글을 다셨습니다.</div>
-                        <div className="notification-post-image">
-                            <img src="게시글 사진" />
+                        <div className="notification-comment">
+                            Jiho님이 게시글에 댓글을 다셨습니다.
+                        </div>
+                        <div className="notification-post-image-wrapper">
+                            <img src="src/assets/mock.png" className="notification-post-image"/>
                         </div>
                     </div>
                 </div>
-                
+
                 {/* 좋아요 받았을 때 */}
                 <div className="notification-list">
                     <div className="notification-type">
                         <div className="notification-list-wrapper">
                             <img
-                                src="댓글 단 사람"
+                                src="src/assets/basic-profile.jpeg"
                                 className="notification-profile-image"
                             />
                         </div>
-                        <div className="notification-like">Jiho님이 게시글에 좋아요를 누르셨습니다.</div>
-                        <div className="notification-post-image">
-                            <img src="게시글 사진" />
+                        <div className="notification-like">
+                            junmo님이 게시글에 좋아요를 다셨습니다.
+                        </div>
+                        <div className="notification-post-image-wrapper">
+                            <img src="src/assets/mock.png" className="notification-post-image"/>
                         </div>
                     </div>
                 </div>
@@ -49,13 +53,15 @@ const NotificationNav = () => {
                     <div className="notification-type">
                         <div className="notification-list-wrapper">
                             <img
-                                src="댓글 단 사람"
+                                src="src/assets/IMG_0710.jpg"
                                 className="notification-profile-image"
                             />
                         </div>
-                        <div className="notification-follow">Jiho님이 팔로우하셨습니다.Jiho님이 팔로우하셨습니다</div>
+                        <div className="notification-follow">
+                            minddo님이 팔로우하셨습니다.
+                        </div>
                         <div className="notification-follow-btn">
-                            <button  >팔로우</button>
+                            <button>팔로우</button>
                         </div>
                     </div>
                 </div>

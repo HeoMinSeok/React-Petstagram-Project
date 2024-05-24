@@ -2,7 +2,6 @@ import "./FriendNav.css";
 import UserService from "../service/UserService";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import useFollowStatus from "../hook/useFollowStatus";
 import FollowCancelModal from "./FollowCancelModal";
 
 const FriendNav = ({

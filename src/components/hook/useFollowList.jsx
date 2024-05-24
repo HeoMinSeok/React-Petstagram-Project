@@ -18,10 +18,8 @@ const useFollowList = (userId) => {
         try {
             let response;
             if (userId) {
-                // 다른 사용자의 팔로워 리스트 가져오기
                 response = await UserService.getFollowersByUserId(userId, token);
             } else {
-                // 현재 사용자의 팔로워 리스트 가져오기
                 response = await UserService.getFollowers(token);
             }
 
@@ -40,10 +38,8 @@ const useFollowList = (userId) => {
         try {
             let response;
             if (userId) {
-                // 다른 사용자의 팔로잉 리스트 가져오기
                 response = await UserService.getFollowingsByUserId(userId, token);
             } else {
-                // 현재 사용자의 팔로잉 리스트 가져오기
                 response = await UserService.getFollowings(token);
             }
 
@@ -58,11 +54,10 @@ const useFollowList = (userId) => {
         }
     }, [userId, token]);
 
-
     useEffect(() => {
         fetchFollowers();
         fetchFollowings();
-    }, [fetchFollowers, fetchFollowings]);
+    }, [fetchFollowers, fetchFollowings, userId]);
 
     return { fetchFollowers, fetchFollowings, followers, followings };
 };

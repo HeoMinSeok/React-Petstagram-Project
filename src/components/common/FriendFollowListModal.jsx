@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import FollowCancelModal from "./FollowCancelModal";
@@ -53,7 +53,7 @@ const CloseIcon = styled.img`
 const SearchContainer = styled.div`
     display: flex;
     justify-content: center;
-    margin-bottom: 10px; 
+    margin-bottom: 20px; /* 검색 컨테이너와 리스트 사이의 간격 추가 */
 `;
 
 const SearchInput = styled.input`
@@ -112,9 +112,10 @@ const Name = styled.div`
 `;
 
 const Button = styled.button`
-    background: #e7e6e6;
+    background: ${(props) =>
+        props.following ? "#e7e6e6" : "rgb(65, 147, 239)"};
     width: 60px;
-    color: black;
+    color: ${(props) => (props.following ? "black" : "white")};
     border: none;
     padding: 5px 10px;
     border-radius: 5px;
@@ -124,14 +125,18 @@ const Button = styled.button`
     font-size: 12px;
 `;
 
-const FollowListModal = ({
+const FriendFollowModal = ({
     title,
     followList,
     onClose,
     onButtonClick,
     fetchFollowCounts,
     fetchFollowList,
-    buttonLabel,
+    profileInfo,
+    myFollowings,
+    myFetchFollowList,
+    handleFollow,
+    handleUnfollow,
 }) => {
     const [searchText, setSearchText] = useState("");
     const navigate = useNavigate();
@@ -157,9 +162,25 @@ const FollowListModal = ({
     const filteredFollowList = getFilteredFollowList();
 
     const handleButtonClick = (user) => {
-        setSelectedUser(user);
-        setCancelModalOpen(true);
+        if (isFollowingUser(user.id)) {
+            // 언팔로우 (현재 로그인된 유저의 follow status)
+            handleUnfollow(user.id)
+            isFollowingUser(false)
+        } else {
+            // 팔로우 (현재 로그인된 유저의 follow status)
+            handleFollow(user.id)
+            isFollowingUser(true)
+        }
     };
+
+    const isFollowingUser = useCallback((userId) => {
+        return myFollowings.some((following) => following.id === userId);
+    }, [myFollowings]);
+
+    useEffect(() => {
+        fetchFollowList();
+        myFetchFollowList();
+    }, [myFetchFollowList, fetchFollowList, isFollowingUser]);
 
     return (
         <Overlay>
@@ -197,9 +218,20 @@ const FollowListModal = ({
                                     <Name>{user.name}</Name>
                                 </UserDetails>
                             </Info>
-                            <Button onClick={() => handleButtonClick(user)}>
-                                {buttonLabel}
-                            </Button>
+                            {profileInfo.email !== user.email && (
+                                <Button
+                                    onClick={() => handleButtonClick(user)}
+                                    following={
+                                        isFollowingUser(user.id)
+                                            ? "true"
+                                            : undefined
+                                    }
+                                >
+                                    {isFollowingUser(user.id)
+                                        ? "팔로잉"
+                                        : "팔로우"}
+                                </Button>
+                            )}
                         </Item>
                     ))}
                 </List>
@@ -218,4 +250,4 @@ const FollowListModal = ({
     );
 };
 
-export default FollowListModal;
+export default FriendFollowModal;
