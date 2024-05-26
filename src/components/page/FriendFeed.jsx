@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import useUser from "../hook/useUser";
 import useAllUserProfile from "../hook/useAllUserProfile";
 import PostService from "../service/PostService";
 import "./FriendFeed.css";
-import useUserProfile from "../hook/useUserProfile";
 import useFollowCounts from "../hook/useFollowCounts";
 import useFollowList from "../hook/useFollowList";
 import FriendFollowModal from "../common/FriendFollowListModal";
@@ -15,9 +15,9 @@ const FriendFeed = ({
     myFollowings,
     myFetchFollowList,
 }) => {
+    const { profileInfo } = useUser();
     const { userId } = useParams();
     const { allUserProfiles } = useAllUserProfile();
-    const { profileInfo } = useUserProfile();
     const [friendProfile, setFriendProfile] = useState(null);
     const [postUserList, setPostUserList] = useState([]);
 

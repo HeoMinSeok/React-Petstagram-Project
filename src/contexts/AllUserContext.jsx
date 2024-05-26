@@ -1,9 +1,11 @@
-import { useState, useEffect, useCallback } from "react";
-import useUser from "./useUser";
-import UserService from "../service/UserService";
-import BasicImage from "../../assets/basic-profile.jpeg";
+import React, { createContext, useState, useEffect, useCallback } from "react";
+import useUser from "../components/hook/useUser";
+import UserService from "../components/service/UserService";
+import BasicImage from "../assets/basic-profile.jpeg";
 
-const useAllUserProfile = () => {
+const AllUserContext = createContext();
+
+export const AllUserProvider = ({ children }) => {
     const { isLoggedIn } = useUser();
     const [allUserProfiles, setAllUserProfiles] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -42,7 +44,13 @@ const useAllUserProfile = () => {
         }
     }, [isLoggedIn, fetchAllUsers]);
 
-    return { allUserProfiles, loading, error, fetchAllUsers };
+    return (
+        <AllUserContext.Provider
+            value={{ allUserProfiles, loading, error, fetchAllUsers }}
+        >
+            {children}
+        </AllUserContext.Provider>
+    );
 };
 
-export default useAllUserProfile;
+export { AllUserContext };

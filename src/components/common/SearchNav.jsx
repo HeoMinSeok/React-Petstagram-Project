@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
 import "./SearchNav.css";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const SearchNav = ({ allUserProfiles }) => {
-    const userProfilesArray = Array.isArray(allUserProfiles)
-        ? allUserProfiles
-        : [];
+import useUser from "../hook/useUser";
+import useAllUser from "../hook/useAllUser";
+
+const SearchNav = () => {
+    const { profileInfo } = useUser();
+    const { allUserProfiles } = useAllUser();
     const [searchText, setSearchText] = useState("");
     const [recentSearches, setRecentSearches] = useState([]);
     const navigate = useNavigate();
@@ -24,7 +26,7 @@ const SearchNav = ({ allUserProfiles }) => {
         if (searchText === "") {
             return [];
         }
-        return userProfilesArray.filter(
+        return allUserProfiles.filter(
             (user) =>
                 user.email.toLowerCase().includes(searchText.toLowerCase()) ||
                 (user.name &&
@@ -40,7 +42,15 @@ const SearchNav = ({ allUserProfiles }) => {
         ];
         setRecentSearches(updatedSearches);
         localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
-        navigate(`/friendfeed/${user.email}`);
+        handleNavigate(user.email);
+    };
+
+    const handleNavigate = (userEmail) => {
+        if (profileInfo && profileInfo.email === userEmail) {
+            navigate("/profile");
+        } else {
+            navigate(`/friendfeed/${userEmail}`);
+        }
     };
 
     // 검색 기록 전체 지우기
@@ -117,7 +127,10 @@ const SearchNav = ({ allUserProfiles }) => {
                 ) : (
                     recentSearches.map((user) => (
                         <div key={user.email} className="search-item">
-                            <div className="search-info" onClick={() => navigate(`/friendfeed/${user.email}`)}>
+                            <div
+                                className="search-info"
+                                onClick={() => handleNavigate(user.email)}
+                            >
                                 <div className="search-icon-wrapper">
                                     <img
                                         src={user.profileImageUrl}

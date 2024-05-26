@@ -1,7 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import UserService from "../service/UserService";
+import useUser from "./useUser";
+import useAllUser from "./useAllUser";
 
-const useFollowStatus = (allUserProfiles, profileInfo) => {
+const useFollowStatus = () => {
+    const { allUserProfiles } = useAllUser();
+    const { profileInfo } = useUser();
     const [followedUsers, setFollowedUsers] = useState({});
 
     const fetchFollowStatus = useCallback(async (userId) => {

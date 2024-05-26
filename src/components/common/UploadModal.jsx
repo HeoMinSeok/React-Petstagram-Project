@@ -1,6 +1,8 @@
 import "./UploadModal.css";
 import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
+import useUser from "../hook/useUser";
+import usePost from "../hook/usePost";
 import PostService from "../service/PostService";
 
 // 삭제 확인 모달 스타일
@@ -14,7 +16,7 @@ const DeleteConfirmModal = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 10000;
 `;
 
 const DeleteConfirmContent = styled.div`
@@ -66,7 +68,7 @@ const EmojiPickerModal = styled.div`
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     padding: 10px;
-    z-index: ;
+    z-index: 1000;
     width: 250px;
 `;
 
@@ -76,7 +78,7 @@ const EmojiButton = styled.button`
     font-size: 24px;
     cursor: pointer;
     margin: 5px;
-    display: inline-block !important;
+    display: inline-block;
 `;
 
 const EmojiTitle = styled.div`
@@ -92,7 +94,9 @@ const EmojiList = styled.div`
     justify-content: space-between;
 `;
 
-export const UploadModal = ({ onClose, profileInfo, setPostSuccess }) => {
+export const UploadModal = ({ onClose }) => {
+    const { isLoggedIn, profileInfo } = useUser();
+    const { postList, setPostList } = usePost(isLoggedIn, profileInfo);
     const fileInputRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [text, setText] = useState("");
@@ -100,28 +104,16 @@ export const UploadModal = ({ onClose, profileInfo, setPostSuccess }) => {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const maxTextLength = 2200;
 
-
     useEffect(() => {
-        setTimeout(() => {
-            console.log('fileInputRef.current in useEffect:', fileInputRef.current);
-            // 모달이 나타날 때 body 요소에 overflow: hidden을 적용하여 스크롤을 막음
-            document.body.style.overflow = "hidden";
-            // 모달이 닫힐 때 body 요소에 overflow: auto로 스크롤을 가능하게 함
-        }, 0);
-
+        document.body.style.overflow = "hidden";
         return () => {
             document.body.style.overflow = "auto";
         };
     }, []);
 
-    const handleFileButtonClick = () => {
-        fileInputRef.current.click();
-    };
-
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            console.log("File selected:", file);
             const reader = new FileReader();
             reader.onload = () => {
                 setSelectedImage(reader.result);
@@ -137,10 +129,6 @@ export const UploadModal = ({ onClose, profileInfo, setPostSuccess }) => {
         }
     };
 
-    const handleDeleteClick = () => {
-        setShowDeleteConfirm(true);
-    };
-
     const handleConfirmDelete = () => {
         setShowDeleteConfirm(false);
         onClose();
@@ -150,10 +138,6 @@ export const UploadModal = ({ onClose, profileInfo, setPostSuccess }) => {
         setShowDeleteConfirm(false);
     };
 
-    const handleEmojiButtonClick = () => {
-        setShowEmojiPicker(!showEmojiPicker);
-    };
-
     const handleEmojiClick = (emoji) => {
         setText(text + emoji);
         setShowEmojiPicker(false);
@@ -161,49 +145,52 @@ export const UploadModal = ({ onClose, profileInfo, setPostSuccess }) => {
 
     const handleSubmit = async () => {
         try {
-            if (!fileInputRef.current) {
-                console.error('파일 입력 요소가 존재하지 않습니다.');
-                return;
-            }
-
-            const file = fileInputRef.current.files[0];
+            const file = fileInputRef.current?.files[0];
             if (!file) {
-                console.error('파일이 선택되지 않았습니다.');
+                console.error("파일이 선택되지 않았습니다.");
                 return;
             }
 
-            const postData = {
-                postContent: text,
-            };
-
-            console.log("File in handleSubmit:", file);
-
+            const postData = { postContent: text };
             const formData = new FormData();
-            formData.append('post', new Blob([JSON.stringify(postData)], { type: "application/json" }));
-            formData.append('file', file);
+            formData.append(
+                "post",
+                new Blob([JSON.stringify(postData)], {
+                    type: "application/json",
+                })
+            );
+            formData.append("file", file);
 
             const token = localStorage.getItem("token");
             const response = await PostService.createPost(formData, token);
-            setPostSuccess(true);
+            
+            setPostList([...postList, response.data]); 
+            
             onClose();
         } catch (error) {
-            console.error('게시글 업로드 중 오류 발생:', error);
+            console.error("게시글 업로드 중 오류 발생:", error);
+            setPostList(postList);
         }
     };
 
     return (
         <div className="post-frame-container">
-            <button className="post-close-modal" onClick={handleDeleteClick}>
+            <button
+                className="post-close-modal"
+                onClick={() => setShowDeleteConfirm(true)}
+            >
                 ✕
             </button>
             <div className="post-frame">
                 <div className="post-header">
                     <div className="post-text-wrapper">새 게시물 만들기</div>
-                    <div className="post-text-wrapper-2" onClick={handleSubmit}>공유하기</div>
+                    <div className="post-text-wrapper-2" onClick={handleSubmit}>
+                        공유하기
+                    </div>
                 </div>
                 <div className="post-content">
                     <div className="post-image-section">
-                        {selectedImage && (
+                        {selectedImage ? (
                             <div className="img_section">
                                 <img
                                     src={selectedImage}
@@ -211,8 +198,7 @@ export const UploadModal = ({ onClose, profileInfo, setPostSuccess }) => {
                                     className="selected-image"
                                 />
                             </div>
-                        )}
-                        {!selectedImage && (
+                        ) : (
                             <div className="img_section">
                                 <img
                                     className="image_file"
@@ -223,8 +209,16 @@ export const UploadModal = ({ onClose, profileInfo, setPostSuccess }) => {
                                 사진과 동영상을 끌어다 놓으세요
                             </div>
                         )}
-                        <div className="post-file-div" style={{ display: selectedImage ? "none" : "block" }}>
-                            <div className="file_section" onClick={handleFileButtonClick}>
+                        <div
+                            className="post-file-div"
+                            style={{
+                                display: selectedImage ? "none" : "block",
+                            }}
+                        >
+                            <div
+                                className="file_section"
+                                onClick={() => fileInputRef.current.click()}
+                            >
                                 컴퓨터에서 선택
                             </div>
                             <input
@@ -237,7 +231,11 @@ export const UploadModal = ({ onClose, profileInfo, setPostSuccess }) => {
                     </div>
                     <div className="post-details-section">
                         <div className="post-user-info">
-                            <img className="post-ellipse" src={profileInfo.profileImageUrl}/>
+                            <img
+                                className="post-ellipse"
+                                src={profileInfo.profileImageUrl}
+                                alt="User Profile"
+                            />
                             <div className="post-text-wrapper-3">
                                 {profileInfo.email}
                             </div>
@@ -254,68 +252,20 @@ export const UploadModal = ({ onClose, profileInfo, setPostSuccess }) => {
                                     className="post-uil-smile"
                                     alt="Uil smile"
                                     src="../src/assets/postmodal/smile.png"
-                                    onClick={handleEmojiButtonClick}
+                                    onClick={() =>
+                                        setShowEmojiPicker(!showEmojiPicker)
+                                    }
                                 />
                                 <div className="post-text-wrapper-5">
                                     {text.length}/{maxTextLength}
                                 </div>
                             </div>
                         </div>
-                        <div className="post-options">
-                            <div className="post-option">
-                                <div className="post-text-wrapper-6">
-                                    위치 추가
-                                </div>
-                                <img
-                                    className="post-icon"
-                                    alt="Frame"
-                                    src="../src/assets/postmodal/location.png"
-                                />
-                            </div>
-                            <div className="post-option">
-                                <div className="post-text-wrapper-6">
-                                    접근성
-                                </div>
-                                <img
-                                    className="post-icon"
-                                    alt="Frame"
-                                    src="../src/assets/postmodal/under.png"
-                                />
-                            </div>
-                            <div className="post-option">
-                                <div className="post-text-wrapper-6">
-                                    고급 설정
-                                </div>
-                                <img
-                                    className="post-icon"
-                                    alt="Frame"
-                                    src="../src/assets/postmodal/under.png"
-                                />
-                            </div>
-                        </div>
+                        <PostOptions />
                     </div>
                 </div>
             </div>
-            {/*  이모지 선택창*/}
-            {showEmojiPicker && (
-                <EmojiPickerModal>
-                    <EmojiTitle>최고 인기 이모티콘</EmojiTitle>
-                    <EmojiList>
-                        {["🐥", "🐣", "🐤", "🐧", "🐦", "🐰", "🐹"].map(
-                            (emoji) => (
-                                <EmojiButton
-                                    key={emoji}
-                                    onClick={() => handleEmojiClick(emoji)}
-                                >
-                                    {emoji}
-                                </EmojiButton>
-                            )
-                        )}
-                    </EmojiList>
-                </EmojiPickerModal>
-            )}
-
-            {/* 삭제 확인 이중 모달 */}
+            {showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiClick} />}
             {showDeleteConfirm && (
                 <DeleteConfirmModal>
                     <DeleteConfirmContent>
@@ -345,3 +295,34 @@ export const UploadModal = ({ onClose, profileInfo, setPostSuccess }) => {
         </div>
     );
 };
+
+const PostOptions = () => (
+    <div className="post-options">
+        {[
+            {
+                label: "위치 추가",
+                icon: "../src/assets/postmodal/location.png",
+            },
+            { label: "접근성", icon: "../src/assets/postmodal/under.png" },
+            { label: "고급 설정", icon: "../src/assets/postmodal/under.png" },
+        ].map((option, index) => (
+            <div className="post-option" key={index}>
+                <div className="post-text-wrapper-6">{option.label}</div>
+                <img className="post-icon" alt="Frame" src={option.icon} />
+            </div>
+        ))}
+    </div>
+);
+
+const EmojiPicker = ({ onEmojiClick }) => (
+    <EmojiPickerModal>
+        <EmojiTitle>최고 인기 이모티콘</EmojiTitle>
+        <EmojiList>
+            {["🐥", "🐣", "🐤", "🐧", "🐦", "🐰", "🐹"].map((emoji) => (
+                <EmojiButton key={emoji} onClick={() => onEmojiClick(emoji)}>
+                    {emoji}
+                </EmojiButton>
+            ))}
+        </EmojiList>
+    </EmojiPickerModal>
+);

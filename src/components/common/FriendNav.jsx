@@ -1,20 +1,19 @@
 import "./FriendNav.css";
 import UserService from "../service/UserService";
+import useUser from "../hook/useUser";
+import useAllUser from "../hook/useAllUser";
+import useModal from "../hook/useModal";
+
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+
 import FollowCancelModal from "./FollowCancelModal";
 
-const FriendNav = ({
-    setIsLoggedIn,
-    profileInfo,
-    allUserProfiles,
-    fetchAllUsers,
-    isFollowing,
-    handleFollow,
-    handleUnfollow,
-}) => {
+const FriendNav = ({ isFollowing, handleFollow, handleUnfollow }) => {
+    const { setIsLoggedIn } = useUser();
+    const { fetchAllUsers } = useAllUser();
     const navigate = useNavigate();
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { openModal, closeModal, isModalOpen } = useModal();
     const [selectedUser, setSelectedUser] = useState(null);
 
     const handleLogout = () => {
@@ -25,35 +24,33 @@ const FriendNav = ({
         }
     };
 
-    const openModal = (user) => {
+    const openFollowCancelModal = (user) => {
         setSelectedUser(user);
-        setIsModalOpen(true);
+        openModal("followCancel");
     };
 
-    const closeModal = () => {
-        setIsModalOpen(false);
+    const closeFollowCancelModal = () => {
         setSelectedUser(null);
+        closeModal("followCancel");
     };
 
     useEffect(() => {
-        fetchAllUsers(); // 컴포넌트가 마운트될 때 fetchAllUsers 호출
+        fetchAllUsers();
     }, [fetchAllUsers]);
 
     return (
         <div className="friendnav">
-            <MyProfile profileInfo={profileInfo} onLogout={handleLogout} />
+            <MyProfile onLogout={handleLogout} />
             <Recommendation
-                allUserProfiles={allUserProfiles}
-                profileInfo={profileInfo}
                 isFollowing={isFollowing}
-                openModal={openModal}
+                openFollowCancelModal={openFollowCancelModal}
                 handleFollow={handleFollow}
                 navigate={navigate}
             />
-            {selectedUser && (
+            {selectedUser && isModalOpen("followCancel") && (
                 <FollowCancelModal
-                    isOpen={isModalOpen}
-                    onClose={closeModal}
+                    isOpen={isModalOpen("followCancel")}
+                    onClose={closeFollowCancelModal}
                     user={selectedUser}
                     onUnfollow={handleUnfollow}
                 />
@@ -62,96 +59,115 @@ const FriendNav = ({
     );
 };
 
-const MyProfile = ({ profileInfo, onLogout }) => (
-    <div className="friendnav-user-info">
-        <img className="ellipse-3" src={profileInfo.profileImageUrl} />
-        <div className="friendnav-user-profile">
-            <div className="friendnav-user-profile-wrapper">
-                <div className="friendnav-user-email">{profileInfo.email}</div>
-                <div className="friendnav-user-name">{profileInfo.name}</div>
-            </div>
-        </div>
-        <div className="friendnav-logout">
-            <div className="friendnav-logout-btn" onClick={onLogout}>
-                로그아웃
-            </div>
-        </div>
-    </div>
-);
+const MyProfile = ({ onLogout }) => {
+    const { profileInfo } = useUser();
 
-const Recommendation = ({
-    allUserProfiles,
-    profileInfo,
-    isFollowing,
-    openModal,
-    handleFollow,
-    navigate,
-}) => (
-    <div>
-        <div className="friendnav-recommend">
-            <div className="friendnav-recommend-wrapper">
-                <div className="friendnav-recommend-text">
-                    <div className="text-wrapper-8">회원님을 위한 추천</div>
+    return (
+        <div className="friendnav-user-info">
+            <img
+                className="friendnav-user-profile-image"
+                src={profileInfo.profileImageUrl}
+                alt="Profile"
+            />
+            <div className="friendnav-user-profile">
+                <div className="friendnav-user-profile-wrapper">
+                    <div className="friendnav-user-email">
+                        {profileInfo.email}
+                    </div>
+                    <div className="friendnav-user-name">
+                        {profileInfo.name}
+                    </div>
                 </div>
             </div>
-            <div className="frame-19">
-                <div className="text-wrapper-11">모두 보기</div>
+            <div className="friendnav-logout">
+                <div className="friendnav-logout-btn" onClick={onLogout}>
+                    로그아웃
+                </div>
             </div>
         </div>
+    );
+};
 
-        <div className="frame-20">
-            {allUserProfiles
-                .filter(
-                    (user) =>
-                        user.email !== profileInfo.email &&
-                        user.isRecommend === true
-                )
-                .slice(0, 5)
-                .map((user) => (
-                    <div key={user.email} className="frame-21">
-                        <div
-                            onClick={() => {
-                                navigate(`/friendfeed/${user.email}`);
-                            }}
-                        >
-                            <img
-                                src={user.profileImageUrl}
-                                className="ellipse-3"
-                                alt="프로필 이미지"
-                            />
-                            <div className="frame-13">
-                                <div className="frame-14">
-                                    <div className="text-wrapper-8">
+const Recommendation = ({
+    isFollowing,
+    openFollowCancelModal,
+    handleFollow,
+    navigate,
+}) => {
+    const { profileInfo } = useUser();
+    const { allUserProfiles } = useAllUser();
+
+    return (
+        <div>
+            <div className="friendnav-recommend">
+                <div className="friendnav-recommend-wrapper">
+                    <div className="friendnav-recommend-text">
+                        <div className="text-wrapper-8">회원님을 위한 추천</div>
+                    </div>
+                </div>
+                <div className="friendnav-all-text-wrapper">
+                    <div className="friendnav-all-text">모두 보기</div>
+                </div>
+            </div>
+
+            <div className="friendnav-item-div">
+                {allUserProfiles
+                    .filter(
+                        (user) =>
+                            user.email !== profileInfo.email &&
+                            user.isRecommend === true
+                    )
+                    .slice(0, 5)
+                    .map((user) => (
+                        <div key={user.email} className="friendnav-item">
+                            <div
+                                className="friendnav-item-list"
+                                onClick={() => {
+                                    navigate(`/friendfeed/${user.email}`);
+                                }}
+                            >
+                                <div className="friendnav-image-wrapper">
+                                    <img
+                                        src={user.profileImageUrl}
+                                        className="friendnav-profile-image"
+                                        alt="프로필 이미지"
+                                    />
+                                </div>
+
+                                <div className="friendnav-recommend-user">
+                                    <div className="friendnav-recommend-user-email">
                                         {user.email}
                                     </div>
-                                    <div className="text-wrapper-9">
+                                    <div className="friendnav-recommend-user-text">
                                         회원님을 위한 추천
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="frame-15">
-                            {isFollowing(user.id) ? (
-                                <button
-                                    className="text-wrapper-10-1"
-                                    onClick={() => openModal(user)}
-                                >
-                                    팔로잉
-                                </button>
-                            ) : (
-                                <button
-                                    className="text-wrapper-10-2"
-                                    onClick={() => handleFollow(user.id)}
-                                >
-                                    팔로우
-                                </button>
-                            )}
+                            <div>
+                                {isFollowing(user.id) ? (
+                                    <button
+                                        className="friendnav-following-btn"
+                                        onClick={() =>
+                                            openFollowCancelModal(user)
+                                        }
+                                    >
+                                        팔로잉
+                                    </button>
+                                ) : (
+                                    <button
+                                        className="friendnav-follow-btn"
+                                        onClick={() => handleFollow(user.id)}
+                                    >
+                                        팔로우
+                                    </button>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 export default FriendNav;

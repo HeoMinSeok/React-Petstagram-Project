@@ -1,110 +1,48 @@
 import React from "react";
-import "./App.css";
 import {
     BrowserRouter as Router,
     Route,
     Routes,
     Navigate,
 } from "react-router-dom";
-import { useState, useEffect } from "react";
+import "./App.css";
+import { UserProvider } from "./contexts/UserContext";
+import { AllUserProvider } from "./contexts/AllUserContext";
+import { NavProvider } from "./contexts/NavContext";
+import { ModalProvider } from "./contexts/ModalContext";
+
+/* 컴포넌트 */
 import LoginForm from "./components/page/LoginForm";
 import SignUp from "./components/page/SignUp";
-import HomeNav from "./components/common/HomeNav";
-import SearchNav from "./components/common/SearchNav";
 import Feed from "./components/page/Feed";
-import ExploreFeed from "./components/page/ExploreFeed";
 import FriendFeed from "./components/page/FriendFeed";
-import Message from "./components/page/Message";
-import FriendNav from "./components/common/FriendNav";
-import useUserProfile from "./components/hook/useUserProfile";
-import useAllUserProfile from "./components/hook/useAllUserProfile";
-import PostService from "./components/service/PostService";
+import ExploreFeed from "./components/page/ExploreFeed";
 import MyFeed from "./components/page/MyFeed";
+import Message from "./components/page/Message";
+import HomeNav from "./components/common/HomeNav";
+import FriendNav from "./components/common/FriendNav";
+import SearchNav from "./components/common/SearchNav";
 import NotificationNav from "./components/common/NotificationNav";
+
+/* Hook */
+import useUser from "./components/hook/useUser";
+import usePost from "./components/hook/usePost";
+import useNav from "./components/hook/useNav";
+import useAllUserProfile from "./components/hook/useAllUserProfile";
 import useFollowStatus from "./components/hook/useFollowStatus";
 import useFollowList from "./components/hook/useFollowList";
 
-const App = () => {
-    const { isLoggedIn, setIsLoggedIn, profileInfo, fetchProfileInfo } =
-        useUserProfile();
-    const { allUserProfiles, loading, error, fetchAllUsers } =
-        useAllUserProfile();
-
-    // postSuccess -> 글 등록시 렌더링 시키기 위해
-    const [postSuccess, setPostSuccess] = useState(false);
-    const [postList, setPostList] = useState([]);
-    const [postUserList, setPostUserList] = useState([]);
-
-    const { handleFollow, handleUnfollow, isFollowing } = useFollowStatus(
-        allUserProfiles,
+const AppContent = () => {
+    const { isLoggedIn, setIsLoggedIn, profileInfo } = useUser();
+    const { allUserProfiles } = useAllUserProfile();
+    const { postList, postUserList, fetchPosts, fetchUserPosts } = usePost(
+        isLoggedIn,
         profileInfo
     );
 
-    const { followers, followings, fetchFollowers, fetchFollowings } =
-        useFollowList();
-
-    // 모든 게시물 목록을 가져오는 useEffect
-    useEffect(() => {
-        const fetchPosts = async () => {
-            try {
-                const posts = await PostService.getPostList();
-                setPostList(posts);
-            } catch (error) {
-                console.error("게시글을 가져오는 중 오류 발생:", error);
-            }
-        };
-        if (isLoggedIn) {
-            fetchPosts();
-            setPostSuccess(false);
-        }
-    }, [isLoggedIn, postSuccess]);
-
-    // 현재 로그인한 사용자가 작성한 게시물을 가져오는 useEffect
-    useEffect(() => {
-        const fetchUserPosts = async () => {
-            if (isLoggedIn && profileInfo.id) {
-                try {
-                    const postUserList = await PostService.getPostsByUserId(
-                        profileInfo.id
-                    );
-                    setPostUserList(postUserList);
-                } catch (error) {
-                    console.error(
-                        "사용자가 작성한 게시물을 가져오는 중 오류 발생:",
-                        error
-                    );
-                }
-            }
-        };
-
-        if (isLoggedIn && profileInfo.id) {
-            fetchUserPosts();
-        }
-    }, [isLoggedIn, profileInfo.id, postSuccess]);
-
-    const [navState, setNavState] = useState({
-        home: true,
-        search: false,
-        explore: false,
-        messages: false,
-        notification: false,
-        profile: false,
-    });
-
-    const handleNavClick = (menu) => {
-        setNavState((prevState) => ({
-            home: false,
-            search: menu === "search" ? !prevState.search : false,
-            explore: false,
-            messages: false,
-            notification:
-                menu === "notification" ? !prevState.notification : false,
-            profile: false,
-            [menu]:
-                (menu !== "search" && menu !== "notification") ||
-                (!prevState.search && !prevState.notification),
-        }));
-    };
+    const { handleFollow, handleUnfollow, isFollowing } = useFollowStatus();
+    const { followers, followings, fetchFollowings } = useFollowList();
+    const { navState, handleNavClick } = useNav();
 
     return (
         <Router>
@@ -130,8 +68,6 @@ const App = () => {
                         )
                     }
                 />
-
-                {/* 홈 라우트 */}
                 <Route
                     path="/"
                     element={
@@ -140,35 +76,14 @@ const App = () => {
                                 <div className="div">
                                     {!navState.explore && (
                                         <>
-                                            {postList.map((post, index) => (
-                                                <Feed
-                                                    key={index}
-                                                    writer={post.email}
-                                                    postdate={post.regTime}
-                                                    postContent={
-                                                        post.postContent
-                                                    }
-                                                    postId={post.id}
-                                                    images={post.imageList}
-                                                    allUserProfiles={
-                                                        allUserProfiles
-                                                    }
-                                                    isFollowing={isFollowing}
-                                                    handleFollow={handleFollow}
-                                                    handleUnfollow={
-                                                        handleUnfollow
-                                                    }
-                                                    myFollowers={followers}
-                                                    myFollowings={followings}
-                                                />
-                                            ))}
+                                            <Feed
+                                                isFollowing={isFollowing}
+                                                handleFollow={handleFollow}
+                                                handleUnfollow={handleUnfollow}
+                                                myFollowers={followers}
+                                                myFollowings={followings}
+                                            />
                                             <FriendNav
-                                                setIsLoggedIn={setIsLoggedIn}
-                                                profileInfo={profileInfo}
-                                                allUserProfiles={
-                                                    allUserProfiles
-                                                }
-                                                fetchAllUsers={fetchAllUsers}
                                                 isFollowing={isFollowing}
                                                 handleFollow={handleFollow}
                                                 handleUnfollow={handleUnfollow}
@@ -176,25 +91,10 @@ const App = () => {
                                         </>
                                     )}
                                     <div className="main-container">
-                                        <HomeNav
-                                            profileInfo={profileInfo}
-                                            handleNavClick={handleNavClick}
-                                            navState={navState}
-                                            setPostSuccess={setPostSuccess}
-                                        />
-                                        {navState.search && (
-                                            <SearchNav
-                                                allUserProfiles={
-                                                    allUserProfiles
-                                                }
-                                            />
-                                        )}
+                                        <HomeNav />
+                                        {navState.search && <SearchNav />}
                                         {navState.notification && (
-                                            <NotificationNav
-                                                allUserProfiles={
-                                                    allUserProfiles
-                                                }
-                                            />
+                                            <NotificationNav />
                                         )}
                                     </div>
                                 </div>
@@ -204,39 +104,18 @@ const App = () => {
                         )
                     }
                 />
-
-                {/* 탐색 탭 라우트 */}
                 <Route
                     path="/explore"
                     element={
                         isLoggedIn ? (
                             <div className="app">
                                 <div className="div">
-                                    <ExploreFeed
-                                        images={postList.flatMap(
-                                            (post) => post.imageList
-                                        )}
-                                    />
+                                    <ExploreFeed postList={postList} />
                                     <div className="main-container">
-                                        <HomeNav
-                                            profileInfo={profileInfo}
-                                            handleNavClick={handleNavClick}
-                                            navState={navState}
-                                            setPostSuccess={setPostSuccess}
-                                        />
-                                        {navState.search && (
-                                            <SearchNav
-                                                allUserProfiles={
-                                                    allUserProfiles
-                                                }
-                                            />
-                                        )}
+                                        <HomeNav />
+                                        {navState.search && <SearchNav />}
                                         {navState.notification && (
-                                            <NotificationNav
-                                                allUserProfiles={
-                                                    allUserProfiles
-                                                }
-                                            />
+                                            <NotificationNav />
                                         )}
                                     </div>
                                 </div>
@@ -246,8 +125,6 @@ const App = () => {
                         )
                     }
                 />
-
-                {/* 메시지 라우트 */}
                 <Route
                     path="/messages"
                     element={
@@ -256,19 +133,8 @@ const App = () => {
                                 <div className="div">
                                     <Message />
                                     <div className="main-container">
-                                        <HomeNav
-                                            profileInfo={profileInfo}
-                                            handleNavClick={handleNavClick}
-                                            navState={navState}
-                                            setPostSuccess={setPostSuccess}
-                                        />
-                                        {navState.search && (
-                                            <SearchNav
-                                                allUserProfiles={
-                                                    allUserProfiles
-                                                }
-                                            />
-                                        )}
+                                        <HomeNav />
+                                        {navState.search && <SearchNav />}
                                         {navState.notification && (
                                             <NotificationNav
                                                 allUserProfiles={
@@ -284,37 +150,16 @@ const App = () => {
                         )
                     }
                 />
-
-                {/* 프로필 라우트 */}
                 <Route
                     path="/profile"
                     element={
                         isLoggedIn ? (
                             <div className="app">
                                 <div className="div">
-                                    <MyFeed
-                                        images={postUserList.flatMap(
-                                            (post) => post.imageList
-                                        )}
-                                        profileInfo={profileInfo}
-                                        postSuccess={postSuccess}
-                                        fetchProfileInfo={fetchProfileInfo}
-                                        allUserProfiles={allUserProfiles}
-                                    />
+                                    <MyFeed postUserList={postUserList} />
                                     <div className="main-container">
-                                        <HomeNav
-                                            profileInfo={profileInfo}
-                                            handleNavClick={handleNavClick}
-                                            navState={navState}
-                                            setPostSuccess={setPostSuccess}
-                                        />
-                                        {navState.search && (
-                                            <SearchNav
-                                                allUserProfiles={
-                                                    allUserProfiles
-                                                }
-                                            />
-                                        )}
+                                        <HomeNav />
+                                        {navState.search && <SearchNav />}
                                         {navState.notification && (
                                             <NotificationNav
                                                 allUserProfiles={
@@ -330,8 +175,6 @@ const App = () => {
                         )
                     }
                 />
-
-                {/* 친구 피드 라우트 */}
                 <Route
                     path="/friendfeed/:userId"
                     element={
@@ -346,25 +189,10 @@ const App = () => {
                                         myFetchFollowList={fetchFollowings}
                                     />
                                     <div className="main-container">
-                                        <HomeNav
-                                            profileInfo={profileInfo}
-                                            handleNavClick={handleNavClick}
-                                            navState={navState}
-                                            setPostSuccess={setPostSuccess}
-                                        />
-                                        {navState.search && (
-                                            <SearchNav
-                                                allUserProfiles={
-                                                    allUserProfiles
-                                                }
-                                            />
-                                        )}
+                                        <HomeNav />
+                                        {navState.search && <SearchNav />}
                                         {navState.notification && (
-                                            <NotificationNav
-                                                allUserProfiles={
-                                                    allUserProfiles
-                                                }
-                                            />
+                                            <NotificationNav />
                                         )}
                                     </div>
                                 </div>
@@ -378,5 +206,17 @@ const App = () => {
         </Router>
     );
 };
+
+const App = () => (
+    <UserProvider>
+        <AllUserProvider>
+            <NavProvider>
+                <ModalProvider>
+                    <AppContent />
+                </ModalProvider>
+            </NavProvider>
+        </AllUserProvider>
+    </UserProvider>
+);
 
 export default App;

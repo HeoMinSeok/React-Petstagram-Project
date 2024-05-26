@@ -1,11 +1,10 @@
 .messageroom {
     background-color: #fff;
-    position: relative;
+    position: fixed;
     left: 550px; 
     top: 0;
     height: 100vh;
     width: calc(100vw - 550px);
-    z-index: 999; 
     border-left: 1px solid rgb(237, 237, 237);
     overflow: hidden;
 }

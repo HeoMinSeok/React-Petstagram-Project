@@ -6,6 +6,14 @@
     width: 391px;
 }
 
+.friendnav-user-profile-image,
+.friendnav-profile-image {
+    border-radius: 50%;
+    height: 53px;
+    width: 53px;
+    object-fit: cover;
+}
+
 .friendnav-user-info {
     height: 53px;
     left: 0;
@@ -14,18 +22,7 @@
     width: 391px;
 }
 
-.ellipse-3 {
-    background-color: #d9d9d9;
-    border-radius: 26.5px;
-    height: 53px;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 53px;
-}
-
 .friendnav-user-profile {
-    height: 53px;
     left: 60px;
     position: absolute;
     top: 0;
@@ -68,7 +65,7 @@
 
 .friendnav-logout {
     height: 53px;
-    left: 257px;
+    left: 280px;
     position: absolute;
     top: 0;
     width: 134px;
@@ -88,24 +85,7 @@
     cursor: pointer;
 }
 
-.frame-13 {
-    height: 53px;
-    left: 60px;
-    position: absolute;
-    top: 0;
-    width: 197px;
-}
-
-.frame-14 {
-    align-items: flex-start;
-    display: inline-flex;
-    flex-direction: column;
-    gap: 2px;
-    position: relative;
-    top: 9px;
-}
-
-.text-wrapper-8 {
+.friendnav-recommend-user-email {
     color: #000000;
     font-family: "Inter", Helvetica;
     font-size: 13.6px;
@@ -113,42 +93,22 @@
     letter-spacing: 0;
     line-height: normal;
     margin-top: -1px;
-    position: relative;
     white-space: nowrap;
-    width: fit-content;
 }
 
-.text-wrapper-9 {
+.friendnav-item-div{
+    right: 20px;
+}
+
+.friendnav-recommend-user-text {
     color: #afafaf;
     font-family: "Inter", Helvetica;
     font-size: 13.6px;
     font-weight: 500;
     letter-spacing: 0;
     line-height: normal;
-    position: relative;
     white-space: nowrap;
-    width: fit-content;
-}
-
-.frame-15 {
-    height: 53px;
-    left: 257px;
-    position: absolute;
-    top: 0;
-    width: 134px;
-}
-
-.text-wrapper-10 {
-    color: #00a3ff;
-    font-family: "Inter", Helvetica;
-    font-size: 13.6px;
-    font-weight: 700;
-    left: 6px;
-    letter-spacing: 0;
-    line-height: normal;
-    position: absolute;
-    top: 17px;
-    white-space: nowrap;
+    margin-right: 100px;
 }
 
 .friendnav-recommend {
@@ -176,7 +136,7 @@
     top: 18px;
 }
 
-.frame-19 {
+.friendnav-all-text-wrapper {
     height: auto;
     right: 0px;
     position: absolute;
@@ -184,7 +144,7 @@
     width: 134px;
 }
 
-.text-wrapper-11 {
+.friendnav-all-text {
     color: #000000;
     font-family: "Inter", Helvetica;
     font-size: 13.6px;
@@ -197,49 +157,55 @@
     white-space: nowrap;
 }
 
-.frame-20 {
+.friendnav-item-div {
     align-items: flex-start;
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
     gap: 11px;
-    left: 0;
     position: absolute;
     top: 175px;
 }
 
-.frame-21 {
-    height: 53px;
-    position: relative;
-    width: 391px;
+.friendnav-item {
+    padding: 10px 30px 10px 30px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    justify-content: space-between;
 }
 
-.text-wrapper-10-1 {
+.friendnav-item-list {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.friendnav-image-wrapper {
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.friendnav-following-btn {
     background-color: #cbcaca;
     width: 70px;
     font-family: "Inter", Helvetica;
     font-size: 13.6px;
     font-weight: 700;
-    left: 6px;
     letter-spacing: 0;
     line-height: normal;
-    position: absolute;
-    top: 17px;
     white-space: nowrap;
     cursor: pointer;
 }
 
-
-.text-wrapper-10-2 {
+.friendnav-follow-btn {
     background-color: #00a3ff;
     width: 70px;
     font-family: "Inter", Helvetica;
     font-size: 13.6px;
     font-weight: 700;
-    left: 6px;
     letter-spacing: 0;
     line-height: normal;
-    position: absolute;
-    top: 17px;
     white-space: nowrap;
     cursor: pointer;
 }

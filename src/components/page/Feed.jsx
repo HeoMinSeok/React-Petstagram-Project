@@ -1,37 +1,49 @@
 import "./Feed.css";
-import commentIcon from "../../assets/feed/feed-comment.png";
-import heartIcon from "../../assets/feed/feed-heart.png";
-import heartFillIcon from "../../assets/feed/feed-heart-fill.png";
-import shareIcon from "../../assets/feed/feed-share.png";
-import bookmarkIcon from "../../assets/feed/feed-save.png";
-import moreIcon from "../../assets/feed/feed-more.png";
-import BasicImage from "../../assets/basic-profile.jpeg";
+import icons from "../../assets/ImageList";
 import GetRelativeTime from "../../utils/GetRelativeTime";
+import useUser from "../hook/useUser";
+import useAllUser from "../hook/useAllUser";
+import usePost from "../hook/usePost";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CommentService from "../service/CommentService";
 import PostService from "../service/PostService";
-import useUserProfile from "../hook/useUserProfile";
 
-const Feed = ({
-    writer,
-    postdate,
-    postContent,
-    images,
-    allUserProfiles,
-    postId,
+const Feed = ({ isFollowing, handleFollow, handleUnfollow }) => {
+    const { isLoggedIn, profileInfo } = useUser();
+    const { postList, postSuccess, setPostSuccess } = usePost(
+        isLoggedIn,
+        profileInfo
+    );
+
+    return (
+        <div>
+            {postList.map((post) => (
+                <FeedItem
+                    key={post.id}
+                    post={post}
+                    isFollowing={isFollowing}
+                    handleFollow={handleFollow}
+                    handleUnfollow={handleUnfollow}
+                />
+            ))}
+        </div>
+    );
+};
+
+const FeedItem = ({
+    post,
     isFollowing,
     handleFollow,
     handleUnfollow,
-    myFollowers,
-    myFollowings,
 }) => {
-    const uploadPostTime = GetRelativeTime(postdate);
+    const { profileInfo } = useUser();
+    const { allUserProfiles } = useAllUser();
+    const uploadPostTime = GetRelativeTime(post.regTime);
     const [comments, setComments] = useState([]);
     const [commentText, setCommentText] = useState("");
     const [postLiked, setPostLiked] = useState(false);
     const [postLikesCount, setPostLikesCount] = useState(0);
-    const { profileInfo } = useUserProfile();
     const navigate = useNavigate();
 
     const getImageUrl = (image) => {
@@ -43,7 +55,7 @@ const Feed = ({
         if (user && user.profileImageUrl) {
             return user.profileImageUrl;
         }
-        return BasicImage;
+        return icons.BasicImage;
     };
 
     const getUserIdByEmail = (email) => {
@@ -51,15 +63,14 @@ const Feed = ({
         return user ? user.id : null;
     };
 
-    const writerId = getUserIdByEmail(writer);
-    const profileImageUrl = getProfileImageUrlForWriter(writer);
+    const writerId = getUserIdByEmail(post.email);
+    const profileImageUrl = getProfileImageUrlForWriter(post.email);
 
-    // 좋아요 상태 및 개수 업데이트
     useEffect(() => {
         const updateLikeStatus = async () => {
             try {
                 const { postLiked, postLikesCount } =
-                    await PostService.getPostLikeStatus(postId); // 서버로부터 좋아요 상태와 개수를 받아옴
+                    await PostService.getPostLikeStatus(post.id);
                 setPostLiked(postLiked);
                 setPostLikesCount(postLikesCount);
             } catch (error) {
@@ -72,14 +83,12 @@ const Feed = ({
 
         updateLikeStatus();
         fetchComments(); // 댓글 목록 불러오기
-    }, [postId]);
+    }, [post.id]);
 
-    // 좋아요 버튼 클릭 처리 함수
     const handleLikeClick = async () => {
         try {
-            await PostService.togglePostLike(postId);
+            await PostService.togglePostLike(post.id);
 
-            // 좋아요 상태 반전
             const newLikesCount = !postLiked
                 ? postLikesCount + 1
                 : postLikesCount - 1;
@@ -91,35 +100,33 @@ const Feed = ({
     };
 
     const handleUserClick = () => {
-        if (profileInfo.email == writer) {
+        if (profileInfo.email === post.email) {
             navigate(`/profile`);
         } else {
-            navigate(`/friendfeed/${writer}`);
+            navigate(`/friendfeed/${post.email}`);
         }
     };
 
-    // 댓글 목록을 불로오는 함수
     const fetchComments = async () => {
         try {
-            const commentList = await CommentService.getCommentList(postId);
+            const commentList = await CommentService.getCommentList(post.id);
             setComments(commentList);
         } catch (error) {
-            console.log("댓글을 불로오는 중 오류가 발생했습니다.", error);
+            console.log("댓글을 불러오는 중 오류가 발생했습니다.", error);
         }
     };
 
-    // 댓글 작성하는 함수
     const submitComment = async (e) => {
         e.preventDefault();
-        if (commentText.trim() === "") return; // 빈 댓글 방지
+        if (commentText.trim() === "") return;
 
         const commentData = {
             commentContent: commentText,
-            id: postId,
+            id: post.id,
         };
 
         try {
-            await CommentService.createPost(commentData, postId);
+            await CommentService.createPost(commentData, post.id);
             setCommentText("");
             fetchComments();
         } catch (error) {
@@ -136,10 +143,11 @@ const Feed = ({
                             <img
                                 className="feed-profile-img"
                                 src={profileImageUrl}
+                                alt="프로필"
                             />
                         </div>
                         <div>
-                            <div className="feed-writer-name">{writer}</div>
+                            <div className="feed-writer-name">{post.email}</div>
                         </div>
                         <div>
                             <div className="feed-writer-date">
@@ -147,7 +155,7 @@ const Feed = ({
                             </div>
                         </div>
 
-                        {profileInfo.email !== writer &&
+                        {profileInfo.email !== post.email &&
                             writerId &&
                             (isFollowing(writerId) ? (
                                 <button
@@ -174,13 +182,17 @@ const Feed = ({
 
                     <div className="feed-more">
                         <button className="feed-more-btn">
-                            <img className="feed-more-img" src={moreIcon}></img>
+                            <img
+                                className="feed-more-img"
+                                src={icons.moreIcon}
+                                alt="더보기"
+                            />
                         </button>
                     </div>
                 </div>
-                {images && images.length > 0 && (
+                {post.imageList && post.imageList.length > 0 && (
                     <div className="feed-post-photos">
-                        {images.map((image, index) => (
+                        {post.imageList.map((image, index) => (
                             <img
                                 key={index}
                                 className="feed-post-photo"
@@ -195,20 +207,28 @@ const Feed = ({
                         <img
                             className={`heart_img ${postLiked ? "liked" : ""}`}
                             alt="좋아요"
-                            src={postLiked ? heartFillIcon : heartIcon}
+                            src={
+                                postLiked
+                                    ? icons.heartFillIcon
+                                    : icons.heartIcon
+                            }
                             onClick={handleLikeClick}
                         />
-                        <img className="share_img" alt="공유" src={shareIcon} />
+                        <img
+                            className="share_img"
+                            alt="공유"
+                            src={icons.postShareIcon}
+                        />
                         <img
                             className="comment_img"
                             alt="댓글"
-                            src={commentIcon}
+                            src={icons.commentIcon}
                         />
                     </div>
                     <img
                         className="bookmark-img"
                         alt="저장"
-                        src={bookmarkIcon}
+                        src={icons.bookmarkIcon}
                     />
                 </div>
                 <div className="feed-post-info">
@@ -216,9 +236,8 @@ const Feed = ({
                         좋아요 {postLikesCount}개
                     </div>
                     <div>
-                        {/* 작성자 아이디 추가하기 */}
                         <p className="feed-post-content">
-                            {postContent}
+                            {post.postContent}
                             <span className="feed-post-more"> 더 보기</span>
                         </p>
                     </div>
@@ -226,14 +245,6 @@ const Feed = ({
                     <div className="feed-comment-more">
                         <span>댓글 {comments.length}개 모두 보기</span>
                     </div>
-                    {/* <div className="feed-comments">
-                        {comments.map((comment, index) => (
-                            <div key={index} className="feed-comment-item">
-                                <span>{comment.commentEmail}</span>:
-                                {comment.commentContent}
-                            </div>
-                        ))}
-                    </div> */}
                     <form className="feed-comment" onSubmit={submitComment}>
                         <input
                             type="text"
@@ -245,7 +256,6 @@ const Feed = ({
                         <button type="submit" className="feed-comment-regi">
                             게시
                         </button>
-                        {/* <span style={{ fontSize: 18 }}>☺︎</span> */}
                     </form>
                 </div>
             </div>

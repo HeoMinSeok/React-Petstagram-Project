@@ -3,17 +3,28 @@
     top: 0;
     left: 0;
     height: 100vh;
-    width: 300px;
+    width: 80px;
     display: flex;
     flex-direction: column;
-    background-color: transparent; /* 배경 투명 설정 */
-    z-index: 10; /* z-index를 낮춤 */
+    background-color: white; /* 배경 투명 설정 */
+    z-index: 1; /* z-index를 낮춤 */
 }
 
 .sidebar-wrapper {
     width: 100%;
     height: 100%;
     background-color: transparent; /* 배경 투명 설정 */
+}
+
+.more-menu {
+    top: 540px;
+    font-size: 20px;
+    background-color: transparent;
+}
+
+.more-menu.active {
+    font-weight: bold;
+    color: #000;
 }
 
 .menu-wrapper {
@@ -36,16 +47,15 @@
     margin-right: 30px;
 }
 
-.menu-item-profile {
-    font-size: 20px;
+.menu-item-profile-img {
     width: 45px;
     height: 45px;
     border-radius: 50%;
     margin-right: 30px;
-    
 }
 
-.menu-item {
+.menu-item,
+.menu-item-profile {
     font-size: 20px;
     background-color: transparent; /* 배경 투명 설정 */
 }
@@ -53,6 +63,11 @@
 .menu-item.active {
     font-weight: bold;
     color: #000; /* 원하는 색상으로 변경 */
+}
+
+.menu-item-profile-img.active {
+    border: 2px solid black; /* 원하는 두께와 색상으로 설정 */
+    border-radius: 50%; /* 둥근 테두리를 유지 */
 }
 
 .menu-item-profile.active {
@@ -76,8 +91,12 @@
     }
 
     .menu-icon,
-    .menu-profile-icon {
+    .menu-item-profile-img {
         margin-right: 0;
+    }
+
+    .more-menu {
+        margin-top: -280px;
     }
 
     .menu-item {
@@ -85,12 +104,9 @@
         font-size: 0;
     }
 }
-.upload-modal {
-    z-index: 10;
+
+@media (max-width: 2055px) {
+    .more-menu {
+        top: 400px;
+    }
 }
-/* .css-wx7wi4 {
-    border-radius: 50%;
-    width: 40px ;
-    height: 40px;
-    object-fit: cover;
-} */

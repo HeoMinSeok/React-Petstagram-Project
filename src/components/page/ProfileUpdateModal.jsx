@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./ProfileUpdateModal.css";
+import useUser from "../hook/useUser";
 import Select from "react-select";
 import styled from "styled-components";
 import UserService from "../service/UserService";
@@ -63,85 +64,59 @@ const ModalButton = styled.button`
     border-radius: 0;
 `;
 
-const ProfileUpdateModal = ({ onClose, profileInfo, profileImageUrl, setIsUpdateProfile, fetchProfileInfo }) => {
+const genderOptions = [
+    { value: "비공개", label: "밝히고 싶지 않음" },
+    { value: "남성", label: "남성" },
+    { value: "여성", label: "여성" },
+];
+
+const ProfileUpdateModal = ({
+    onClose,
+}) => {
+    const { profileInfo, fetchProfileInfo } = useUser();
     const [bio, setBio] = useState(profileInfo.bio || "");
     const [gender, setGender] = useState(profileInfo.gender || "비공개");
     const [showRecommendations, setShowRecommendations] = useState(
         profileInfo.isRecommend || false
     );
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-
     const [showModal, setShowModal] = useState(false);
-    const openModal = () => setShowModal(true);
-    const closeModal = () => setShowModal(false);
     const fileInputRef = useRef(null);
-    const [selectedImage, setSelectedImage] = useState(profileImageUrl);
-    const [selectedFile, setSelectedFile] = useState(null); 
-
-    const genderOptions = [
-        { value: "비공개", label: "밝히고 싶지 않음" },
-        { value: "남성", label: "남성" },
-        { value: "여성", label: "여성" },
-    ];
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null);
 
     useEffect(() => {
-        setIsSubmitDisabled(true); 
+        setIsSubmitDisabled(true);
     }, []);
 
-    const handleInputChange = (setter) => (e) => {
-        setter(e.target.value);
-        setIsSubmitDisabled(false); 
-    };
-
-    const handleSelectChange = (setter) => (selectedOption) => {
-        setter(selectedOption.value);
-        setIsSubmitDisabled(false); 
-    };
-
-    const handleCheckboxChange = (setter) => (e) => {
-        setter(e.target.checked);
-        setIsSubmitDisabled(false); 
+    const handleChange = (setter) => (value) => {
+        setter(value);
+        setIsSubmitDisabled(false);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const userData = {
-            bio,
-            gender,
-            isRecommend: showRecommendations
-        };
+        const userData = { bio, gender, isRecommend: showRecommendations };
 
         const formData = new FormData();
-        if (Object.keys(userData).length > 0) {
-            formData.append(
-                "user",
-                new Blob([JSON.stringify(userData)], {
-                    type: "application/json",
-                })
-            );
-        }
+        formData.append(
+            "user",
+            new Blob([JSON.stringify(userData)], { type: "application/json" })
+        );
         if (selectedFile) {
             formData.append("file", selectedFile);
         }
 
         try {
             const token = localStorage.getItem("token");
-            const updatedUser = await UserService.updateUser(
-                profileInfo.id,
-                formData,
-                token
-            );
-            setIsUpdateProfile(true);
-            fetchProfileInfo();
+            await UserService.updateUser(profileInfo.id, formData, token);
+            await fetchProfileInfo();
             onClose();
         } catch (error) {
             console.error("Error updating user:", error);
+            alert("프로필 업데이트 중 오류가 발생했습니다. 다시 시도해주세요.");
         }
-    };
-
-    const handleFileSelect = () => {
-        fileInputRef.current.click();
     };
 
     const handleFileChange = (e) => {
@@ -151,11 +126,20 @@ const ProfileUpdateModal = ({ onClose, profileInfo, profileImageUrl, setIsUpdate
             const reader = new FileReader();
             reader.onload = () => {
                 setSelectedImage(reader.result);
-                closeModal();
+                setShowModal(false);
             };
             reader.readAsDataURL(file);
         }
-        setIsSubmitDisabled(false); 
+        setIsSubmitDisabled(false);
+    };
+
+    const handleDeleteImage = () => {
+        setSelectedImage(null);
+        setSelectedFile(null);
+        setShowModal(false);
+        // 기본 프로필 사진으로 변경하고 싶다면 여기서 API를 호출해 서버에서 이미지 제거 로직을 추가하세요.
+        // UserService.deleteProfileImage(profileInfo.id); // 이와 같은 API 호출
+        setIsSubmitDisabled(false);
     };
 
     return (
@@ -189,7 +173,7 @@ const ProfileUpdateModal = ({ onClose, profileInfo, profileImageUrl, setIsUpdate
                         <button
                             type="button"
                             className="profile-change-pic-btn"
-                            onClick={openModal}
+                            onClick={() => setShowModal(true)}
                         >
                             사진 변경
                         </button>
@@ -199,7 +183,9 @@ const ProfileUpdateModal = ({ onClose, profileInfo, profileImageUrl, setIsUpdate
                         <label>소개</label>
                         <textarea
                             value={bio}
-                            onChange={handleInputChange(setBio)}
+                            onChange={(e) =>
+                                handleChange(setBio)(e.target.value)
+                            }
                             maxLength={149}
                             placeholder="소개"
                         />
@@ -211,7 +197,9 @@ const ProfileUpdateModal = ({ onClose, profileInfo, profileImageUrl, setIsUpdate
                             value={genderOptions.find(
                                 (option) => option.value === gender
                             )}
-                            onChange={handleSelectChange(setGender)}
+                            onChange={(option) =>
+                                handleChange(setGender)(option.value)
+                            }
                             options={genderOptions}
                             className="profile-select"
                             classNamePrefix="profile-select"
@@ -234,9 +222,11 @@ const ProfileUpdateModal = ({ onClose, profileInfo, profileImageUrl, setIsUpdate
                                         type="checkbox"
                                         id="recommendations"
                                         checked={showRecommendations}
-                                        onChange={handleCheckboxChange(
-                                            setShowRecommendations
-                                        )}
+                                        onChange={(e) =>
+                                            handleChange(
+                                                setShowRecommendations
+                                            )(e.target.checked)
+                                        }
                                     />
                                     <span className="profile-slider round"></span>
                                 </label>
@@ -259,12 +249,12 @@ const ProfileUpdateModal = ({ onClose, profileInfo, profileImageUrl, setIsUpdate
                 </form>
             </div>
             {showModal && (
-                <ModalBackdrop onClick={closeModal}>
+                <ModalBackdrop onClick={() => setShowModal(false)}>
                     <ModalContainer onClick={(e) => e.stopPropagation()}>
                         <ModalTitle>프로필 사진 바꾸기</ModalTitle>
                         <ModalButton
                             color="rgb(65, 147, 239)"
-                            onClick={handleFileSelect}
+                            onClick={() => fileInputRef.current.click()}
                         >
                             사진 업로드
                         </ModalButton>
@@ -274,10 +264,13 @@ const ProfileUpdateModal = ({ onClose, profileInfo, profileImageUrl, setIsUpdate
                             style={{ display: "none" }}
                             onChange={handleFileChange}
                         />
-                        <ModalButton color="#ff5a5a">
+                        <ModalButton color="#ff5a5a" onClick={handleDeleteImage}>
                             현재 사진 삭제
                         </ModalButton>
-                        <ModalButton color="#000" onClick={closeModal}>
+                        <ModalButton
+                            color="#000"
+                            onClick={() => setShowModal(false)}
+                        >
                             취소
                         </ModalButton>
                     </ModalContainer>

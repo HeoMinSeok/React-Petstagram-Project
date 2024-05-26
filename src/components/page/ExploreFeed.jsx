@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./ExploreFeed.css";
 
-const ExploreFeed = ({ images }) => {
-    console.log("ExploreFeed rendered");
-
+const ExploreFeed = ({ postList }) => {
     const getImageUrl = (image) => {
         return `http://localhost:8088/uploads/${image.imageUrl}`; // 이미지 URL 구성
     };
+
+    const images = postList.flatMap(post => post.imageList);
 
     return (
         <div className="explore">
