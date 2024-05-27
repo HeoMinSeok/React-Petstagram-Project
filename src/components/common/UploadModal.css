@@ -103,7 +103,15 @@
 }
 
 .file_section {
-    display: inline-block;
+    background-color: #3493ed;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.camera-section {
     background-color: #3493ed;
     color: white;
     padding: 10px 20px;

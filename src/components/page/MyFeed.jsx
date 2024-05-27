@@ -13,7 +13,7 @@ import useFollowList from "../hook/useFollowList";
 
 import icons from "../../assets/ImageList";
 
-const MyFeed = ({ postUserList, allUserProfiles }) => {
+const MyFeed = ({ postUserList }) => {
     const { profileInfo } = useUser();
     const { openModal, closeModal, isModalOpen } = useModal();
     

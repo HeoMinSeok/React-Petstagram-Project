@@ -25,6 +25,10 @@ import BasicImage from "./basic-profile.jpeg";
 /* MyFeed */
 import shareIcon from "/src/assets/myfeed/myfeed-share.png";
 
+/* Webcam */
+import catEars from "/src/assets/cat.png";
+import kapibara from "/src/assets/kapibara.png";
+
 const icons = {
     // HomeNav
     homeIcon,
@@ -52,6 +56,10 @@ const icons = {
 
     // Myfeed
     shareIcon,
+
+    // Webcam
+    catEars,
+    kapibara,
 };
 
 export default icons;

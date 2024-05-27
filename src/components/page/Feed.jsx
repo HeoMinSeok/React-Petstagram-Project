@@ -11,10 +11,7 @@ import PostService from "../service/PostService";
 
 const Feed = ({ isFollowing, handleFollow, handleUnfollow }) => {
     const { isLoggedIn, profileInfo } = useUser();
-    const { postList, postSuccess, setPostSuccess } = usePost(
-        isLoggedIn,
-        profileInfo
-    );
+    const { postList } = usePost(isLoggedIn, profileInfo);
 
     return (
         <div>
@@ -31,12 +28,7 @@ const Feed = ({ isFollowing, handleFollow, handleUnfollow }) => {
     );
 };
 
-const FeedItem = ({
-    post,
-    isFollowing,
-    handleFollow,
-    handleUnfollow,
-}) => {
+const FeedItem = ({ post, isFollowing, handleFollow, handleUnfollow }) => {
     const { profileInfo } = useUser();
     const { allUserProfiles } = useAllUser();
     const uploadPostTime = GetRelativeTime(post.regTime);

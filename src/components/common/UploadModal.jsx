@@ -4,6 +4,7 @@ import styled from "styled-components";
 import useUser from "../hook/useUser";
 import usePost from "../hook/usePost";
 import PostService from "../service/PostService";
+import WebcamComponent from "../../utils/WebcamComponent";
 
 // 삭제 확인 모달 스타일
 const DeleteConfirmModal = styled.div`
@@ -103,6 +104,7 @@ export const UploadModal = ({ onClose }) => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const maxTextLength = 2200;
+    const [showWebcam, setShowWebcam] = useState(false);
 
     useEffect(() => {
         document.body.style.overflow = "hidden";
@@ -142,15 +144,14 @@ export const UploadModal = ({ onClose }) => {
         setText(text + emoji);
         setShowEmojiPicker(false);
     };
+    const handleCapture = (imageSrc) => {
+        setSelectedImage(imageSrc);
+        setShowWebcam(false);
+    };
 
     const handleSubmit = async () => {
         try {
             const file = fileInputRef.current?.files[0];
-            if (!file) {
-                console.error("파일이 선택되지 않았습니다.");
-                return;
-            }
-
             const postData = { postContent: text };
             const formData = new FormData();
             formData.append(
@@ -159,13 +160,21 @@ export const UploadModal = ({ onClose }) => {
                     type: "application/json",
                 })
             );
-            formData.append("file", file);
+            if (file) {
+                formData.append("file", file);
+            } else if (selectedImage) {
+                const blob = await fetch(selectedImage).then((res) => res.blob());
+                formData.append("file", blob, "webcam.webp");
+            } else {
+                console.error("파일이 선택되지 않았습니다.");
+                return;
+            }
 
             const token = localStorage.getItem("token");
             const response = await PostService.createPost(formData, token);
-            
-            setPostList([...postList, response.data]); 
-            
+
+            setPostList([...postList, response.data]);
+
             onClose();
         } catch (error) {
             console.error("게시글 업로드 중 오류 발생:", error);
@@ -220,6 +229,12 @@ export const UploadModal = ({ onClose }) => {
                                 onClick={() => fileInputRef.current.click()}
                             >
                                 컴퓨터에서 선택
+                            </div>
+                            <div
+                                className="camera-section"
+                                onClick={() => setShowWebcam(true)}
+                            >
+                                촬영
                             </div>
                             <input
                                 type="file"
@@ -291,6 +306,12 @@ export const UploadModal = ({ onClose }) => {
                         </DeleteConfirmActions>
                     </DeleteConfirmContent>
                 </DeleteConfirmModal>
+            )}
+            {showWebcam && (
+                <WebcamComponent
+                    onCapture={handleCapture}
+                    onClose={() => setShowWebcam(false)}
+                />
             )}
         </div>
     );
