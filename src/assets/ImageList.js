@@ -26,8 +26,11 @@ import BasicImage from "./basic-profile.jpeg";
 import shareIcon from "/src/assets/myfeed/myfeed-share.png";
 
 /* Webcam */
-import catEars from "/src/assets/cat.png";
-import kapibara from "/src/assets/kapibara.png";
+import catEars from "/src/assets/camera/catEars.png";
+import kapibara from "/src/assets/camera/kapibara.png";
+import chilbok from "/src/assets/camera/chilbok.png";
+import sunglasses from "/src/assets/camera/sunglasses.png";
+import transform from "/src/assets/camera/transform.png";
 
 const icons = {
     // HomeNav
@@ -60,6 +63,9 @@ const icons = {
     // Webcam
     catEars,
     kapibara,
+    chilbok,
+    sunglasses,
+    transform,
 };
 
 export default icons;
