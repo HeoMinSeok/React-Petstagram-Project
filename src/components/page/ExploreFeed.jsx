@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./ExploreFeed.css";
+import usePost from "../hook/usePost";
 
-const ExploreFeed = ({ postList }) => {
+const ExploreFeed = () => {
+    const { postList = [] } = usePost();
+
     const getImageUrl = (image) => {
-        return `http://localhost:8088/uploads/${image.imageUrl}`; // 이미지 URL 구성
+        return `http://localhost:8088/uploads/${image.imageUrl}`;
     };
 
-    const images = postList.flatMap(post => post.imageList);
+    const images = postList.flatMap((post) =>
+        post && post.imageList ? post.imageList : []
+    );
 
     return (
         <div className="explore">

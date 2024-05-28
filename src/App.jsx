@@ -6,8 +6,11 @@ import {
     Navigate,
 } from "react-router-dom";
 import "./App.css";
+
+/* 컨텍스트 */
 import { UserProvider } from "./contexts/UserContext";
 import { AllUserProvider } from "./contexts/AllUserContext";
+import { PostProvider } from "./contexts/PostContext";
 import { NavProvider } from "./contexts/NavContext";
 import { ModalProvider } from "./contexts/ModalContext";
 
@@ -26,23 +29,15 @@ import NotificationNav from "./components/common/NotificationNav";
 
 /* Hook */
 import useUser from "./components/hook/useUser";
-import usePost from "./components/hook/usePost";
 import useNav from "./components/hook/useNav";
-import useAllUserProfile from "./components/hook/useAllUserProfile";
 import useFollowStatus from "./components/hook/useFollowStatus";
 import useFollowList from "./components/hook/useFollowList";
 
 const AppContent = () => {
-    const { isLoggedIn, setIsLoggedIn, profileInfo } = useUser();
-    const { allUserProfiles } = useAllUserProfile();
-    const { postList, postUserList, fetchPosts, fetchUserPosts } = usePost(
-        isLoggedIn,
-        profileInfo
-    );
-
+    const { isLoggedIn, setIsLoggedIn } = useUser();
     const { handleFollow, handleUnfollow, isFollowing } = useFollowStatus();
     const { followers, followings, fetchFollowings } = useFollowList();
-    const { navState, handleNavClick } = useNav();
+    const { navState } = useNav();
 
     return (
         <Router>
@@ -110,7 +105,7 @@ const AppContent = () => {
                         isLoggedIn ? (
                             <div className="app">
                                 <div className="div">
-                                    <ExploreFeed postList={postList} />
+                                    <ExploreFeed />
                                     <div className="main-container">
                                         <HomeNav />
                                         {navState.search && <SearchNav />}
@@ -136,11 +131,7 @@ const AppContent = () => {
                                         <HomeNav />
                                         {navState.search && <SearchNav />}
                                         {navState.notification && (
-                                            <NotificationNav
-                                                allUserProfiles={
-                                                    allUserProfiles
-                                                }
-                                            />
+                                            <NotificationNav />
                                         )}
                                     </div>
                                 </div>
@@ -156,16 +147,12 @@ const AppContent = () => {
                         isLoggedIn ? (
                             <div className="app">
                                 <div className="div">
-                                    <MyFeed postUserList={postUserList} />
+                                    <MyFeed />
                                     <div className="main-container">
                                         <HomeNav />
                                         {navState.search && <SearchNav />}
                                         {navState.notification && (
-                                            <NotificationNav
-                                                allUserProfiles={
-                                                    allUserProfiles
-                                                }
-                                            />
+                                            <NotificationNav />
                                         )}
                                     </div>
                                 </div>
@@ -212,7 +199,9 @@ const App = () => (
         <AllUserProvider>
             <NavProvider>
                 <ModalProvider>
-                    <AppContent />
+                    <PostProvider>
+                        <AppContent />
+                    </PostProvider>
                 </ModalProvider>
             </NavProvider>
         </AllUserProvider>

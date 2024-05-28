@@ -1,19 +1,19 @@
 import "./FriendNav.css";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import UserService from "../service/UserService";
+
 import useUser from "../hook/useUser";
 import useAllUser from "../hook/useAllUser";
 import useModal from "../hook/useModal";
-
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 
 import FollowCancelModal from "./FollowCancelModal";
 
 const FriendNav = ({ isFollowing, handleFollow, handleUnfollow }) => {
     const { setIsLoggedIn } = useUser();
     const { fetchAllUsers } = useAllUser();
-    const navigate = useNavigate();
     const { openModal, closeModal, isModalOpen } = useModal();
+    const navigate = useNavigate();
     const [selectedUser, setSelectedUser] = useState(null);
 
     const handleLogout = () => {

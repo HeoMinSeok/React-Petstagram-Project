@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import useUser from "../hook/useUser";
-import useAllUserProfile from "../hook/useAllUserProfile";
+import useAllUser from "../hook/useAllUser";
 import PostService from "../service/PostService";
 import "./FriendFeed.css";
 import useFollowCounts from "../hook/useFollowCounts";
@@ -17,7 +17,7 @@ const FriendFeed = ({
 }) => {
     const { profileInfo } = useUser();
     const { userId } = useParams();
-    const { allUserProfiles } = useAllUserProfile();
+    const { allUserProfiles } = useAllUser();
     const [friendProfile, setFriendProfile] = useState(null);
     const [postUserList, setPostUserList] = useState([]);
 

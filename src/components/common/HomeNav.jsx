@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import useUser from "../hook/useUser";
 import useModal from "../hook/useModal";
 import useNav from "../hook/useNav";
-import usePost from "../hook/usePost";
 import { UploadModal } from "./UploadModal";
 
 import icons from "../../assets/ImageList";

@@ -2,20 +2,21 @@ import React, { useEffect } from "react";
 import "./MyFeed.css";
 import useUser from "../hook/useUser";
 import useModal from "../hook/useModal";
+import usePost from "../hook/usePost";
+import useFollowStatus from "../hook/useFollowStatus";
+import useFollowCounts from "../hook/useFollowCounts";
+import useFollowList from "../hook/useFollowList";
 
 import ProfileUpdateModal from "./ProfileUpdateModal";
 import { UploadModal } from "../common/UploadModal";
 import FollowListModal from "../common/FollowListModal";
 
-import useFollowStatus from "../hook/useFollowStatus";
-import useFollowCounts from "../hook/useFollowCounts";
-import useFollowList from "../hook/useFollowList";
-
 import icons from "../../assets/ImageList";
 
-const MyFeed = ({ postUserList }) => {
+const MyFeed = () => {
     const { profileInfo } = useUser();
     const { openModal, closeModal, isModalOpen } = useModal();
+    const { postUserList = [] } = usePost();
     
     const { handleDeleteFollower, handleUnfollow } = useFollowStatus();
     const { followersCount, followingsCount, fetchFollowCounts } =
@@ -23,10 +24,10 @@ const MyFeed = ({ postUserList }) => {
     const { followers, followings, fetchFollowers, fetchFollowings } =
         useFollowList();
 
-    useEffect(() => {
-        fetchFollowCounts();
-        fetchFollowings();
-    }, [fetchFollowCounts, fetchFollowings]);
+    // useEffect(() => {
+    //     fetchFollowCounts();
+    //     fetchFollowings();
+    // }, [fetchFollowCounts, fetchFollowings]);
 
     const handleFollowButtonClick = async (userId, action) => {
         await action(userId);

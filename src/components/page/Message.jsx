@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./Message.css";
-import useAllUserProfile from "../hook/useAllUserProfile";
+import useAllUser from "../hook/useAllUser";
 import MessageList from "../common/MessageList";
 import MessageRoom from "../common/MessageRoom";
 import ChatRoomService from "../service/ChatRoomService";
 
 const Message = () => {
-    const { allUserProfiles } = useAllUserProfile();
+    const { allUserProfiles } = useAllUser();
     const [chatRoom, setChatRoom] = useState(null); // 채팅방 ID를 저장할 상태
     const [selectedUser, setSelectedUser] = useState(null); // 선택된 사용자 저장할 상태
     const [messages, setMessages] = useState([]); // 메시지 상태 추가

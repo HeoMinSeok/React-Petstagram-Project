@@ -97,7 +97,7 @@ const EmojiList = styled.div`
 
 export const UploadModal = ({ onClose }) => {
     const { isLoggedIn, profileInfo } = useUser();
-    const { postList, setPostList } = usePost(isLoggedIn, profileInfo);
+    const { postList, setPostList, setPostSuccess } = usePost(isLoggedIn, profileInfo);
     const fileInputRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [text, setText] = useState("");
@@ -172,9 +172,8 @@ export const UploadModal = ({ onClose }) => {
 
             const token = localStorage.getItem("token");
             const response = await PostService.createPost(formData, token);
-
             setPostList([...postList, response.data]);
-
+            setPostSuccess(true);
             onClose();
         } catch (error) {
             console.error("게시글 업로드 중 오류 발생:", error);

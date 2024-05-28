@@ -1,29 +1,33 @@
 import "./Feed.css";
-import icons from "../../assets/ImageList";
-import GetRelativeTime from "../../utils/GetRelativeTime";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useUser from "../hook/useUser";
 import useAllUser from "../hook/useAllUser";
 import usePost from "../hook/usePost";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import useLikeStatus from "../hook/useLikeStatus";
+import icons from "../../assets/ImageList";
+import GetRelativeTime from "../../utils/GetRelativeTime";
 import CommentService from "../service/CommentService";
-import PostService from "../service/PostService";
 
 const Feed = ({ isFollowing, handleFollow, handleUnfollow }) => {
-    const { isLoggedIn, profileInfo } = useUser();
-    const { postList } = usePost(isLoggedIn, profileInfo);
+    const { postList = [] } = usePost();
 
     return (
         <div>
-            {postList.map((post) => (
-                <FeedItem
-                    key={post.id}
-                    post={post}
-                    isFollowing={isFollowing}
-                    handleFollow={handleFollow}
-                    handleUnfollow={handleUnfollow}
-                />
-            ))}
+            {postList.map((post, index) => {
+                return (
+                    post &&
+                    post.id && (
+                        <FeedItem
+                            key={post.id}
+                            post={post}
+                            isFollowing={isFollowing}
+                            handleFollow={handleFollow}
+                            handleUnfollow={handleUnfollow}
+                        />
+                    )
+                );
+            })}
         </div>
     );
 };
@@ -31,12 +35,14 @@ const Feed = ({ isFollowing, handleFollow, handleUnfollow }) => {
 const FeedItem = ({ post, isFollowing, handleFollow, handleUnfollow }) => {
     const { profileInfo } = useUser();
     const { allUserProfiles } = useAllUser();
+    const { postLiked, postLikesCount, handleLikeClick } = useLikeStatus(
+        post.id
+    );
+    const navigate = useNavigate();
+
     const uploadPostTime = GetRelativeTime(post.regTime);
     const [comments, setComments] = useState([]);
     const [commentText, setCommentText] = useState("");
-    const [postLiked, setPostLiked] = useState(false);
-    const [postLikesCount, setPostLikesCount] = useState(0);
-    const navigate = useNavigate();
 
     const getImageUrl = (image) => {
         return `http://localhost:8088/uploads/${image.imageUrl}`;
@@ -57,39 +63,6 @@ const FeedItem = ({ post, isFollowing, handleFollow, handleUnfollow }) => {
 
     const writerId = getUserIdByEmail(post.email);
     const profileImageUrl = getProfileImageUrlForWriter(post.email);
-
-    useEffect(() => {
-        const updateLikeStatus = async () => {
-            try {
-                const { postLiked, postLikesCount } =
-                    await PostService.getPostLikeStatus(post.id);
-                setPostLiked(postLiked);
-                setPostLikesCount(postLikesCount);
-            } catch (error) {
-                console.error(
-                    "좋아요 정보를 불러오는 중 오류가 발생했습니다.",
-                    error
-                );
-            }
-        };
-
-        updateLikeStatus();
-        fetchComments(); // 댓글 목록 불러오기
-    }, [post.id]);
-
-    const handleLikeClick = async () => {
-        try {
-            await PostService.togglePostLike(post.id);
-
-            const newLikesCount = !postLiked
-                ? postLikesCount + 1
-                : postLikesCount - 1;
-            setPostLiked(!postLiked);
-            setPostLikesCount(newLikesCount);
-        } catch (error) {
-            console.error("좋아요 상태 변경 중 오류가 발생했습니다.", error);
-        }
-    };
 
     const handleUserClick = () => {
         if (profileInfo.email === post.email) {
