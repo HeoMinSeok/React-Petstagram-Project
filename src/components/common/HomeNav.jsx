@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import useUser from "../hook/useUser";
 import useModal from "../hook/useModal";
 import useNav from "../hook/useNav";
+import SelectUpload from "../ui/SelectUpload";
 import { UploadModal } from "./UploadModal";
 
 import icons from "../../assets/ImageList";
@@ -172,7 +173,7 @@ const HomeNav = () => {
                 </Menu>
 
                 {isModalOpen("upload") && (
-                    <UploadModal onClose={() => closeModal("upload")} />
+                    <SelectUpload onClose={() => closeModal("upload")} />
                 )}
             </Sidebar>
         </div>
