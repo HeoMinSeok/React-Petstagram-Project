@@ -6,13 +6,15 @@ import UserService from "../service/UserService";
 import useUser from "../hook/useUser";
 import useAllUser from "../hook/useAllUser";
 import useModal from "../hook/useModal";
+import useFollow from "../hook/useFollow";
 
 import FollowCancelModal from "./FollowCancelModal";
 
-const FriendNav = ({ isFollowing, handleFollow, handleUnfollow }) => {
+const FriendNav = () => {
     const { setIsLoggedIn } = useUser();
     const { fetchAllUsers } = useAllUser();
     const { openModal, closeModal, isModalOpen } = useModal();
+    const { isFollowing, handleFollow, handleUnfollow } = useFollow();
     const navigate = useNavigate();
     const [selectedUser, setSelectedUser] = useState(null);
 

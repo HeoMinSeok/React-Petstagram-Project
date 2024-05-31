@@ -5,8 +5,8 @@ const StyledButton = styled.button`
     width: ${(props) => props.width || "100%"};
     padding: ${(props) => props.padding || '10px'};
     background-color: ${(props) => props.backgroundColor || "#7ab3f4"};
-    color: #fff;
-    border: none;
+    color: ${(props) => props.color || "#fff"}; 
+    border: ${(props) => props.borderStyle || "none"} ${(props) => props.borderColor || "transparent"};
     border-radius: 5px;
     cursor: pointer;
 `;

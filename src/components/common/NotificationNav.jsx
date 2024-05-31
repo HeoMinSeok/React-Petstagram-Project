@@ -1,7 +1,200 @@
 import React from "react";
 import "./Notification.css";
+import Button from "../ui/Button";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+
+import useUser from "../hook/useUser";
+import useAllUser from "../hook/useAllUser";
+import usePost from "../hook/usePost";
+import useNotifications from "../hook/useNotifications";
+import useFollow from "../hook/useFollow";
+import {
+    categorizeNotifications,
+    getDisplayTime,
+} from "../../utils/GetNotiTime";
+import useComment from "../hook/useComment";
 
 const NotificationNav = () => {
+    const { profileInfo } = useUser();
+    const { allUserProfiles } = useAllUser();
+    const { postList } = usePost();
+    const { commentList, setCurrentPostIds } = useComment();
+    const notifications = useNotifications(profileInfo.id);
+    const { isFollowing, handleFollow, handleUnfollow } = useFollow();
+
+    const navigate = useNavigate();
+
+    const getLikerImage = (fromUserId) => {
+        const user = allUserProfiles.find((user) => user.id === fromUserId);
+        return user ? user.profileImageUrl : "src/assets/default-profile.jpeg";
+    };
+
+    const getLikerEmail = (fromUserId) => {
+        const user = allUserProfiles.find((user) => user.id === fromUserId);
+        return user ? user.email : "Unknown";
+    };
+
+    const getImageUrl = (image) => {
+        return `http://localhost:8088/uploads/${image.imageUrl}`;
+    };
+
+    const getPostImage = (postId) => {
+        const post = postList.find((post) => post.id === postId);
+        if (!post || !post.imageList || post.imageList.length === 0) {
+            return "src/assets/default-post-image.jpeg";
+        }
+        return getImageUrl(post.imageList[0]);
+    };
+
+    const handleProfileClick = (fromUserId) => {
+        const user = allUserProfiles.find((user) => user.id === fromUserId);
+        if (user) {
+            navigate(`/friendfeed/${user.email}`);
+        }
+    };
+
+    const { today, yesterday, thisWeek, thisMonth } =
+        categorizeNotifications(notifications);
+
+    // 실시간 댓글 알림을 받으면 postId를 통해 댓글을 들고 옴
+    useEffect(() => {
+        const postIds = notifications
+            .map((notification) => notification.postId)
+            .filter(
+                (postId, index, self) =>
+                    postId !== null && self.indexOf(postId) === index
+            );
+        if (postIds.length > 0) {
+            setCurrentPostIds(postIds);
+        }
+    }, [notifications, setCurrentPostIds]);
+
+    const getCommentContent = (commentId) => {
+        const comment = commentList.find((c) => c.id === commentId);
+        return comment
+            ? comment.commentContent
+            : "댓글 내용을 불러오지 못했습니다.";
+    };
+
+    const renderNotification = (notification) => (
+        <div key={notification.id} className="notification-list">
+            <div className="notification-type">
+                <div className="notification-list-wrapper">
+                    <img
+                        src={getLikerImage(notification.fromUserId)}
+                        className="notification-profile-image"
+                        alt="profile"
+                        onClick={() =>
+                            handleProfileClick(notification.fromUserId)
+                        }
+                    />
+                </div>
+                <div className="notification-content">
+                    {/* 좋아요 알림 */}
+                    {notification.eventType === "like" && (
+                        <>
+                            <div>
+                                <div className="notification-like">
+                                    <span className="notification-from-user">
+                                        {getLikerEmail(notification.fromUserId)}
+                                    </span>
+                                    님이 회원님의 게시물을 좋아합니다.
+                                    <span className="notification-regtime">
+                                        {getDisplayTime(notification.regTime)}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="notification-post-image-wrapper">
+                                <img
+                                    src={getPostImage(notification.postId)}
+                                    className="notification-post-image"
+                                    alt="post"
+                                />
+                            </div>
+                        </>
+                    )}
+
+                    {/* 팔로잉 알림 */}
+                    {notification.eventType === "following" && (
+                        <>
+                            <div>
+                                <div className="notification-follow">
+                                    {getLikerEmail(notification.fromUserId)}님이
+                                    팔로우하셨습니다.
+                                    <span className="notification-regtime">
+                                        {getDisplayTime(notification.regTime)}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="notification-follow-btn">
+                                {isFollowing(notification.fromUserId) ? (
+                                    <Button
+                                        backgroundColor="rgb(239, 239, 239)"
+                                        width="75px"
+                                        color="rgb(0, 0, 0)"
+                                        onClick={() =>
+                                            handleUnfollow(
+                                                notification.fromUserId
+                                            )
+                                        }
+                                    >
+                                        팔로잉
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        backgroundColor="rgb(65, 147, 239)"
+                                        width="75px"
+                                        onClick={() =>
+                                            handleFollow(
+                                                notification.fromUserId
+                                            )
+                                        }
+                                    >
+                                        팔로우
+                                    </Button>
+                                )}
+                            </div>
+                        </>
+                    )}
+
+                    {/* 댓글 알림 */}
+                    {notification.eventType === "comment" && (
+                        <>
+                            <div>
+                                <div className="notification-comment">
+                                    <span className="notification-from-user">
+                                        {getLikerEmail(notification.fromUserId)}
+                                    </span>
+                                    님이 댓글을 남겼습니다:
+                                    <span>
+                                        {" "}
+                                        {getCommentContent(
+                                            notification.commentId
+                                        )}
+                                    </span>
+                                    <span className="notification-regtime">
+                                        {getDisplayTime(notification.regTime)}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="notification-post-image-wrapper">
+                                <img
+                                    src={getPostImage(notification.postId)}
+                                    className="notification-post-image"
+                                    alt="post"
+                                />
+                            </div>
+                        </>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+
     return (
         <div className="notification-container">
             <div className="notification-title">
@@ -9,62 +202,41 @@ const NotificationNav = () => {
             </div>
 
             <div className="notification-recent">
-                <div className="notification-date">
-                    <h4>오늘</h4>
-                </div>
-                {/* 댓글이 달릴 때 */}
-                <div className="notification-list">
-                    <div className="notification-type">
-                        <div className="notification-list-wrapper">
-                            <img
-                                src="src/assets/7bok.jpeg"
-                                className="notification-profile-image"
-                            />
+                {today.length > 0 && (
+                    <>
+                        <div className="notification-date">
+                            <h4>오늘</h4>
                         </div>
-                        <div className="notification-comment">
-                            Jiho님이 게시글에 댓글을 다셨습니다.
-                        </div>
-                        <div className="notification-post-image-wrapper">
-                            <img src="src/assets/mock.png" className="notification-post-image"/>
-                        </div>
-                    </div>
-                </div>
+                        {today.map(renderNotification)}
+                    </>
+                )}
 
-                {/* 좋아요 받았을 때 */}
-                <div className="notification-list">
-                    <div className="notification-type">
-                        <div className="notification-list-wrapper">
-                            <img
-                                src="src/assets/basic-profile.jpeg"
-                                className="notification-profile-image"
-                            />
+                {yesterday.length > 0 && (
+                    <>
+                        <div className="notification-date">
+                            <h4>어제</h4>
                         </div>
-                        <div className="notification-like">
-                            junmo님이 게시글에 좋아요를 다셨습니다.
-                        </div>
-                        <div className="notification-post-image-wrapper">
-                            <img src="src/assets/mock.png" className="notification-post-image"/>
-                        </div>
-                    </div>
-                </div>
+                        {yesterday.map(renderNotification)}
+                    </>
+                )}
 
-                {/* 팔로우 당했을 떄 */}
-                <div className="notification-list">
-                    <div className="notification-type">
-                        <div className="notification-list-wrapper">
-                            <img
-                                src="src/assets/IMG_0710.jpg"
-                                className="notification-profile-image"
-                            />
+                {thisWeek.length > 0 && (
+                    <>
+                        <div className="notification-date">
+                            <h4>이번 주</h4>
                         </div>
-                        <div className="notification-follow">
-                            minddo님이 팔로우하셨습니다.
+                        {thisWeek.map(renderNotification)}
+                    </>
+                )}
+
+                {thisMonth.length > 0 && (
+                    <>
+                        <div className="notification-date">
+                            <h4>이번 달</h4>
                         </div>
-                        <div className="notification-follow-btn">
-                            <button>팔로우</button>
-                        </div>
-                    </div>
-                </div>
+                        {thisMonth.map(renderNotification)}
+                    </>
+                )}
             </div>
         </div>
     );

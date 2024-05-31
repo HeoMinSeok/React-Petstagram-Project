@@ -1,9 +1,11 @@
-import { useState, useEffect, useCallback } from "react";
-import UserService from "../service/UserService";
-import useUser from "./useUser";
-import useAllUser from "./useAllUser";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import UserService from "../components/service/UserService";
+import useUser from "../components/hook/useUser";
+import useAllUser from "../components/hook/useAllUser";
 
-const useFollowStatus = () => {
+const FollowContext = createContext();
+
+export const FollowProvider = ({ children }) => {
     const { allUserProfiles } = useAllUser();
     const { profileInfo } = useUser();
     const [followedUsers, setFollowedUsers] = useState({});
@@ -70,14 +72,20 @@ const useFollowStatus = () => {
 
     const isFollowing = (userId) => followedUsers[userId] === true;
 
-    return {
-        fetchFollowStatus,
-        followedUsers,
-        handleFollow,
-        handleUnfollow,
-        handleDeleteFollower,
-        isFollowing,
-    };
+    return (
+        <FollowContext.Provider
+            value={{
+                fetchFollowStatus,
+                followedUsers,
+                handleFollow,
+                handleUnfollow,
+                handleDeleteFollower,
+                isFollowing,
+            }}
+        >
+            {children}
+        </FollowContext.Provider>
+    );
 };
 
-export default useFollowStatus;
+export { FollowContext };

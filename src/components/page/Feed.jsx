@@ -1,43 +1,38 @@
 import "./Feed.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
 import useUser from "../hook/useUser";
 import useAllUser from "../hook/useAllUser";
 import usePost from "../hook/usePost";
 import useLikeStatus from "../hook/useLikeStatus";
+import useFollow from "../hook/useFollow";
+
 import icons from "../../assets/ImageList";
 import GetRelativeTime from "../../utils/GetRelativeTime";
 import CommentService from "../service/CommentService";
 
-const Feed = ({ isFollowing, handleFollow, handleUnfollow }) => {
+const Feed = () => {
     const { postList = [] } = usePost();
 
     return (
         <div>
             {postList.map((post, index) => {
                 return (
-                    post &&
-                    post.id && (
-                        <FeedItem
-                            key={post.id}
-                            post={post}
-                            isFollowing={isFollowing}
-                            handleFollow={handleFollow}
-                            handleUnfollow={handleUnfollow}
-                        />
-                    )
+                    post && post.id && <FeedItem key={post.id} post={post} />
                 );
             })}
         </div>
     );
 };
 
-const FeedItem = ({ post, isFollowing, handleFollow, handleUnfollow }) => {
+const FeedItem = ({ post }) => {
     const { profileInfo } = useUser();
     const { allUserProfiles } = useAllUser();
     const { postLiked, postLikesCount, handleLikeClick } = useLikeStatus(
         post.id
     );
+    const { isFollowing, handleFollow, handleUnfollow } = useFollow();
     const navigate = useNavigate();
 
     const uploadPostTime = GetRelativeTime(post.regTime);
@@ -98,6 +93,11 @@ const FeedItem = ({ post, isFollowing, handleFollow, handleUnfollow }) => {
             console.log("댓글을 작성하는 중 오류가 발생했습니다.", error);
         }
     };
+
+    useEffect(() => {
+        fetchComments();
+    }, []);
+
 
     return (
         <div className="feed">

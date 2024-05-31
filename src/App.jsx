@@ -13,6 +13,8 @@ import { AllUserProvider } from "./contexts/AllUserContext";
 import { PostProvider } from "./contexts/PostContext";
 import { NavProvider } from "./contexts/NavContext";
 import { ModalProvider } from "./contexts/ModalContext";
+import { FollowProvider } from "./contexts/FollowContext";
+import { CommentProvider } from "./contexts/CommentContext";
 
 /* 컴포넌트 */
 import LoginForm from "./components/page/LoginForm";
@@ -30,12 +32,10 @@ import NotificationNav from "./components/common/NotificationNav";
 /* Hook */
 import useUser from "./components/hook/useUser";
 import useNav from "./components/hook/useNav";
-import useFollowStatus from "./components/hook/useFollowStatus";
 import useFollowList from "./components/hook/useFollowList";
 
 const AppContent = () => {
     const { isLoggedIn, setIsLoggedIn } = useUser();
-    const { handleFollow, handleUnfollow, isFollowing } = useFollowStatus();
     const { followers, followings, fetchFollowings } = useFollowList();
     const { navState } = useNav();
 
@@ -72,17 +72,10 @@ const AppContent = () => {
                                     {!navState.explore && (
                                         <>
                                             <Feed
-                                                isFollowing={isFollowing}
-                                                handleFollow={handleFollow}
-                                                handleUnfollow={handleUnfollow}
                                                 myFollowers={followers}
                                                 myFollowings={followings}
                                             />
-                                            <FriendNav
-                                                isFollowing={isFollowing}
-                                                handleFollow={handleFollow}
-                                                handleUnfollow={handleUnfollow}
-                                            />
+                                            <FriendNav />
                                         </>
                                     )}
                                     <div className="main-container">
@@ -169,9 +162,6 @@ const AppContent = () => {
                             <div className="app">
                                 <div className="div">
                                     <FriendFeed
-                                        isFollowing={isFollowing}
-                                        handleFollow={handleFollow}
-                                        handleUnfollow={handleUnfollow}
                                         myFollowings={followings}
                                         myFetchFollowList={fetchFollowings}
                                     />
@@ -200,7 +190,11 @@ const App = () => (
             <NavProvider>
                 <ModalProvider>
                     <PostProvider>
-                        <AppContent />
+                        <CommentProvider>
+                            <FollowProvider>
+                                <AppContent />
+                            </FollowProvider>
+                        </CommentProvider>
                     </PostProvider>
                 </ModalProvider>
             </NavProvider>

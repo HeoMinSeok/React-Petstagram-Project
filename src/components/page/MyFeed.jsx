@@ -3,7 +3,7 @@ import "./MyFeed.css";
 import useUser from "../hook/useUser";
 import useModal from "../hook/useModal";
 import usePost from "../hook/usePost";
-import useFollowStatus from "../hook/useFollowStatus";
+import useFollow from "../hook/useFollow";
 import useFollowCounts from "../hook/useFollowCounts";
 import useFollowList from "../hook/useFollowList";
 
@@ -18,7 +18,7 @@ const MyFeed = () => {
     const { openModal, closeModal, isModalOpen } = useModal();
     const { postUserList = [] } = usePost();
     
-    const { handleDeleteFollower, handleUnfollow } = useFollowStatus();
+    const { handleDeleteFollower, handleUnfollow } = useFollow();
     const { followersCount, followingsCount, fetchFollowCounts } =
         useFollowCounts(profileInfo.id);
     const { followers, followings, fetchFollowers, fetchFollowings } =
