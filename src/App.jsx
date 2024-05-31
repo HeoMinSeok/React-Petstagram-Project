@@ -32,11 +32,11 @@ import NotificationNav from "./components/common/NotificationNav";
 /* Hook */
 import useUser from "./components/hook/useUser";
 import useNav from "./components/hook/useNav";
-import useFollowList from "./components/hook/useFollowList";
+import useFollow from "./components/hook/useFollow";
 
 const AppContent = () => {
     const { isLoggedIn, setIsLoggedIn } = useUser();
-    const { followers, followings, fetchFollowings } = useFollowList();
+    const { followers, followings, fetchFollowings } = useFollow();
     const { navState } = useNav();
 
     return (
@@ -71,10 +71,7 @@ const AppContent = () => {
                                 <div className="div">
                                     {!navState.explore && (
                                         <>
-                                            <Feed
-                                                myFollowers={followers}
-                                                myFollowings={followings}
-                                            />
+                                            <Feed />
                                             <FriendNav />
                                         </>
                                     )}
@@ -161,10 +158,7 @@ const AppContent = () => {
                         isLoggedIn ? (
                             <div className="app">
                                 <div className="div">
-                                    <FriendFeed
-                                        myFollowings={followings}
-                                        myFetchFollowList={fetchFollowings}
-                                    />
+                                    <FriendFeed />
                                     <div className="main-container">
                                         <HomeNav />
                                         {navState.search && <SearchNav />}

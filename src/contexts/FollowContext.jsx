@@ -1,7 +1,14 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, {
+    createContext,
+    useContext,
+    useState,
+    useEffect,
+    useCallback,
+} from "react";
 import UserService from "../components/service/UserService";
 import useUser from "../components/hook/useUser";
 import useAllUser from "../components/hook/useAllUser";
+import useFollowList from "../components/hook/useFollowList";
 
 const FollowContext = createContext();
 
@@ -9,6 +16,9 @@ export const FollowProvider = ({ children }) => {
     const { allUserProfiles } = useAllUser();
     const { profileInfo } = useUser();
     const [followedUsers, setFollowedUsers] = useState({});
+
+    const { fetchFollowers, fetchFollowings, followers, followings } =
+        useFollowList();
 
     const fetchFollowStatus = useCallback(async (userId) => {
         try {
@@ -81,6 +91,10 @@ export const FollowProvider = ({ children }) => {
                 handleUnfollow,
                 handleDeleteFollower,
                 isFollowing,
+                fetchFollowers,
+                fetchFollowings,
+                followers,
+                followings,
             }}
         >
             {children}

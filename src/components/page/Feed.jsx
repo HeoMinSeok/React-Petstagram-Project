@@ -7,36 +7,54 @@ import useAllUser from "../hook/useAllUser";
 import usePost from "../hook/usePost";
 import useLikeStatus from "../hook/useLikeStatus";
 import useFollow from "../hook/useFollow";
+import useComment from "../hook/useComment";
 
 import icons from "../../assets/ImageList";
 import GetRelativeTime from "../../utils/GetRelativeTime";
-import CommentService from "../service/CommentService";
 
 const Feed = () => {
     const { postList = [] } = usePost();
+    const { setCurrentPostIds, commentList } = useComment();
+
+    // 현재 등록된 게시물들의 댓글 전체 들고오기
+    useEffect(() => {
+        if (postList.length > 0) {
+            const postIds = postList.map((post) => post.id);
+            setCurrentPostIds(postIds);
+        }
+    }, [postList, setCurrentPostIds]);
 
     return (
         <div>
             {postList.map((post, index) => {
+                const postComments = commentList.filter(
+                    (comment) => comment.postId === post.id
+                );
                 return (
-                    post && post.id && <FeedItem key={post.id} post={post} />
+                    post &&
+                    post.id && (
+                        <FeedItem
+                            key={post.id}
+                            post={post}
+                            comments={postComments}
+                        />
+                    )
                 );
             })}
         </div>
     );
 };
 
-const FeedItem = ({ post }) => {
+const FeedItem = ({ post, comments }) => {
     const { profileInfo } = useUser();
     const { allUserProfiles } = useAllUser();
     const { postLiked, postLikesCount, handleLikeClick } = useLikeStatus(
         post.id
     );
     const { isFollowing, handleFollow, handleUnfollow } = useFollow();
+    const { submitComment } = useComment();
     const navigate = useNavigate();
-
     const uploadPostTime = GetRelativeTime(post.regTime);
-    const [comments, setComments] = useState([]);
     const [commentText, setCommentText] = useState("");
 
     const getImageUrl = (image) => {
@@ -67,37 +85,11 @@ const FeedItem = ({ post }) => {
         }
     };
 
-    const fetchComments = async () => {
-        try {
-            const commentList = await CommentService.getCommentList(post.id);
-            setComments(commentList);
-        } catch (error) {
-            console.log("댓글을 불러오는 중 오류가 발생했습니다.", error);
-        }
-    };
-
-    const submitComment = async (e) => {
+    const handleCommentSubmit = async (e) => {
         e.preventDefault();
-        if (commentText.trim() === "") return;
-
-        const commentData = {
-            commentContent: commentText,
-            id: post.id,
-        };
-
-        try {
-            await CommentService.createPost(commentData, post.id);
-            setCommentText("");
-            fetchComments();
-        } catch (error) {
-            console.log("댓글을 작성하는 중 오류가 발생했습니다.", error);
-        }
+        await submitComment(post.id, commentText);
+        setCommentText("");
     };
-
-    useEffect(() => {
-        fetchComments();
-    }, []);
-
 
     return (
         <div className="feed">
@@ -210,7 +202,10 @@ const FeedItem = ({ post }) => {
                     <div className="feed-comment-more">
                         <span>댓글 {comments.length}개 모두 보기</span>
                     </div>
-                    <form className="feed-comment" onSubmit={submitComment}>
+                    <form
+                        className="feed-comment"
+                        onSubmit={handleCommentSubmit}
+                    >
                         <input
                             type="text"
                             className="feed-comment-input"

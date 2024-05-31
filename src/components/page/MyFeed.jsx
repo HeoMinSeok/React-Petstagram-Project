@@ -5,11 +5,10 @@ import useModal from "../hook/useModal";
 import usePost from "../hook/usePost";
 import useFollow from "../hook/useFollow";
 import useFollowCounts from "../hook/useFollowCounts";
-import useFollowList from "../hook/useFollowList";
 
 import ProfileUpdateModal from "./ProfileUpdateModal";
 import { UploadModal } from "../common/UploadModal";
-import FollowListModal from "../common/FollowListModal";
+import FollowListModal from "../ui/FollowListModal";
 
 import icons from "../../assets/ImageList";
 
@@ -17,12 +16,17 @@ const MyFeed = () => {
     const { profileInfo } = useUser();
     const { openModal, closeModal, isModalOpen } = useModal();
     const { postUserList = [] } = usePost();
-    
-    const { handleDeleteFollower, handleUnfollow } = useFollow();
+
+    const {
+        handleDeleteFollower,
+        handleUnfollow,
+        followers,
+        followings,
+        fetchFollowers,
+        fetchFollowings,
+    } = useFollow();
     const { followersCount, followingsCount, fetchFollowCounts } =
         useFollowCounts(profileInfo.id);
-    const { followers, followings, fetchFollowers, fetchFollowings } =
-        useFollowList();
 
     // useEffect(() => {
     //     fetchFollowCounts();

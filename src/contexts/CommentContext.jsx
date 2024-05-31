@@ -16,17 +16,37 @@ export const CommentProvider = ({ children }) => {
     const [commentSuccess, setCommentSuccess] = useState(false);
     const [currentPostIds, setCurrentPostIds] = useState(null);
 
+    /* 댓글 조회 */
     const fetchComments = useCallback(async (postIds) => {
         try {
             const comments = await Promise.all(
                 postIds.map(async (postId) => {
-                    const postComments = await CommentService.getCommentList(postId);
+                    const postComments = await CommentService.getCommentList(
+                        postId
+                    );
                     return postComments;
                 })
             );
             setCommentList(comments.flat());
         } catch (error) {
             console.error("댓글 리스트 오류:", error);
+        }
+    }, []);
+
+    /* 댓글 작성 */
+    const submitComment = useCallback(async (postId, commentText) => {
+        if (commentText.trim() === "") return;
+
+        const commentData = {
+            commentContent: commentText,
+            id: postId,
+        };
+
+        try {
+            await CommentService.createPost(commentData, postId);
+            setCommentSuccess(true);
+        } catch (error) {
+            console.log("댓글을 작성하는 중 오류가 발생했습니다.", error);
         }
     }, []);
 
@@ -75,7 +95,8 @@ export const CommentProvider = ({ children }) => {
                 commentList,
                 setCommentList,
                 setCommentSuccess,
-                setCurrentPostIds
+                setCurrentPostIds,
+                submitComment,
             }}
         >
             {children}

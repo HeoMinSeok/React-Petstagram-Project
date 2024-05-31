@@ -12,7 +12,7 @@ import useModal from "../hook/useModal";
 
 import FriendFollowModal from "../common/FriendFollowListModal";
 
-const FriendFeed = ({ myFollowings, myFetchFollowList }) => {
+const FriendFeed = () => {
     const { profileInfo } = useUser();
     const { userId } = useParams();
     const { allUserProfiles } = useAllUser();
@@ -37,7 +37,7 @@ const FriendFeed = ({ myFollowings, myFetchFollowList }) => {
         useFollowCounts(friendProfile ? friendProfile.id : null);
 
     const { fetchFollowers, fetchFollowings, followers, followings } =
-        useFollowList(friendProfile ? friendProfile.id : null);
+        useFollow(friendProfile ? friendProfile.id : null);
 
     const isCurrentlyFollowing = isFollowing(friendProfile?.id);
 
@@ -154,13 +154,11 @@ const FriendFeed = ({ myFollowings, myFetchFollowList }) => {
             {/* 모달 다시 만들기 */}
             {isModalOpen("followerlist") && (
                 <FriendFollowModal
-                    myFollowings={myFollowings}
                     profileInfo={profileInfo}
                     fetchFollowList={fetchFollowers}
                     onClose={closeModal("followerlist")}
                     title="팔로워"
                     followList={followers}
-                    myFetchFollowList={myFetchFollowList}
                     handleFollow={handleFollow}
                     handleUnfollow={handleUnfollow}
                 />
@@ -168,13 +166,11 @@ const FriendFeed = ({ myFollowings, myFetchFollowList }) => {
 
             {isModalOpen("followinglist") && (
                 <FriendFollowModal
-                    myFollowings={myFollowings}
                     profileInfo={profileInfo}
                     fetchFollowList={fetchFollowings}
                     onClose={closeModal("followinglist")}
                     title="팔로잉"
                     followList={followings}
-                    myFetchFollowList={myFetchFollowList}
                     handleFollow={handleFollow}
                     handleUnfollow={handleUnfollow}
                 />

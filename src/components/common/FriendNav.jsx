@@ -8,7 +8,7 @@ import useAllUser from "../hook/useAllUser";
 import useModal from "../hook/useModal";
 import useFollow from "../hook/useFollow";
 
-import FollowCancelModal from "./FollowCancelModal";
+import FollowCancelModal from "../ui/FollowCancelModal";
 
 const FriendNav = () => {
     const { setIsLoggedIn } = useUser();
@@ -52,7 +52,7 @@ const FriendNav = () => {
             {selectedUser && isModalOpen("followCancel") && (
                 <FollowCancelModal
                     isOpen={isModalOpen("followCancel")}
-                    onClose={closeFollowCancelModal}
+                    onClose={() => closeModal("followcancel")}
                     user={selectedUser}
                     onUnfollow={handleUnfollow}
                 />
