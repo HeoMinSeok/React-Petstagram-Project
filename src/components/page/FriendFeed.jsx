@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import "./FriendFeed.css";
 
 import useUser from "../hook/useUser";
@@ -7,20 +7,29 @@ import useAllUser from "../hook/useAllUser";
 import useFollow from "../hook/useFollow";
 import usePost from "../hook/usePost";
 import useFollowCounts from "../hook/useFollowCounts";
-import useFollowList from "../hook/useFollowList";
-import useModal from "../hook/useModal";
 
-import FriendFollowModal from "../common/FriendFollowListModal";
+import FriendFollowModal from "../ui/FriendFollowListModal";
 
 const FriendFeed = () => {
     const { profileInfo } = useUser();
     const { userId } = useParams();
     const { allUserProfiles } = useAllUser();
-    const { isFollowing, handleFollow, handleUnfollow } = useFollow();
-    const { openModal, closeModal, isModalOpen } = useModal();
-    const { postUserList = [], fetchUserPosts } = usePost();
+    const {
+        isFollowing,
+        handleFollow,
+        handleUnfollow,
+        userFollowerList,
+        userFollowingList,
+        fetchUserFollowerList,
+        fetchUserFollowingList,
+    } = useFollow();
 
+    const { postUserList = [], fetchUserPosts } = usePost();
     const [friendProfile, setFriendProfile] = useState(null);
+
+    // 모달 상태 관리
+    const [isFollowerModalOpen, setIsFollowerModalOpen] = useState(false);
+    const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
 
     const getImageUrl = (imageUrl) => {
         return `http://localhost:8088/uploads/${imageUrl}`;
@@ -30,20 +39,33 @@ const FriendFeed = () => {
         const user = allUserProfiles.find(
             (profile) => profile.email === userId
         );
-        setFriendProfile(user);
+        if (user) {
+            setFriendProfile(user);
+        }
     }, [userId, allUserProfiles]);
+
+    /* 현재 보고있는 유저 id를 통해 post, follower, following 가져오기 */
+    const fetchData = useCallback(async () => {
+        if (friendProfile?.id) {
+            await fetchUserPosts(friendProfile.id);
+            await fetchUserFollowerList(friendProfile.id);
+            await fetchUserFollowingList(friendProfile.id);
+        }
+    }, [
+        friendProfile,
+        fetchUserPosts,
+        fetchUserFollowerList,
+        fetchUserFollowingList,
+    ]);
 
     useEffect(() => {
         if (friendProfile?.id) {
-            fetchUserPosts(friendProfile.id);
+            fetchData();
         }
-    }, [friendProfile, fetchUserPosts]);
+    }, [friendProfile, fetchData]);
 
     const { fetchFollowCounts, followersCount, followingsCount } =
         useFollowCounts(friendProfile ? friendProfile.id : null);
-
-    const { fetchFollowers, fetchFollowings, followers, followings } =
-        useFollow(friendProfile ? friendProfile.id : null);
 
     const isCurrentlyFollowing = isFollowing(friendProfile?.id);
 
@@ -55,11 +77,11 @@ const FriendFeed = () => {
         return <div>Loading...</div>;
     }
 
-    const handleFollowClick = () => {
+    const handleFollowClick = async () => {
         if (isFollowing(friendProfile.id)) {
-            handleUnfollow(friendProfile.id);
+            await handleUnfollow(friendProfile.id);
         } else {
-            handleFollow(friendProfile.id);
+            await handleFollow(friendProfile.id);
         }
         fetchFollowCounts();
     };
@@ -102,7 +124,7 @@ const FriendFeed = () => {
                         </div>
                     </div>
                     <div className="friendfeed-user-stats">
-                        <div className="friendfeed-user-stat">
+                        <div className="friendfeed-user-stat-post">
                             <span className="friendfeed-stat-label">
                                 게시물
                             </span>
@@ -112,7 +134,7 @@ const FriendFeed = () => {
                         </div>
                         <div
                             className="friendfeed-user-stat"
-                            onClick={() => openModal("followerlist")}
+                            onClick={() => setIsFollowerModalOpen(true)}
                         >
                             <span className="friendfeed-stat-label">
                                 팔로워
@@ -123,7 +145,7 @@ const FriendFeed = () => {
                         </div>
                         <div
                             className="friendfeed-user-stat"
-                            onClick={() => openModal("followinglist")}
+                            onClick={() => setIsFollowingModalOpen(true)}
                         >
                             <span className="friendfeed-stat-label">
                                 팔로우
@@ -156,29 +178,24 @@ const FriendFeed = () => {
                     ))}
                 </div>
             </div>
-            
-            {/* 모달 다시 만들기 */}
-            {isModalOpen("followerlist") && (
+
+            {/* 팔로워 모달 */}
+            {isFollowerModalOpen && (
                 <FriendFollowModal
-                    profileInfo={profileInfo}
-                    fetchFollowList={fetchFollowers}
-                    onClose={closeModal("followerlist")}
+                    fetchFollowList={fetchUserFollowerList}
+                    followList={userFollowerList}
+                    onClose={() => setIsFollowerModalOpen(false)}
                     title="팔로워"
-                    followList={followers}
-                    handleFollow={handleFollow}
-                    handleUnfollow={handleUnfollow}
                 />
             )}
 
-            {isModalOpen("followinglist") && (
+            {/* 팔로잉 모달 */}
+            {isFollowingModalOpen && (
                 <FriendFollowModal
-                    profileInfo={profileInfo}
-                    fetchFollowList={fetchFollowings}
-                    onClose={closeModal("followinglist")}
+                    fetchFollowList={fetchUserFollowingList}
+                    followList={userFollowingList}
+                    onClose={() => setIsFollowingModalOpen(false)}
                     title="팔로잉"
-                    followList={followings}
-                    handleFollow={handleFollow}
-                    handleUnfollow={handleUnfollow}
                 />
             )}
         </div>

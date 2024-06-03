@@ -89,11 +89,18 @@
     display: flex;
     justify-content: flex-start;
     gap: 50px;
+    
+}
+.friendfeed-user-stat-post {
+    flex-direction: column;
+    align-items: center;
+    cursor: default;
 }
 
 .friendfeed-user-stat {
     flex-direction: column;
     align-items: center;
+    cursor: pointer;
 }
 
 .friendfeed-stat-number {

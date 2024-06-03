@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import FollowCancelModal from "../ui/FollowCancelModal";
+import FollowCancelModal from "./FollowCancelModal";
+import useFollow from "../hook/useFollow";
+import useUser from "../hook/useUser";
 
 const Overlay = styled.div`
     position: fixed;
@@ -125,23 +127,20 @@ const Button = styled.button`
     font-size: 12px;
 `;
 
-const FriendFollowModal = ({
-    title,
-    followList,
-    onClose,
-    onButtonClick,
-    fetchFollowCounts,
-    fetchFollowList,
-    profileInfo,
-    myFollowings,
-    myFetchFollowList,
-    handleFollow,
-    handleUnfollow,
-}) => {
+const FriendFollowModal = ({ fetchFollowList, followList, onClose, title }) => {
+    const { profileInfo } = useUser();
+    const { handleFollow, handleUnfollow, followingList, fetchFollowingList } =
+        useFollow();
+
     const [searchText, setSearchText] = useState("");
+    const [localFollowingList, setLocalFollowingList] = useState(followingList);
     const navigate = useNavigate();
     const [isCancelModalOpen, setCancelModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState([]);
+
+    useEffect(() => {
+        setLocalFollowingList(followingList);
+    }, [followingList]);
 
     const handleSearchChange = (e) => {
         setSearchText(e.target.value);
@@ -161,26 +160,34 @@ const FriendFollowModal = ({
 
     const filteredFollowList = getFilteredFollowList();
 
-    const handleButtonClick = (user) => {
+    const handleButtonClick = async (user) => {
         if (isFollowingUser(user.id)) {
             // 언팔로우 (현재 로그인된 유저의 follow status)
-            handleUnfollow(user.id)
-            isFollowingUser(false)
+            await handleUnfollow(user.id);
+            setLocalFollowingList((prev) =>
+                prev.filter((following) => following.id !== user.id)
+            );
         } else {
             // 팔로우 (현재 로그인된 유저의 follow status)
-            handleFollow(user.id)
-            isFollowingUser(true)
+            await handleFollow(user.id);
+            setLocalFollowingList((prev) => [...prev, user]);
         }
     };
 
-    const isFollowingUser = useCallback((userId) => {
-        return myFollowings.some((following) => following.id === userId);
-    }, [myFollowings]);
+    const isFollowingUser = useCallback(
+        (userId) => {
+            return localFollowingList.some(
+                (following) => following.id === userId
+            );
+        },
+        [localFollowingList]
+    );
 
-    useEffect(() => {
-        fetchFollowList();
-        myFetchFollowList();
-    }, [myFetchFollowList, fetchFollowList, isFollowingUser]);
+    // useEffect(() => {
+    //     console.log('Fetching follow list for modal:', title);
+    //     fetchFollowList();
+    //     fetchFollowingList();
+    // }, [fetchFollowingList, fetchFollowList, title]);
 
     return (
         <Overlay>
@@ -241,8 +248,6 @@ const FriendFollowModal = ({
                     title={title}
                     onClose={() => setCancelModalOpen(false)}
                     user={selectedUser}
-                    onButtonClick={onButtonClick}
-                    fetchFollowCounts={fetchFollowCounts}
                     fetchFollowList={fetchFollowList}
                 />
             )}

@@ -5,34 +5,36 @@ import useModal from "../hook/useModal";
 import usePost from "../hook/usePost";
 import useFollow from "../hook/useFollow";
 import useFollowCounts from "../hook/useFollowCounts";
-import useFollowList from "../hook/useFollowList";
 
 import ProfileUpdateModal from "./ProfileUpdateModal";
-import { UploadModal } from "../common/UploadModal";
 import FollowListModal from "../ui/FollowListModal";
 import icons from "../../assets/ImageList";
-import UploadGetGallery from "../common/UploadGetGallery";
 import SelectUpload from "../ui/SelectUpload";
 
 const MyFeed = () => {
     const { profileInfo } = useUser();
     const { openModal, closeModal, isModalOpen } = useModal();
-    const { postUserList = [], fetchUserPosts } = usePost();
+    const { postUserList = [], fetchUserPosts, postSuccess } = usePost();
+    const {
+        handleDeleteFollower,
+        handleUnfollow,
+        followerList,
+        followingList,
+        fetchFollowingList,
+        fetchFollowerList,
+    } = useFollow();
 
-    const { handleDeleteFollower, handleUnfollow } = useFollow();
     const { followersCount, followingsCount, fetchFollowCounts } =
         useFollowCounts(profileInfo.id);
-    const { followers, followings, fetchFollowers, fetchFollowings } =
-        useFollowList();
-
-    // useEffect(() => {
-    //     fetchFollowCounts();
-    //     fetchFollowings();
-    // }, [fetchFollowCounts, fetchFollowings]);
 
     useEffect(() => {
         fetchUserPosts(profileInfo.id);
-    }, [profileInfo, fetchUserPosts]);
+    }, [profileInfo, fetchUserPosts, postSuccess]);
+
+    useEffect(() => {
+        fetchFollowerList();
+        fetchFollowingList();
+    }, [fetchFollowCounts, fetchFollowerList, fetchFollowingList]);
 
     const handleFollowButtonClick = async (userId, action) => {
         await action(userId);
@@ -73,27 +75,27 @@ const MyFeed = () => {
             {isModalOpen("followerList") && (
                 <FollowListModal
                     title="팔로워"
-                    followList={followers}
+                    followList={followerList}
                     onClose={() => closeModal("followerList")}
                     onButtonClick={(userId) =>
                         handleFollowButtonClick(userId, handleDeleteFollower)
                     }
                     buttonLabel="삭제"
                     fetchFollowCounts={fetchFollowCounts}
-                    fetchFollowList={fetchFollowers}
+                    fetchFollowList={fetchFollowerList}
                 />
             )}
             {isModalOpen("followingList") && (
                 <FollowListModal
                     title="팔로잉"
-                    followList={followings}
+                    followList={followingList}
                     onClose={() => closeModal("followingList")}
                     onButtonClick={(userId) =>
                         handleFollowButtonClick(userId, handleUnfollow)
                     }
                     buttonLabel="팔로잉"
                     fetchFollowCounts={fetchFollowCounts}
-                    fetchFollowList={fetchFollowings}
+                    fetchFollowList={fetchFollowingList}
                 />
             )}
         </div>

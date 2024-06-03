@@ -24,8 +24,15 @@ const NotificationNav = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchAllComments();
-    }, [commentList, fetchAllComments]);
+        const newCommentNotification = notifications.find(
+            (notification) => notification.eventType === "comment"
+        );
+
+        if (newCommentNotification) {
+            fetchAllComments();
+        }
+    }, [notifications, fetchAllComments]);
+
 
     const getLikerImage = (fromUserId) => {
         const user = allUserProfiles.find((user) => user.id === fromUserId);

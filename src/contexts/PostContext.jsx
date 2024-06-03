@@ -91,6 +91,8 @@ export const PostProvider = ({ children }) => {
                 postList,
                 postUserList,
                 setPostList,
+                setPostUserList,
+                postSuccess,
                 setPostSuccess,
                 updateLikeStatus,
                 toggleLikeStatus,

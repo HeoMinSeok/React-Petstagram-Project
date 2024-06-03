@@ -6,7 +6,6 @@ import useUser from "../hook/useUser";
 import useModal from "../hook/useModal";
 import useNav from "../hook/useNav";
 import SelectUpload from "../ui/SelectUpload";
-import { UploadModal } from "./UploadModal";
 
 import icons from "../../assets/ImageList";
 

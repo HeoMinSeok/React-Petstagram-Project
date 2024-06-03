@@ -50,7 +50,7 @@ const ModalButton = styled.button`
 `;
 
 const SelectUpload = ({ onClose }) => {
-    const { openModal, closeModal, isModalOpen } = useModal();
+    const { openModal, isModalOpen } = useModal();
 
     return (
         <>
