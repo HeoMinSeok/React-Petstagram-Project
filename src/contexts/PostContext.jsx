@@ -25,12 +25,10 @@ export const PostProvider = ({ children }) => {
         }
     }, []);
 
-    const fetchUserPosts = useCallback(async () => {
-        if (isLoggedIn && profileInfo && profileInfo.id) {
+    const fetchUserPosts = useCallback(async (userId) => {
+        if (userId) {
             try {
-                const postUserList = await PostService.getPostsByUserId(
-                    profileInfo.id
-                );
+                const postUserList = await PostService.getPostsByUserId(userId);
                 setPostUserList(postUserList);
             } catch (error) {
                 console.error(
@@ -39,7 +37,7 @@ export const PostProvider = ({ children }) => {
                 );
             }
         }
-    }, [isLoggedIn, profileInfo]);
+    }, []);
 
     /* 특정 게시물 좋아요 상태 및 갯수 들고옴 */
     const updateLikeStatus = useCallback(async (postId) => {
@@ -82,9 +80,10 @@ export const PostProvider = ({ children }) => {
     useEffect(() => {
         if (postSuccess) {
             fetchPosts();
+            fetchUserPosts();
             setPostSuccess(false);
         }
-    }, [postSuccess, fetchPosts]);
+    }, [postSuccess, fetchPosts, fetchUserPosts]);
 
     return (
         <PostContext.Provider
@@ -95,6 +94,7 @@ export const PostProvider = ({ children }) => {
                 setPostSuccess,
                 updateLikeStatus,
                 toggleLikeStatus,
+                fetchUserPosts,
             }}
         >
             {children}

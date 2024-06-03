@@ -24,8 +24,6 @@ const UploadGetGallery = ({ onClose }) => {
     const [text, setText] = useState("");
     const maxTextLength = 2200;
 
-    const [breed, setBreed] = useState("");
-
     useEffect(() => {
         document.body.style.overflow = "hidden";
         return () => {

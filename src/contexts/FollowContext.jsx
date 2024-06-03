@@ -8,7 +8,6 @@ import React, {
 import UserService from "../components/service/UserService";
 import useUser from "../components/hook/useUser";
 import useAllUser from "../components/hook/useAllUser";
-import useFollowList from "../components/hook/useFollowList";
 
 const FollowContext = createContext();
 
@@ -17,8 +16,11 @@ export const FollowProvider = ({ children }) => {
     const { profileInfo } = useUser();
     const [followedUsers, setFollowedUsers] = useState({});
 
-    const { fetchFollowers, fetchFollowings, followers, followings } =
-        useFollowList();
+    const [followerList, setFollowerList] = useState([]);
+    const [userFollowerList, setUserFollowerList] = useState([]);
+
+    const [followingList, setFollowingList] = useState([]);
+    const [userFollowingList, setUserFollowingList] = useState([]);
 
     const fetchFollowStatus = useCallback(async (userId) => {
         try {
@@ -33,6 +35,7 @@ export const FollowProvider = ({ children }) => {
         }
     }, []);
 
+    /* 다른 사용자들의 팔로우 상태 체크 */
     useEffect(() => {
         allUserProfiles.forEach((user) => {
             if (user.email !== profileInfo.email) {
@@ -40,6 +43,26 @@ export const FollowProvider = ({ children }) => {
             }
         });
     }, [allUserProfiles, profileInfo.email, fetchFollowStatus]);
+
+    /* 현재 로그인 유저 follwer 리스트 */
+    const fetchFollowerList = useCallback(async () => {
+        try {
+            const follwerLists = await UserService.getFollowers();
+            setFollowerList(follwerLists);
+        } catch (error) {
+            console.error("팔로워 가져오는 중 오류 발생:", error);
+        }
+    }, []);
+
+    /* 현재 로그인 유저 follwing 리스트 */
+    const fetchFollowingList = useCallback(async () => {
+        try {
+            const followingLists = await UserService.getFollowings();
+            setFollowingList(followingLists);
+        } catch (error) {
+            console.error("팔로잉 가져오는 중 오류 발생:", error);
+        }
+    }, []);
 
     const handleFollow = async (userId) => {
         try {
@@ -91,10 +114,6 @@ export const FollowProvider = ({ children }) => {
                 handleUnfollow,
                 handleDeleteFollower,
                 isFollowing,
-                fetchFollowers,
-                fetchFollowings,
-                followers,
-                followings,
             }}
         >
             {children}

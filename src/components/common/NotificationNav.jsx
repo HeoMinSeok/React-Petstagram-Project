@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./Notification.css";
 import Button from "../ui/Button";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 import useUser from "../hook/useUser";
 import useAllUser from "../hook/useAllUser";
@@ -19,11 +18,14 @@ const NotificationNav = () => {
     const { profileInfo } = useUser();
     const { allUserProfiles } = useAllUser();
     const { postList } = usePost();
-    const { commentList, setCurrentPostIds } = useComment();
+    const { commentList, fetchAllComments } = useComment();
     const notifications = useNotifications(profileInfo.id);
     const { isFollowing, handleFollow, handleUnfollow } = useFollow();
-
     const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchAllComments();
+    }, [commentList, fetchAllComments]);
 
     const getLikerImage = (fromUserId) => {
         const user = allUserProfiles.find((user) => user.id === fromUserId);
@@ -57,21 +59,14 @@ const NotificationNav = () => {
     const { today, yesterday, thisWeek, thisMonth } =
         categorizeNotifications(notifications);
 
-    // 실시간 댓글 알림을 받으면 postId를 통해 댓글을 들고 옴
-    useEffect(() => {
-        const postIds = notifications
-            .map((notification) => notification.postId)
-            .filter(
-                (postId, index, self) =>
-                    postId !== null && self.indexOf(postId) === index
-            );
-        if (postIds.length > 0) {
-            setCurrentPostIds(postIds);
-        }
-    }, [notifications, setCurrentPostIds]);
-
-    const getCommentContent = (commentId) => {
-        const comment = commentList.find((c) => c.id === commentId);
+    // 실시간 댓글 알림을 받으면 postId, commentId로 댓글 내용 불러옴
+    const getCommentContent = (notification) => {
+        const postComments =
+            commentList.find((post) => post.postId === notification.postId)
+                ?.comments || [];
+        const comment = postComments.find(
+            (c) => c.id === notification.commentId
+        );
         return comment
             ? comment.commentContent
             : "댓글 내용을 불러오지 못했습니다.";
@@ -171,9 +166,7 @@ const NotificationNav = () => {
                                     님이 댓글을 남겼습니다:
                                     <span>
                                         {" "}
-                                        {getCommentContent(
-                                            notification.commentId
-                                        )}
+                                        {getCommentContent(notification)}
                                     </span>
                                     <span className="notification-regtime">
                                         {getDisplayTime(notification.regTime)}

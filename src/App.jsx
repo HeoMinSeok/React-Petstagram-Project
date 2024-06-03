@@ -32,11 +32,9 @@ import NotificationNav from "./components/common/NotificationNav";
 /* Hook */
 import useUser from "./components/hook/useUser";
 import useNav from "./components/hook/useNav";
-import useFollow from "./components/hook/useFollow";
 
 const AppContent = () => {
     const { isLoggedIn, setIsLoggedIn } = useUser();
-    const { followers, followings, fetchFollowings } = useFollow();
     const { navState } = useNav();
 
     return (

@@ -5,33 +5,34 @@ import useModal from "../hook/useModal";
 import usePost from "../hook/usePost";
 import useFollow from "../hook/useFollow";
 import useFollowCounts from "../hook/useFollowCounts";
+import useFollowList from "../hook/useFollowList";
 
 import ProfileUpdateModal from "./ProfileUpdateModal";
 import { UploadModal } from "../common/UploadModal";
 import FollowListModal from "../ui/FollowListModal";
-
 import icons from "../../assets/ImageList";
+import UploadGetGallery from "../common/UploadGetGallery";
+import SelectUpload from "../ui/SelectUpload";
 
 const MyFeed = () => {
     const { profileInfo } = useUser();
     const { openModal, closeModal, isModalOpen } = useModal();
-    const { postUserList = [] } = usePost();
+    const { postUserList = [], fetchUserPosts } = usePost();
 
-    const {
-        handleDeleteFollower,
-        handleUnfollow,
-        followers,
-        followings,
-        fetchFollowers,
-        fetchFollowings,
-    } = useFollow();
+    const { handleDeleteFollower, handleUnfollow } = useFollow();
     const { followersCount, followingsCount, fetchFollowCounts } =
         useFollowCounts(profileInfo.id);
+    const { followers, followings, fetchFollowers, fetchFollowings } =
+        useFollowList();
 
     // useEffect(() => {
     //     fetchFollowCounts();
     //     fetchFollowings();
     // }, [fetchFollowCounts, fetchFollowings]);
+
+    useEffect(() => {
+        fetchUserPosts(profileInfo.id);
+    }, [profileInfo, fetchUserPosts]);
 
     const handleFollowButtonClick = async (userId, action) => {
         await action(userId);
@@ -67,7 +68,7 @@ const MyFeed = () => {
                 />
             )}
             {isModalOpen("upload") && (
-                <UploadModal onClose={() => closeModal("upload")} />
+                <SelectUpload onClose={() => closeModal("upload")} />
             )}
             {isModalOpen("followerList") && (
                 <FollowListModal

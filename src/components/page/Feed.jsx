@@ -1,5 +1,5 @@
 import "./Feed.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 import useUser from "../hook/useUser";
@@ -14,22 +14,14 @@ import GetRelativeTime from "../../utils/GetRelativeTime";
 
 const Feed = () => {
     const { postList = [] } = usePost();
-    const { setCurrentPostIds, commentList } = useComment();
-
-    // 현재 등록된 게시물들의 댓글 전체 들고오기
-    useEffect(() => {
-        if (postList.length > 0) {
-            const postIds = postList.map((post) => post.id);
-            setCurrentPostIds(postIds);
-        }
-    }, [postList, setCurrentPostIds]);
+    const { commentList, submitComment } = useComment();
 
     return (
         <div>
-            {postList.map((post, index) => {
-                const postComments = commentList.filter(
-                    (comment) => comment.postId === post.id
-                );
+            {postList.map((post) => {
+                const postComments =
+                    commentList.find((c) => c.postId === post?.id)?.comments ||
+                    [];
                 return (
                     post &&
                     post.id && (
@@ -37,6 +29,7 @@ const Feed = () => {
                             key={post.id}
                             post={post}
                             comments={postComments}
+                            submitComment={submitComment}
                         />
                     )
                 );
@@ -45,14 +38,13 @@ const Feed = () => {
     );
 };
 
-const FeedItem = ({ post, comments }) => {
+const FeedItem = ({ post, comments, submitComment }) => {
     const { profileInfo } = useUser();
     const { allUserProfiles } = useAllUser();
     const { postLiked, postLikesCount, handleLikeClick } = useLikeStatus(
         post.id
     );
     const { isFollowing, handleFollow, handleUnfollow } = useFollow();
-    const { submitComment } = useComment();
     const navigate = useNavigate();
     const uploadPostTime = GetRelativeTime(post.regTime);
     const [commentText, setCommentText] = useState("");
@@ -87,6 +79,8 @@ const FeedItem = ({ post, comments }) => {
 
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
+        if (commentText.trim() === "") return;
+
         await submitComment(post.id, commentText);
         setCommentText("");
     };

@@ -139,7 +139,8 @@ class UserService {
     }
 
     // 현재 로그인한 사용자의 팔로 리스트 가져오기
-    static async getFollowings(token) {
+    static async getFollowings() {
+        const token = localStorage.getItem("token");
         const response = await axios.get(
             `${UserService.BASE_URL}/user/following`,
             { headers: { Authorization: `Bearer ${token}` } }
@@ -148,7 +149,8 @@ class UserService {
     }
 
     // 현재 로그인한 사용자의 팔로워 리스트 가져오기
-    static async getFollowers(token) {
+    static async getFollowers() {
+        const token = localStorage.getItem("token");
         const response = await axios.get(
             `${UserService.BASE_URL}/user/followers`,
             { headers: { Authorization: `Bearer ${token}` } }

@@ -18,7 +18,7 @@ const FriendFeed = () => {
     const { allUserProfiles } = useAllUser();
     const { isFollowing, handleFollow, handleUnfollow } = useFollow();
     const { openModal, closeModal, isModalOpen } = useModal();
-    const { postUserList = [] } = usePost();
+    const { postUserList = [], fetchUserPosts } = usePost();
 
     const [friendProfile, setFriendProfile] = useState(null);
 
@@ -32,6 +32,12 @@ const FriendFeed = () => {
         );
         setFriendProfile(user);
     }, [userId, allUserProfiles]);
+
+    useEffect(() => {
+        if (friendProfile?.id) {
+            fetchUserPosts(friendProfile.id);
+        }
+    }, [friendProfile, fetchUserPosts]);
 
     const { fetchFollowCounts, followersCount, followingsCount } =
         useFollowCounts(friendProfile ? friendProfile.id : null);
