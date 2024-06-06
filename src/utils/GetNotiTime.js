@@ -11,11 +11,8 @@ moment.updateLocale("ko", {
         h: "1시간",
         hh: "%d시간",
         d: "1일",
-        dd: "%d일",
-        M: "1개월",
-        MM: "%d개월",
-        y: "1년",
-        yy: "%d년",
+        dd: (number) =>
+            number < 7 ? number + "일" : Math.floor(number / 7) + "주",
     },
 });
 
@@ -24,12 +21,14 @@ const categorizeNotifications = (notifications) => {
     const yesterday = [];
     const thisWeek = [];
     const thisMonth = [];
+    const pastActivities = [];
 
-    const now = moment().startOf('day');  
+    const now = moment().startOf("day");
 
     notifications.forEach((notification) => {
-        const notificationTime = moment(notification.regTime).startOf('day');  
+        const notificationTime = moment(notification.regTime).startOf("day");
         const diffDays = now.diff(notificationTime, "days");
+        const diffWeeks = Math.floor(diffDays / 7);
 
         if (diffDays === 0) {
             today.push(notification);
@@ -37,16 +36,19 @@ const categorizeNotifications = (notifications) => {
             yesterday.push(notification);
         } else if (diffDays < 7) {
             thisWeek.push(notification);
-        } else if (diffDays < 30) {
+        } else if (diffWeeks < 5) {
             thisMonth.push(notification);
+        } else {
+            pastActivities.push(notification);
         }
     });
 
-    return { today, yesterday, thisWeek, thisMonth };
+    return { today, yesterday, thisWeek, thisMonth, pastActivities };
 };
 
 const getDisplayTime = (date) => {
-    return moment(date).fromNow();
+    const notificationTime = moment(date);
+    return notificationTime.fromNow();
 };
 
 export { categorizeNotifications, getDisplayTime };

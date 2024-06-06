@@ -32,6 +32,17 @@ import chilbok from "/src/assets/camera/chilbok.png";
 import sunglasses from "/src/assets/camera/sunglasses.png";
 import transform from "/src/assets/camera/transform.png";
 
+/* PostViewModal */
+import commentIcon2 from "./postviewmodal/postview-speech-bubble.png";
+import bookMarkIcon2 from "./postviewmodal/postview-mark.png";
+import moreIcon2 from "./postviewmodal/postview-comment-more.png";
+import lineIcon from "./postviewmodal/postview-line.png";
+
+/* PostModal */
+import smileIcon from "./postmodal/smile.png";
+import locationIcon from "./postmodal/location.png";
+import underArrowIcon from "./postmodal/under.png";
+
 const icons = {
     // HomeNav
     homeIcon,
@@ -66,6 +77,17 @@ const icons = {
     chilbok,
     sunglasses,
     transform,
+
+    // PostViewModal
+    commentIcon2,
+    bookMarkIcon2,
+    moreIcon2,
+    lineIcon,
+
+    // PostModal
+    smileIcon,
+    locationIcon,
+    underArrowIcon,
 };
 
 export default icons;

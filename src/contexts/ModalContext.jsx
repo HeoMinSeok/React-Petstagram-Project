@@ -19,10 +19,21 @@ export const ModalProvider = ({ children }) => {
         }));
     };
 
+    const toggleModal = (modalName) => {
+        setModals((prevModals) => ({
+            ...prevModals,
+            [modalName]: !prevModals[modalName],
+        }));
+    };
+
+    const resetModals = () => {
+        setModals({});
+    };
+
     const isModalOpen = (modalName) => !!modals[modalName];
 
     return (
-        <ModalContext.Provider value={{ openModal, closeModal, isModalOpen }}>
+        <ModalContext.Provider value={{ openModal, closeModal, isModalOpen, toggleModal, resetModals }}>
             {children}
         </ModalContext.Provider>
     );

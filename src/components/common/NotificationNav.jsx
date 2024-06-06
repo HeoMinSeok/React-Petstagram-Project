@@ -63,7 +63,7 @@ const NotificationNav = () => {
         }
     };
 
-    const { today, yesterday, thisWeek, thisMonth } =
+    const { today, yesterday, thisWeek, thisMonth, pastActivities } =
         categorizeNotifications(notifications);
 
     // 실시간 댓글 알림을 받으면 postId, commentId로 댓글 내용 불러옴
@@ -202,7 +202,7 @@ const NotificationNav = () => {
             </div>
 
             <div className="notification-recent">
-                {today.length > 0 && (
+            {today.length > 0 && (
                     <>
                         <div className="notification-date">
                             <h4>오늘</h4>
@@ -235,6 +235,15 @@ const NotificationNav = () => {
                             <h4>이번 달</h4>
                         </div>
                         {thisMonth.map(renderNotification)}
+                    </>
+                )}
+
+                {pastActivities.length > 0 && (
+                    <>
+                        <div className="notification-date">
+                            <h4>지난 활동</h4>
+                        </div>
+                        {pastActivities.map(renderNotification)}
                     </>
                 )}
             </div>

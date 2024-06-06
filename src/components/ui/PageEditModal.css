@@ -1,44 +1,32 @@
-.post-frame-container {
+.pageedit-frame-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.4);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 899;
+    z-index: 9999;
     padding: 20px;
-    
 }
 
-.post-close-modal {
-    position: fixed;
-    top: 0%;
-    left: 48%;
-    background: none;
-    border: none;
-    font-size: 25px;
-    color: #ffffff;
-    cursor: pointer;
-    z-index: 900;
-}
 
-.post-frame {
+.pageedit-frame {
     background-color: #ffffff;
     border-radius: 20px;
     height: 90%;  
     width: 90%;  
     max-height: 910px;  
-    max-width: 1300px;  
+    max-width: 1330px;  
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.post-frame .post-header {
+.pageedit-frame .pageedit-header {
     height: 69px;
     width: 100%;
     display: flex;
@@ -47,94 +35,80 @@
     padding: 0 20px;
     border-bottom: 1px solid #d9d9d9;
     box-sizing: border-box;
-    
 }
 
-.post-frame .post-header .post-text-wrapper,
-.post-frame .post-header .post-text-wrapper-2 {
+.pageedit-text-cancle {
+    cursor: pointer;
+}
+
+.pageedit-frame .pageedit-header .pageedit-text-wrapper,
+.pageedit-frame .pageedit-header .pageedit-text-wrapper-2 {
     font-family: "Inter-Bold", Helvetica;
     font-size: 20.4px;
     font-weight: 700;
 }
 
-.post-frame .post-header .post-text-wrapper {
+.pageedit-frame .pageedit-header .pageedit-text-wrapper {
     color: #000000;
     flex: 1;
     text-align: center;
 }
 
-.post-frame .post-header .post-text-wrapper-2 {
+.pageedit-frame .pageedit-header .pageedit-text-wrapper-2 {
     color: #3493ed;
     margin-left: auto;
-    padding-left: 20px;
     cursor: pointer;
 }
 
-.post-frame .post-content {
+.pageedit-frame .pageedit-content {
     display: flex;
     height: calc(100% - 69px);
 }
 
-.post-frame .post-image-section {
+.pageedit-frame .pageedit-image-section {
     background-color: #d9d9d9;
-    width: 90%;  /* 이미지 섹션의 너비를 60%로 줄임 */
+    width: 90%;  
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     text-align: center;
     max-height: 100%;
     overflow: hidden;
-    border-right: 1px solid #d9d9d9; /* 이미지와 텍스트 섹션 사이의 경계 */
-}
-
-.img_section img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
+    border-right: 1px solid #d9d9d9; 
 }
 
 .img_section {
-    margin-bottom: 20px;
-}
-
-.image_file{
-    width: 150px;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: fill;
 }
 
 .file_section {
+    display: inline-block;
     background-color: #3493ed;
     color: white;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
-    margin-bottom: 10px;
+    
 }
 
-.camera-section {
-    background-color: #3493ed;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.post-frame .post-details-section {
+.pageedit-frame .pageedit-details-section {
     background-color: #ffffff;
-    width: 40%;  /* 텍스트 섹션의 너비를 40%로 늘림 */
+    width: 50%;  
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
     overflow-y: auto;
 }
 
-.post-frame .post-user-info {
+.pageedit-frame .pageedit-user-info {
     display: flex;
     align-items: center;
     padding: 20px;
 }
 
-.post-frame .post-user-info .post-ellipse {
+.pageedit-frame .pageedit-user-info .pageedit-ellipse {
     background-color: #d9d9d9;
     border-radius: 50%;
     height: 41px;
@@ -142,18 +116,18 @@
     margin-right: 10px;
 }
 
-.post-frame .post-user-info .post-text-wrapper-3 {
+.pageedit-frame .pageedit-user-info .pageedit-text-wrapper-3 {
     font-family: "Inter-Bold", Helvetica;
     font-size: 13.6px;
     font-weight: 700;
     color: #000000;
 }
-.post-textarea-section {
+.pageedit-textarea-section {
     padding: 0 20px;
     height: 40%;
 }
 
-.post-input-wrapper {
+.pageedit-input-wrapper {
     width: 100%;
     height: 80%;
     border: none;
@@ -165,30 +139,31 @@
     color: #000000;
     margin-bottom: 10px;
 }
-.post-counter {
+
+.pageedit-counter {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.post-frame .post-textarea-section .post-counter .post-uil-smile {
+.pageedit-frame .pageedit-textarea-section .pageedit-counter .pageedit-uil-smile {
     height: 24px;
     width: 24px;
 }
 
-.post-frame .post-textarea-section .post-counter .post-text-wrapper-5 {
+.pageedit-frame .pageedit-textarea-section .pageedit-counter .pageedit-text-wrapper-5 {
     font-family: "Inter-Regular", Helvetica;
     font-size: 13.6px;
     color: #d9d9d9;
 }
 
-.post-frame .post-options {
+.pageedit-frame .pageedit-options {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.post-option {
+.pageedit-option {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -197,7 +172,7 @@
     box-sizing: border-box;
 }
 
-.post-frame .post-option .post-text-wrapper-6 {
+.pageedit-frame .pageedit-option .pageedit-text-wrapper-6 {
     font-family: "Inter-Bold", Helvetica;
     font-size: 18.7px;
     color: #000000;
@@ -205,7 +180,7 @@
 
 /* 미디어 쿼리 */
 @media (max-width: 768px) {
-    .post-frame {
+    .pageedit-frame {
         width: 100%;
         height: 100%;
         border-radius: 0;
@@ -213,13 +188,13 @@
         max-height: none;
     }
 
-    .post-frame .post-image-section,
-    .post-frame .post-details-section {
+    .pageedit-frame .pageedit-image-section,
+    .pageedit-frame .pageedit-details-section {
         width: 100%; /* 작은 화면에서는 전체 너비를 사용 */
         border-right: none; /* 작은 화면에서는 경계를 제거 */
     }
 
-    .post-frame .post-image-section {
+    .pageedit-frame .pageedit-image-section {
         border-bottom: 1px solid #d9d9d9; /* 작은 화면에서는 아래 경계 추가 */
     }
 }

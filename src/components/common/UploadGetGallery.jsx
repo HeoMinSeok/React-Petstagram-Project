@@ -68,7 +68,7 @@ const UploadGetGallery = ({ onClose }) => {
             );
 
             if (file) {
-                const breed = await PostService.classifyImage(file);  // 변경된 부분
+                const breed = await PostService.classifyImage(file); // 변경된 부분
                 console.log("Predictions: ", breed);
 
                 formData.append("breed", breed);
@@ -178,14 +178,14 @@ const UploadGetGallery = ({ onClose }) => {
                                     {text.length}/{maxTextLength}
                                 </div>
                             </div>
+                            {isModalOpen("emojiPicker") && (
+                                <EmojiPicker onEmojiClick={handleEmojiClick} />
+                            )}
                         </div>
                         <PostOptions />
                     </div>
                 </div>
             </div>
-            {isModalOpen("emojiPicker") && (
-                <EmojiPicker onEmojiClick={handleEmojiClick} />
-            )}
             {isModalOpen("deleteConfirm") && (
                 <DeleteConfirm closeModal={closeModal} onClose={onClose} />
             )}

@@ -39,6 +39,29 @@ export const PostProvider = ({ children }) => {
         }
     }, []);
 
+     /* 게시글 삭제 */
+     const deletePost = useCallback(async (postId) => {
+        try {
+            const token = localStorage.getItem("token");
+            await PostService.deletePost(postId, token);
+            setPostSuccess(true);
+        } catch (error) {
+            console.error("게시글 삭제 중 오류가 발생했습니다.", error);
+            throw error;
+        }
+    }, []);
+
+    /* 특정 게시물 좋아요 누른 사용자 목록 */
+    const getLikesUserList = useCallback(async (postId) => {
+        try {
+            const users = await PostService.getPostLikesList(postId);
+            return { likedUsers: users };
+        } catch (error) {
+            console.error("좋아요 리스트 오류", error);
+            return { likedUsers: [] };
+        }
+    }, []);
+
     /* 특정 게시물 좋아요 상태 및 갯수 들고옴 */
     const updateLikeStatus = useCallback(async (postId) => {
         try {
@@ -92,8 +115,10 @@ export const PostProvider = ({ children }) => {
                 postUserList,
                 setPostList,
                 setPostUserList,
+                deletePost,
                 postSuccess,
                 setPostSuccess,
+                getLikesUserList,
                 updateLikeStatus,
                 toggleLikeStatus,
                 fetchUserPosts,
