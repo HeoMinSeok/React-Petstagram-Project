@@ -217,7 +217,7 @@
     width: 10%;
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 1000px) {
     .feed {
         width: calc(100% - 30px);
         left: 50%;

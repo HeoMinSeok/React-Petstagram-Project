@@ -85,7 +85,7 @@
     text-align: center;
     max-height: 100%;
     overflow: hidden;
-    border-right: 1px solid #d9d9d9; /* 이미지와 텍스트 섹션 사이의 경계 */
+    border-right: 1px solid #d9d9d9; 
 }
 
 .img_section img {

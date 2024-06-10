@@ -68,6 +68,7 @@
 .pageedit-frame .pageedit-image-section {
     background-color: #d9d9d9;
     width: 90%;  
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -77,10 +78,15 @@
     border-right: 1px solid #d9d9d9; 
 }
 
-.img_section {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: fill;
+.pageedit-img-section {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.pageedit_selected-image {
+    width: 100%;
+    height: auto;
 }
 
 .file_section {
@@ -88,9 +94,7 @@
     background-color: #3493ed;
     color: white;
     padding: 10px 20px;
-    border-radius: 5px;
     cursor: pointer;
-    
 }
 
 .pageedit-frame .pageedit-details-section {

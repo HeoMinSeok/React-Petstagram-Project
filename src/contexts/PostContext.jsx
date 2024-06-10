@@ -7,40 +7,112 @@ import React, {
 } from "react";
 import PostService from "../components/service/PostService";
 import { UserContext } from "./UserContext";
+import useReporting from "../components/hook/useReporting";
 
 const PostContext = createContext();
 
 export const PostProvider = ({ children }) => {
     const { isLoggedIn, profileInfo } = useContext(UserContext);
+    const { bannedUsers, fetchBannedUsers, bannedMe, fetchBannedMe } = useReporting();
     const [postList, setPostList] = useState([]);
     const [postUserList, setPostUserList] = useState([]);
     const [postSuccess, setPostSuccess] = useState(false);
 
+    useEffect(() => {
+        if (isLoggedIn) {
+            fetchBannedUsers();
+            fetchBannedMe();
+        }
+    }, [isLoggedIn, fetchBannedUsers, fetchBannedMe]);
+
+    /* 차단한 사용자 게시글 필터 */
+    const filterBannedUserPosts = useCallback(
+        (posts) => {
+            const bannedUserIds = bannedUsers.map((user) => user.reportedUserId);
+            const bannedMeIds = bannedMe.map((user) => user.reporterUserId);
+            return posts.filter((post) => !bannedUserIds.includes(post.userId) && !bannedMeIds.includes(post.userId));
+        },
+        [bannedUsers, bannedMe]
+    );
+
     const fetchPosts = useCallback(async () => {
         try {
             const posts = await PostService.getPostList();
-            setPostList(posts);
+            const filteredPosts = filterBannedUserPosts(posts);
+            setPostList(filteredPosts);
         } catch (error) {
             console.error("게시글을 가져오는 중 오류 발생:", error);
         }
-    }, []);
+    }, [filterBannedUserPosts]);
 
-    const fetchUserPosts = useCallback(async (userId) => {
-        if (userId) {
-            try {
-                const postUserList = await PostService.getPostsByUserId(userId);
-                setPostUserList(postUserList);
-            } catch (error) {
-                console.error(
-                    "사용자가 작성한 게시물을 가져오는 중 오류 발생:",
-                    error
-                );
+    const fetchUserPosts = useCallback(
+        async (userId) => {
+            if (userId) {
+                try {
+                    const postUserList = await PostService.getPostsByUserId(
+                        userId
+                    );
+                    const filteredPosts = filterBannedUserPosts(postUserList);
+                    setPostUserList(filteredPosts);
+                } catch (error) {
+                    console.error(
+                        "사용자가 작성한 게시물을 가져오는 중 오류 발생:",
+                        error
+                    );
+                }
             }
+        },
+        [filterBannedUserPosts]
+    );
+
+    /* 게시글 수정 */
+    const updatePost = useCallback(async (post, currentFile, currentText) => {
+        try {
+            const postId = post.id;
+
+            const updatedPost = {
+                ...post,
+                postContent: currentText,
+            };
+
+            const formData = new FormData();
+            formData.append(
+                "post",
+                new Blob([JSON.stringify(updatedPost)], {
+                    type: "application/json",
+                })
+            );
+            if (currentFile) {
+                const currentBreed = await PostService.classifyImage(
+                    currentFile
+                );
+
+                formData.append("breed", currentBreed);
+                formData.append("file", currentFile);
+            } else {
+                // 기존 이미지 정보를 유지하기 위해 이미지 URL을 포함
+                if (post.imageList && post.imageList.length > 0) {
+                    formData.append("imageUrl", post.imageList[0].imageUrl);
+                }
+            }
+
+            const token = localStorage.getItem("token");
+            const response = await PostService.updatePost(
+                postId,
+                formData,
+                token
+            );
+
+            setPostSuccess(true);
+            return response.data;
+        } catch (error) {
+            console.error("게시글 수정 중 오류가 발생했습니다.", error);
+            throw error;
         }
     }, []);
 
-     /* 게시글 삭제 */
-     const deletePost = useCallback(async (postId) => {
+    /* 게시글 삭제 */
+    const deletePost = useCallback(async (postId) => {
         try {
             const token = localStorage.getItem("token");
             await PostService.deletePost(postId, token);
@@ -108,6 +180,7 @@ export const PostProvider = ({ children }) => {
         }
     }, [postSuccess, fetchPosts, fetchUserPosts]);
 
+
     return (
         <PostContext.Provider
             value={{
@@ -115,12 +188,14 @@ export const PostProvider = ({ children }) => {
                 postUserList,
                 setPostList,
                 setPostUserList,
+                updatePost,
                 deletePost,
                 postSuccess,
                 setPostSuccess,
                 getLikesUserList,
                 updateLikeStatus,
                 toggleLikeStatus,
+                fetchPosts,
                 fetchUserPosts,
             }}
         >

@@ -83,6 +83,7 @@ class UserService {
         return response.data;
     }
 
+    /* ****** 팔로우, 팔로잉 서비스 ****** */
     // 팔로우
     static async follow(toUserId, token) {
         const response = await axios.post(
@@ -138,7 +139,7 @@ class UserService {
         return response.data;
     }
 
-    // 현재 로그인한 사용자의 팔로 리스트 가져오기
+    // 현재 로그인한 사용자의 팔로잉 리스트 가져오기
     static async getFollowings() {
         const token = localStorage.getItem("token");
         const response = await axios.get(
@@ -171,6 +172,71 @@ class UserService {
     static async getFollowersByUserId(userId, token) {
         const response = await axios.get(
             `${this.BASE_URL}/user/${userId}/followers`,
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        return response.data;
+    }
+
+    /* ****** 신고 서비스 ****** */
+
+    // 신고한 회원 목록
+    static async getBannedUsers() {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+            `${this.BASE_URL}/report/banned-users`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    }
+
+    // 자신을 신고한 회원 목록
+    static async getBannedMe() {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+            `${this.BASE_URL}/report/banned-me`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } 
+
+    // 특정 회원 신고
+    static async reportingBannedUser(formData, reportedUserId) {
+        const token = localStorage.getItem("token");
+        const response = await axios.post(
+            `${this.BASE_URL}/report/banned/${reportedUserId}`,
+            formData,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        return response.data;
+    }
+
+    // 특정 회원 신고 취소
+    static async unBanned(reportedUserId) {
+        const token = localStorage.getItem("token");
+        const response = await axios.delete(
+            `${this.BASE_URL}/report/unbanned/${reportedUserId}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        return response.data;
+    }
+
+    // 특정 회원 누적 신고 조회
+    static async reportingBannedCount(userId) {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+            `${this.BASE_URL}/report/bannedCount/${userId}`,
             { headers: { Authorization: `Bearer ${token}` } }
         );
         return response.data;

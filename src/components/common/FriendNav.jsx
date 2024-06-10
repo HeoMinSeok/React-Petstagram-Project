@@ -9,11 +9,13 @@ import useModal from "../hook/useModal";
 import useFollow from "../hook/useFollow";
 
 import FollowCancelModal from "../ui/FollowCancelModal";
+import useReporting from "../hook/useReporting";
 
 const FriendNav = () => {
     const { setIsLoggedIn } = useUser();
     const { fetchAllUsers } = useAllUser();
     const { openModal, closeModal, isModalOpen } = useModal();
+    const { bannedUsers } = useReporting();
     const { isFollowing, handleFollow, handleUnfollow } = useFollow();
     const navigate = useNavigate();
     const [selectedUser, setSelectedUser] = useState(null);
@@ -48,6 +50,7 @@ const FriendNav = () => {
                 openFollowCancelModal={openFollowCancelModal}
                 handleFollow={handleFollow}
                 navigate={navigate}
+                bannedUsers={bannedUsers}
             />
             {selectedUser && isModalOpen("followCancel") && (
                 <FollowCancelModal
@@ -95,9 +98,12 @@ const Recommendation = ({
     openFollowCancelModal,
     handleFollow,
     navigate,
+    bannedUsers,
 }) => {
     const { profileInfo } = useUser();
     const { allUserProfiles } = useAllUser();
+
+    const bannedUserIds = bannedUsers.map(user => user.reportedUserId);
 
     return (
         <div>
@@ -117,7 +123,8 @@ const Recommendation = ({
                     .filter(
                         (user) =>
                             user.email !== profileInfo.email &&
-                            user.isRecommend === true
+                            user.isRecommend === true &&
+                            !bannedUserIds.includes(user.id)
                     )
                     .slice(0, 5)
                     .map((user) => (

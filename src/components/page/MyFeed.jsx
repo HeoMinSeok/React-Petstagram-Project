@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
 import "./MyFeed.css";
+
 import useUser from "../hook/useUser";
 import useModal from "../hook/useModal";
 import usePost from "../hook/usePost";
 import useFollow from "../hook/useFollow";
 import useFollowCounts from "../hook/useFollowCounts";
 
-import ProfileUpdateModal from "./ProfileUpdateModal";
+import ProfileUpdateModal from "../ui/ProfileUpdateModal";
 import FollowListModal from "../ui/FollowListModal";
 import SelectUpload from "../ui/SelectUpload";
-import PostViewModal from "../ui/PostViewModal";
+import PostViewModal from "../ui/PostViewUI/PostViewModal";
+
 import icons from "../../assets/ImageList";
-import useComment from "../hook/useComment";
 
 const MyFeed = () => {
     const { profileInfo } = useUser();

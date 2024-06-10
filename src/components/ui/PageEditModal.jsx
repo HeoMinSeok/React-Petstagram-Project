@@ -1,16 +1,19 @@
 import React, { useRef, useEffect, useState } from "react";
 import "./PageEditModal.css";
-import PostService from "../service/PostService";
+import usePost from "../hook/usePost";
 import useModal from "../hook/useModal";
+
 import EmojiPicker from "./EmojiPicker";
 import Loading from "./Loading";
 import icons from "../../assets/ImageList";
 
-const PageEditModal = ({ onClose, post, allUserProfiles, onUpdatePost }) => {
+const PageEditModal = ({ onClose, post, allUserProfiles, setCurrentPost }) => {
+    const { updatePost } = usePost();
+    const { openModal, closeModal, isModalOpen, toggleModal } = useModal();
+
     const fileInputRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [text, setText] = useState("");
-    const { openModal, closeModal, isModalOpen, toggleModal } = useModal();
     const maxTextLength = 2200;
 
     const getUserProfileImage = (email) => {
@@ -33,14 +36,9 @@ const PageEditModal = ({ onClose, post, allUserProfiles, onUpdatePost }) => {
         };
     }, [post]);
 
-    const handleFileButtonClick = () => {
-        fileInputRef.current.click();
-    };
-
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            console.log("File selected:", file);
             const reader = new FileReader();
             reader.onload = () => {
                 setSelectedImage(reader.result);
@@ -61,50 +59,19 @@ const PageEditModal = ({ onClose, post, allUserProfiles, onUpdatePost }) => {
         closeModal("emojiPicker");
     };
 
-    const handleSubmit = async () => {
+    const handleUpdateSubmit = async () => {
         try {
             openModal("loading");
-            const currentFile = fileInputRef.current
-                ? fileInputRef.current.files[0]
-                : null;
+            const currentFile = fileInputRef.current?.files[0] || null;
             const currentText = text;
 
-            const postId = post.id;
-
-            const updatedPost = {
-                ...post,
-                postContent: currentText,
-            };
-
-            const formData = new FormData();
-            formData.append(
-                "post",
-                new Blob([JSON.stringify(updatedPost)], {
-                    type: "application/json",
-                })
-            );
-            if (currentFile) {
-                const currentBreed = await PostService.classifyImage(
-                    currentFile
-                );
-                console.log("Predictions: ", currentBreed);
-
-                formData.append("breed", currentBreed);
-                formData.append("file", currentFile);
-            } else {
-                formData.append("breed", post.breed);
-                closeModal("loading");
-            }
-
-            const token = localStorage.getItem("token");
-            const response = await PostService.updatePost(
-                postId,
-                formData,
-                token
+            const updatedPost = await updatePost(
+                post,
+                currentFile,
+                currentText
             );
 
-            console.log("게시글이 성공적으로 업데이트되었습니다:", response);
-            onUpdatePost(response.data);
+            setCurrentPost(updatedPost);
             onClose();
         } catch (error) {
             console.error(
@@ -127,7 +94,7 @@ const PageEditModal = ({ onClose, post, allUserProfiles, onUpdatePost }) => {
                     <div className="pageedit-text-wrapper">정보 수정</div>
                     <div
                         className="pageedit-text-wrapper-2"
-                        onClick={handleSubmit}
+                        onClick={handleUpdateSubmit}
                     >
                         완료
                     </div>
@@ -135,10 +102,10 @@ const PageEditModal = ({ onClose, post, allUserProfiles, onUpdatePost }) => {
                 <div className="pageedit-content">
                     <div
                         className="pageedit-image-section"
-                        onClick={handleFileButtonClick}
+                        onClick={() => fileInputRef.current.click()}
                     >
                         {selectedImage && (
-                            <div className="img_section">
+                            <div className="pageedit-img-section">
                                 <img
                                     src={selectedImage}
                                     alt="Selected"

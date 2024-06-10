@@ -2,11 +2,13 @@ import React, { createContext, useState, useEffect, useCallback } from "react";
 import useUser from "../components/hook/useUser";
 import UserService from "../components/service/UserService";
 import BasicImage from "../assets/basic-profile.jpeg";
+import useReporting from "../components/hook/useReporting";
 
 const AllUserContext = createContext();
 
 export const AllUserProvider = ({ children }) => {
     const { isLoggedIn } = useUser();
+    const { bannedMe } = useReporting();
     const [allUserProfiles, setAllUserProfiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -24,7 +26,12 @@ export const AllUserProvider = ({ children }) => {
             if (!token) throw new Error("로그인이 필요합니다.");
             const users = await UserService.getAllUsers(token);
 
-            const usersWithProfileImageUrls = users.map((user) => ({
+            // 자신을 차단한 사용자를 필터링
+            const bannedMeIds = bannedMe.map(user => user.reporterUserId);
+            const filteredUsers = users.filter(user => !bannedMeIds.includes(user.id));
+
+
+            const usersWithProfileImageUrls = filteredUsers.map((user) => ({
                 ...user,
                 profileImageUrl: getProfileImageUrl(user.profileImage),
             }));
@@ -35,7 +42,7 @@ export const AllUserProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [bannedMe]);
 
     useEffect(() => {
         if (isLoggedIn) {

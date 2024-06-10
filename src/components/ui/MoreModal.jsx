@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useEffect } from "react";
+import styled from "styled-components";
 
 const MoreModalContainer = styled.div`
     width: 300px;
@@ -11,7 +11,7 @@ const MoreModalContainer = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
-    z-index: 10;
+    z-index: 1000; /* 높은 z-index */
     text-align: center;
 `;
 
@@ -27,12 +27,26 @@ const MoreOption = styled.div`
     &.moreoption-remove {
         color: red;
     }
+    &.moreoption-report,
     &.moreoption-unfollow {
         color: red;
+    }
+    &.moreoption-follow {
+        color: #00a3ff;
     }
 `;
 
 const MoreModal = ({ options }) => {
+    useEffect(() => {
+        // 모달이 열렸을 때 부모 컴포넌트의 스크롤을 막음
+        const parentDiv = document.querySelector(".app .div");
+        const originalStyle = parentDiv.style.overflowY;
+        parentDiv.style.overflowY = "hidden";
+
+        return () => {
+            parentDiv.style.overflowY = originalStyle;
+        };
+    }, []);
 
     if (!Array.isArray(options)) {
         options = [];

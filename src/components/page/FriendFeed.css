@@ -52,10 +52,10 @@
 
 .friendfeed-follow-btn.following,
 .friendfeed-dm-btn,
-.friendfeed-settings-btn {
+.friendfeed-more-btn {
     width: auto;
-    height: 35px;
-    padding: 10px 20px;
+    height: auto;
+    padding: 0px 20px;
     font-size: 16px;
     font-weight: 700;
     border: none;
@@ -65,10 +65,10 @@
     color: black;
 }
 
-.friendfeed-follow-btn{
+.friendfeed-follow-btn {
     width: auto;
-    height: 35px;
-    padding: 10px 20px;
+    height: auto;
+    padding: 0px 20px;
     font-size: 16px;
     font-weight: 700;
     border: none;
@@ -77,10 +77,35 @@
     background-color: rgb(65, 147, 239);
     color: white;
 }
+.friendfeed-unban-btn {
+    width: auto;
+    height: auto;
+    padding: 0px 40px;
+    font-size: 20px;
+    font-weight: 400;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: rgb(65, 147, 239);
+    color: white;
+}
 
-.friendfeed-settings-btn {
+.friendfeed-more-btn {
     background-color: transparent;
-    color: #fff;
+    width: auto;
+    height: auto;
+    padding: 5px 5px;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: black;
+}
+.friendfeed-more-img {
+    width: auto;
+    height: 30px;
+    cursor: pointer;
 }
 
 .friendfeed-user-stats {
@@ -89,7 +114,6 @@
     display: flex;
     justify-content: flex-start;
     gap: 50px;
-    
 }
 .friendfeed-user-stat-post {
     flex-direction: column;

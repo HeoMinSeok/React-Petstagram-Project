@@ -23,6 +23,7 @@
         "@tensorflow/tfjs-node": "^4.19.0",
         "axios": "^1.6.8",
         "cors": "^2.8.5",
+        "events": "^3.3.0",
         "express": "^4.19.2",
         "face-api.js": "^0.22.2",
         "firebase": "^10.12.0",

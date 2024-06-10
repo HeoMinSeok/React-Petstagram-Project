@@ -9,6 +9,8 @@ import usePost from "../hook/usePost";
 import useFollowCounts from "../hook/useFollowCounts";
 
 import FriendFollowModal from "../ui/FriendFollowListModal";
+import useReporting from "../hook/useReporting";
+import icons from "../../assets/ImageList";
 
 const FriendFeed = () => {
     const { profileInfo } = useUser();
@@ -24,6 +26,12 @@ const FriendFeed = () => {
         fetchUserFollowingList,
     } = useFollow();
 
+    const {
+        bannedUsers,
+        handleReportBanned,
+        handleUnBanned,
+        fetchBannedUsers,
+    } = useReporting();
     const { postUserList = [], fetchUserPosts } = usePost();
     const [friendProfile, setFriendProfile] = useState(null);
 
@@ -68,6 +76,9 @@ const FriendFeed = () => {
         useFollowCounts(friendProfile ? friendProfile.id : null);
 
     const isCurrentlyFollowing = isFollowing(friendProfile?.id);
+    const isBanned = bannedUsers.some(
+        (bannedUser) => bannedUser.reportedUserId === friendProfile?.id
+    );
 
     useEffect(() => {
         fetchFollowCounts();
@@ -86,6 +97,11 @@ const FriendFeed = () => {
         fetchFollowCounts();
     };
 
+    const handleUnbanClick = async () => {
+        await handleUnBanned(friendProfile.id);
+        fetchBannedUsers(); 
+    };
+
     return (
         <div className="friendfeed-frame">
             <div className="friendfeed-user-info">
@@ -101,25 +117,35 @@ const FriendFeed = () => {
                             {friendProfile.email}
                         </h2>
                         <div className="friendfeed-user-actions">
-                            {profileInfo.email !== friendProfile.email && (
-                                <button
-                                    className={`friendfeed-follow-btn ${
-                                        isFollowing(friendProfile.id)
-                                            ? "following"
-                                            : ""
-                                    }`}
-                                    onClick={handleFollowClick}
-                                >
-                                    {isFollowing(friendProfile.id)
-                                        ? "팔로잉"
-                                        : "팔로우"}
-                                </button>
-                            )}
-                            <button className="friendfeed-dm-btn">
-                                메시지 보내기
-                            </button>
-                            <button className="friendfeed-settings-btn">
-                                <span>⚙️</span>
+                            {profileInfo.email !== friendProfile.email &&
+                                (isBanned ? (
+                                    <button
+                                        className="friendfeed-unban-btn"
+                                        onClick={handleUnbanClick}
+                                    >
+                                        차단 해제
+                                    </button>
+                                ) : (
+                                    <>
+                                        <button
+                                            className={`friendfeed-follow-btn ${
+                                                isFollowing(friendProfile.id)
+                                                    ? "following"
+                                                    : ""
+                                            }`}
+                                            onClick={handleFollowClick}
+                                        >
+                                            {isFollowing(friendProfile.id)
+                                                ? "팔로잉"
+                                                : "팔로우"}
+                                        </button>
+                                        <button className="friendfeed-dm-btn">
+                                            메시지 보내기
+                                        </button>
+                                    </>
+                                ))}
+                            <button className="friendfeed-more-btn">
+                                <img src={icons.moreIcon} alt="더보기" className="friendfeed-more-img"/>
                             </button>
                         </div>
                     </div>

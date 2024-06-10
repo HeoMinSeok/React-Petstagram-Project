@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import usePost from "./usePost";
-import useComment from "./useComment";
 
 const useLikeStatus = (postId) => {
     const { updateLikeStatus, getLikesUserList, toggleLikeStatus } = usePost();
