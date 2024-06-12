@@ -4,7 +4,6 @@ import UserService from "../service/UserService";
 const useReporting = () => {
     const [bannedUsers, setBannedUsers] = useState([]);
     const [bannedMe, setBannedMe] = useState([]);
-    
 
     /* 신고 회원 목록 조회 */
     const fetchBannedUsers = useCallback(async () => {
@@ -56,15 +55,22 @@ const useReporting = () => {
             setBannedUsers((prev) =>
                 prev.filter((id) => id !== reportedUserId)
             );
+            await fetchBannedUsers();
         } catch (error) {
             console.error("차단 해제 중 오류", error);
         }
-    }, []);
+    }, [fetchBannedUsers]);
 
     useEffect(() => {
         fetchBannedUsers();
-        fetchBannedMe(); 
+        fetchBannedMe();
     }, [fetchBannedUsers, fetchBannedMe]);
+
+    const isBanned = (userId) => {
+        return bannedUsers.some(
+            (bannedUser) => bannedUser.reportedUserId === userId
+        );
+    };
 
     return {
         bannedUsers,
@@ -73,6 +79,7 @@ const useReporting = () => {
         handleUnBanned,
         fetchBannedUsers,
         fetchBannedMe,
+        isBanned,
     };
 };
 

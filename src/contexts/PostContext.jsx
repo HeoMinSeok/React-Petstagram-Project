@@ -180,6 +180,13 @@ export const PostProvider = ({ children }) => {
         }
     }, [postSuccess, fetchPosts, fetchUserPosts]);
 
+    useEffect(() => {
+        if (bannedUsers.length > 0 || bannedMe.length > 0) {
+            fetchPosts();
+            fetchUserPosts(profileInfo.id);
+        }
+    }, [bannedUsers, bannedMe, fetchPosts, fetchUserPosts, profileInfo.id]);
+
 
     return (
         <PostContext.Provider

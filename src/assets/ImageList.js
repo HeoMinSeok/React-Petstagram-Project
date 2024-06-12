@@ -26,11 +26,13 @@ import BasicImage from "./basic-profile.jpeg";
 import shareIcon from "/src/assets/myfeed/myfeed-share.png";
 
 /* Webcam */
-import catEars from "/src/assets/camera/catEars.png";
+import transform from "/src/assets/camera/transform.png";
 import kapibara from "/src/assets/camera/kapibara.png";
+import dogFilter from "/src/assets/camera/dog-filter.png"
+import dogEars from "/src/assets/camera/dog-ears.png";
+import dogNose from "/src/assets/camera/dog-nose.png";
 import chilbok from "/src/assets/camera/chilbok.png";
 import sunglasses from "/src/assets/camera/sunglasses.png";
-import transform from "/src/assets/camera/transform.png";
 
 /* PostViewModal */
 import commentIcon2 from "./postviewmodal/postview-speech-bubble.png";
@@ -72,11 +74,13 @@ const icons = {
     shareIcon,
 
     // Webcam
-    catEars,
+    transform,
     kapibara,
+    dogFilter,
+    dogEars,
+    dogNose,
     chilbok,
     sunglasses,
-    transform,
 
     // PostViewModal
     commentIcon2,

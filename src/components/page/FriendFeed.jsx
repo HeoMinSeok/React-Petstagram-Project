@@ -11,6 +11,8 @@ import useFollowCounts from "../hook/useFollowCounts";
 import FriendFollowModal from "../ui/FriendFollowListModal";
 import useReporting from "../hook/useReporting";
 import icons from "../../assets/ImageList";
+import useModal from "../hook/useModal";
+import MoreModal from "../ui/MoreModal";
 
 const FriendFeed = () => {
     const { profileInfo } = useUser();
@@ -26,18 +28,16 @@ const FriendFeed = () => {
         fetchUserFollowingList,
     } = useFollow();
 
-    const {
-        bannedUsers,
-        handleReportBanned,
-        handleUnBanned,
-        fetchBannedUsers,
-    } = useReporting();
-    const { postUserList = [], fetchUserPosts } = usePost();
+    const { handleReportBanned, handleUnBanned, fetchBannedUsers, isBanned } =
+        useReporting();
+    const { postUserList, fetchUserPosts } = usePost();
     const [friendProfile, setFriendProfile] = useState(null);
+    const [filteredPostUserList, setFilteredPostUserList] = useState([]);
 
     // 모달 상태 관리
     const [isFollowerModalOpen, setIsFollowerModalOpen] = useState(false);
     const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
+    const { openModal, closeModal, isModalOpen } = useModal();
 
     const getImageUrl = (imageUrl) => {
         return `http://localhost:8088/uploads/${imageUrl}`;
@@ -52,7 +52,6 @@ const FriendFeed = () => {
         }
     }, [userId, allUserProfiles]);
 
-    /* 현재 보고있는 유저 id를 통해 post, follower, following 가져오기 */
     const fetchData = useCallback(async () => {
         if (friendProfile?.id) {
             await fetchUserPosts(friendProfile.id);
@@ -76,9 +75,15 @@ const FriendFeed = () => {
         useFollowCounts(friendProfile ? friendProfile.id : null);
 
     const isCurrentlyFollowing = isFollowing(friendProfile?.id);
-    const isBanned = bannedUsers.some(
-        (bannedUser) => bannedUser.reportedUserId === friendProfile?.id
-    );
+    const isBannedUser = isBanned(friendProfile?.id);
+
+    useEffect(() => {
+        if (isBannedUser) {
+            setFilteredPostUserList([]);
+        } else {
+            setFilteredPostUserList(postUserList);
+        }
+    }, [isBannedUser, postUserList]);
 
     useEffect(() => {
         fetchFollowCounts();
@@ -97,9 +102,33 @@ const FriendFeed = () => {
         fetchFollowCounts();
     };
 
-    const handleUnbanClick = async () => {
-        await handleUnBanned(friendProfile.id);
-        fetchBannedUsers(); 
+    const handleBanClick = async () => {
+        if (isBannedUser) {
+            await handleUnBanned(friendProfile.id);
+        } else {
+            await handleReportBanned(friendProfile.id, "");
+        }
+        fetchBannedUsers(); // 차단된 유저 목록을 다시 가져옴
+    };
+
+    const getFriendMore = () => {
+        return [
+            {
+                label: isBannedUser ? "차단 해제" : "차단",
+                className: isBannedUser
+                    ? "friend-more-unbanned"
+                    : "friend-more-banned",
+                onClick: async () => {
+                    await handleBanClick();
+                    closeModal("friend-more");
+                },
+            },
+            {
+                label: "취소",
+                className: "moreoption-cancel",
+                onClick: () => closeModal("friend-more"),
+            },
+        ];
     };
 
     return (
@@ -118,10 +147,10 @@ const FriendFeed = () => {
                         </h2>
                         <div className="friendfeed-user-actions">
                             {profileInfo.email !== friendProfile.email &&
-                                (isBanned ? (
+                                (isBannedUser ? (
                                     <button
                                         className="friendfeed-unban-btn"
-                                        onClick={handleUnbanClick}
+                                        onClick={handleBanClick}
                                     >
                                         차단 해제
                                     </button>
@@ -144,18 +173,26 @@ const FriendFeed = () => {
                                         </button>
                                     </>
                                 ))}
-                            <button className="friendfeed-more-btn">
-                                <img src={icons.moreIcon} alt="더보기" className="friendfeed-more-img"/>
+                            <button
+                                className="friendfeed-more-btn"
+                                onClick={() => openModal("friend-more")}
+                            >
+                                <img
+                                    src={icons.moreIcon}
+                                    alt="더보기"
+                                    className="friendfeed-more-img"
+                                />
                             </button>
                         </div>
                     </div>
+
                     <div className="friendfeed-user-stats">
                         <div className="friendfeed-user-stat-post">
                             <span className="friendfeed-stat-label">
                                 게시물
                             </span>
                             <span className="friendfeed-stat-number">
-                                {postUserList.length}
+                                {filteredPostUserList.length}
                             </span>
                         </div>
                         <div
@@ -191,7 +228,7 @@ const FriendFeed = () => {
             </div>
             <div className="friendfeed-container">
                 <div className="friendfeed-grid-container">
-                    {postUserList.map((post, index) => (
+                    {filteredPostUserList.map((post, index) => (
                         <div key={index} className="friendfeed-grid-item">
                             {post.imageList.map((image, imgIndex) => (
                                 <img
@@ -222,6 +259,13 @@ const FriendFeed = () => {
                     followList={userFollowingList}
                     onClose={() => setIsFollowingModalOpen(false)}
                     title="팔로잉"
+                />
+            )}
+
+            {isModalOpen("friend-more") && (
+                <MoreModal
+                    options={getFriendMore()}
+                    onClose={() => closeModal("friend-more")}
                 />
             )}
         </div>

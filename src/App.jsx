@@ -5,7 +5,6 @@ import {
     Routes,
     Navigate,
 } from "react-router-dom";
-import { useEffect } from "react";
 import "./App.css";
 
 /* 컨텍스트 */
@@ -34,24 +33,17 @@ import NotificationNav from "./components/common/NotificationNav";
 /* Hook */
 import useUser from "./components/hook/useUser";
 import useNav from "./components/hook/useNav";
-import useTheme from "./components/hook/useTheme";
-import Loading from "./components/ui/Loading";
+
+/* Utils */
+import DogCursor from "./utils/DogCursor";
 
 const AppContent = () => {
     const { isLoggedIn, setIsLoggedIn } = useUser();
     const { navState } = useNav();
-    const { isDarkMode, toggleTheme } = useTheme();
-
-    useEffect(() => {
-        if (isDarkMode) {
-            document.body.classList.add("dark-mode");
-        } else {
-            document.body.classList.remove("dark-mode");
-        }
-    }, [isDarkMode]);
 
     return (
         <Router>
+            <DogCursor />
             <Routes>
                 <Route
                     exact
@@ -87,7 +79,7 @@ const AppContent = () => {
                                         </>
                                     )}
                                     <div className="main-container">
-                                        <HomeNav toggleTheme={toggleTheme} />
+                                        <HomeNav />
                                         {navState.search && <SearchNav />}
                                         {navState.notification && (
                                             <NotificationNav />

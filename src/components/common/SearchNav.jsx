@@ -4,10 +4,12 @@ import { useNavigate } from "react-router-dom";
 
 import useUser from "../hook/useUser";
 import useAllUser from "../hook/useAllUser";
+import useFollow from "../hook/useFollow";
 
 const SearchNav = () => {
     const { profileInfo } = useUser();
     const { allUserProfiles } = useAllUser();
+    const { followingList, fetchFollowingList } = useFollow();
     const [searchText, setSearchText] = useState("");
     const [recentSearches, setRecentSearches] = useState([]);
     const navigate = useNavigate();
@@ -17,6 +19,10 @@ const SearchNav = () => {
             JSON.parse(localStorage.getItem("recentSearches")) || [];
         setRecentSearches(storedSearches);
     }, []);
+
+    useEffect(() => {
+        fetchFollowingList();
+    }, [fetchFollowingList]);
 
     const handleSearchChange = (e) => {
         setSearchText(e.target.value);
@@ -99,7 +105,10 @@ const SearchNav = () => {
                                         className="search-profile-image"
                                     />
                                 </div>
-                                <div>{user.email}</div>
+                                <div className="search-user-info">
+                                    <div>{user.email}</div>
+                                    <div>{user.name} {user.bio}</div>
+                                </div>
                             </div>
                         </div>
                     ))}

@@ -46,11 +46,6 @@ class PostService {
     // 게시글 작성
     static async createPost(formData, token) {
         try {
-            /* 데이터 확인 */
-            for (let pair of formData.entries()) {
-                console.log(pair[0] + ", " + pair[1]);
-            }
-
             const response = await axios.post(
                 `${PostService.BASE_URL}/post/write`,
                 formData,

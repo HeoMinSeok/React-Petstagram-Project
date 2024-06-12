@@ -12,7 +12,7 @@
     flex-direction: column;
     align-items: center;
     overflow: hidden;
-    z-index: 18881;
+    z-index: 188;
 }
 
 .webcam-container {
@@ -74,7 +74,6 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
 }
 
 .webcam-capture-button:hover {
@@ -84,7 +83,7 @@
 
 .webcam-slide-buttons {
     position: absolute;
-    bottom: -50px;
+    bottom: -10px;
     right: 40px;
     width: 60px;
     height: 280px;
@@ -96,7 +95,6 @@
 
 .slick-slider {
     width: 100%;
-    /* height: 100%; */
 }
 
 .slick-slide {
@@ -107,17 +105,17 @@
 .webcam-slide-button {
     background-color: #fff;
     border: 2px solid #000;
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
-    /* display: flex;
+    display: flex;
     justify-content: center;
-    align-items: center; */
+    align-items: center;
     cursor: pointer;
-    margin: 5px 0;
     text-align: center;
     transition: background-color 0.3s, transform 0.2s;
-    line-height: 3.5;
+    overflow: hidden;
+    line-height: 60px;
 }
 
 .webcam-slide-button.active {
@@ -128,4 +126,10 @@
 .webcam-slide-button:hover {
     background-color: #e0e0e0;
     transform: scale(1.1);
+}
+
+.filter-image {
+    width: 55px;
+    height: 60px;
+    object-fit: contain;
 }

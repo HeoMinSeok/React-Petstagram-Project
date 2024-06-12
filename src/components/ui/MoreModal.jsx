@@ -11,7 +11,7 @@ const MoreModalContainer = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
-    z-index: 1000; /* 높은 z-index */
+    z-index: 1000;
     text-align: center;
 `;
 
@@ -28,7 +28,9 @@ const MoreOption = styled.div`
         color: red;
     }
     &.moreoption-report,
-    &.moreoption-unfollow {
+    &.moreoption-unfollow,
+    &.friend-more-unbanned,
+    &.friend-more-banned {
         color: red;
     }
     &.moreoption-follow {

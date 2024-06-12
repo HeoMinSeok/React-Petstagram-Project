@@ -1,15 +1,20 @@
-import React, { useRef, useEffect, useState, useMemo } from "react";
-import Webcam from "react-webcam";
+import React, {
+    useRef,
+    useEffect,
+    useState,
+    useMemo,
+    useCallback,
+} from "react";
 import "./WebcamComponent.css";
-import icons from "../assets/ImageList";
+import Webcam from "react-webcam";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { drawFilter } from "../utils/MakePhotoFilter";
-
-import useFaceApiModels from "../components/hook/useFaceApiModel";
-import useFaceDetection from "../components/hook/useFaceDetection";
+import icons from "../assets/ImageList";
+import filters, { drawFilter, filterImages } from "./filters";
 import useCapture from "../components/hook/useCapture";
+import * as blazeface from "@tensorflow-models/blazeface";
+import "@tensorflow/tfjs";
 
 const WebcamComponent = ({ onCapture }) => {
     const webcamRef = useRef(null);
@@ -17,25 +22,14 @@ const WebcamComponent = ({ onCapture }) => {
     const captureCanvasRef = useRef(null);
     const sliderRef = useRef(null);
     const [filterIndex, setFilterIndex] = useState(0);
-    const filters = useMemo(() => [
-        "none",
-        "catEars",
-        "kapibara",
-        "chilbok",
-        "sunglasses",
-        "blackWhite",
-    ], []);
+    const filterKeys = useMemo(() => Object.keys(filters), []);
 
-    const isModelLoaded = useFaceApiModels("/models");
-    const previousDetections = useFaceDetection(webcamRef, canvasRef, filters, filterIndex, drawFilter); // 얼굴 인식 훅
     const capture = useCapture(
         webcamRef,
         captureCanvasRef,
         canvasRef,
-        filters,
-        filterIndex,
         onCapture
-    ); // 캡처 훅
+    ); 
 
     const toggleMirror = () => {
         const video = webcamRef.current.video;
@@ -62,6 +56,57 @@ const WebcamComponent = ({ onCapture }) => {
         setFilterIndex(index);
     };
 
+    const drawFaces = useCallback(
+        (predictions) => {
+            const canvas = canvasRef.current;
+            const ctx = canvas.getContext("2d");
+            const video = webcamRef.current.video;
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 필터 적용
+            const filterKey = filterKeys[filterIndex];
+            if (filterKey !== "none") {
+                drawFilter(filterKey, predictions, ctx);
+            }
+        },
+        [filterIndex, filterKeys]
+    );
+
+    // BlazeFace 모델을 로드 및 얼굴을 감지
+    useEffect(() => {
+        let isCancelled = false;
+
+        const loadBlazeFace = async () => {
+            const model = await blazeface.load();
+
+            const detectFace = async () => {
+                if (
+                    webcamRef.current &&
+                    webcamRef.current.video.readyState === 4
+                ) {
+                    const video = webcamRef.current.video;
+                    const predictions = await model.estimateFaces(video, false);
+
+                    if (!isCancelled) {
+                        drawFaces(predictions);
+                    }
+                }
+                requestAnimationFrame(detectFace);
+            };
+            detectFace();
+        };
+
+        loadBlazeFace();
+
+        return () => {
+            isCancelled = true;
+        };
+    }, [filterIndex, drawFaces]);
+
     return (
         <div className="ipad-frame">
             <div className="webcam-container">
@@ -73,12 +118,10 @@ const WebcamComponent = ({ onCapture }) => {
                     mirrored
                 />
                 <canvas ref={canvasRef} className="webcam-canvas" />
-                {/* canvasRef 설정 */}
                 <canvas ref={captureCanvasRef} style={{ display: "none" }} />
-                {/* captureCanvasRef 설정 */}
                 <div className="webcam-top-bar">
                     <button onClick={toggleMirror}>
-                        <img src={icons.transform}/>
+                        <img src={icons.transform} />
                     </button>
                 </div>
                 <div className="webcam-bottom-bar">
@@ -89,58 +132,25 @@ const WebcamComponent = ({ onCapture }) => {
                 </div>
                 <div className="webcam-slide-buttons">
                     <Slider {...sliderSettings} ref={sliderRef}>
-                        <div
-                            className={`webcam-slide-button ${
-                                filterIndex === 0 ? "active" : ""
-                            }`}
-                            onClick={() => handleClick(0)}
-                        >
-                            <span>일반</span>
-                        </div>
-                        <img
-                            className={`webcam-slide-button ${
-                                filterIndex === 1 ? "active" : ""
-                            }`}
-                            onClick={() => handleClick(1)}
-                            src={icons.catEars}
-                            alt="고양이"
-                        />
-
-                        <img
-                            className={`webcam-slide-button ${
-                                filterIndex === 2 ? "active" : ""
-                            }`}
-                            onClick={() => handleClick(2)}
-                            src={icons.kapibara}
-                            alt="카피바라"
-                        />
-
-                        <img
-                            className={`webcam-slide-button ${
-                                filterIndex === 3 ? "active" : ""
-                            }`}
-                            onClick={() => handleClick(3)}
-                            src={icons.chilbok}
-                            alt="칠복"
-                        />
-
-                        <img
-                            className={`webcam-slide-button sunglasses ${
-                                filterIndex === 4 ? "active" : ""
-                            }`}
-                            onClick={() => handleClick(4)}
-                            src={icons.sunglasses}
-                            alt="선글라스"
-                        />
-
-                        <div
-                            className={`webcam-slide-button ${
-                                filterIndex === 5 ? "active" : ""
-                            }`}
-                            onClick={() => handleClick(5)}
-                        >
-                            <span>흑백</span>
-                        </div>
+                        {filterKeys.map((key, index) => (
+                            <div
+                                key={key}
+                                className={`webcam-slide-button ${
+                                    filterIndex === index ? "active" : ""
+                                }`}
+                                onClick={() => handleClick(index)}
+                            >
+                                {key === "none" ? (
+                                    <span>일반</span>
+                                ) : (
+                                    <img
+                                        src={filterImages[key]}
+                                        alt={key}
+                                        className="filter-image"
+                                    />
+                                )}
+                            </div>
+                        ))}
                     </Slider>
                 </div>
             </div>

@@ -1,5 +1,5 @@
 import "./Feed.css";
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import useUser from "../hook/useUser";
@@ -16,7 +16,6 @@ import BanReportModal from "../ui/BanReportModal";
 
 import icons from "../../assets/ImageList";
 import GetRelativeTime from "../../utils/GetRelativeTime";
-import useReporting from "../hook/useReporting";
 
 const Feed = () => {
     const { profileInfo } = useUser();
