@@ -72,6 +72,14 @@ class UserService {
         return response.data;
     }
 
+    /* 비밀번호 찾기를 위한 모든 회원 정보 조회 */
+    static async getAllUsersWithoutAuth() {
+        const response = await axios.get(
+            `${UserService.BASE_URL}/user/getAllUsers`
+        );
+        return response.data;
+    }
+
     // 회원 한명 조회
     static async getUserById(userId, token) {
         const response = await axios.get(
@@ -183,25 +191,26 @@ class UserService {
     static async getBannedUsers() {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-            `${this.BASE_URL}/report/banned-users`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+            `${this.BASE_URL}/report/banned-users`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
         return response.data;
     }
 
     // 자신을 신고한 회원 목록
     static async getBannedMe() {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-            `${this.BASE_URL}/report/banned-me`, {
+        const response = await axios.get(`${this.BASE_URL}/report/banned-me`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
         return response.data;
-    } 
+    }
 
     // 특정 회원 신고
     static async reportingBannedUser(formData, reportedUserId) {
