@@ -118,10 +118,14 @@ const NotificationNav = () => {
         }
     };
 
-
     const renderNotification = (notification) => {
         /* 차단한 유저의 알림 숨김 */
-        if (bannedUsers.some((bannedUser) => bannedUser.reportedUserId === notification.fromUserId)) {
+        if (
+            bannedUsers.some(
+                (bannedUser) =>
+                    bannedUser.reportedUserId === notification.fromUserId
+            )
+        ) {
             return null;
         }
 
@@ -271,7 +275,7 @@ const NotificationNav = () => {
                                 <div className="notification-follow-btn">
                                     {isFollowing(notification.fromUserId) ? (
                                         <Button
-                                            backgroundColor="rgb(239, 239, 239)"
+                                            bgColor="rgb(239, 239, 239)"
                                             width="75px"
                                             color="rgb(0, 0, 0)"
                                             onClick={() =>
@@ -284,7 +288,7 @@ const NotificationNav = () => {
                                         </Button>
                                     ) : (
                                         <Button
-                                            backgroundColor="rgb(65, 147, 239)"
+                                            bgColor="rgb(65, 147, 239)"
                                             width="75px"
                                             onClick={() =>
                                                 handleFollow(

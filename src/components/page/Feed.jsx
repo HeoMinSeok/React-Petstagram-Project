@@ -205,47 +205,48 @@ const FeedItem = ({
             <div className="feed-frame">
                 <div className="feed-info">
                     <div className="feed-user-info" onClick={handleUserClick}>
-                        <div>
-                            <img
-                                className="feed-profile-img"
-                                src={profileImageUrl}
-                                alt="프로필"
-                            />
-                        </div>
-                        <div>
-                            <div className="feed-writer-name">{post.email}</div>
-                        </div>
-                        <div>
-                            <div className="feed-writer-date">
-                                {"· " + uploadPostTime + " ·"}
+                        <img
+                            className="feed-profile-img"
+                            src={profileImageUrl}
+                            alt="프로필"
+                        />
+                        <div className="feed-writer-hing">
+                            <div className="feed-writer-div">
+                                <span className="feed-writer-name">
+                                    {post.email}{" "}
+                                </span>
+                                <span className="feed-writer-date">
+                                    {"· " + uploadPostTime + " ·"}
+                                </span>
+                                {profileInfo.email !== post.email &&
+                                    writerId &&
+                                    (isFollowing(writerId) ? (
+                                        <button
+                                            className="feed-user-following"
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // 상위 div의 onClick 이벤트 전파를 막기 위해 사용
+                                                handleUnfollow(writerId);
+                                            }}
+                                        >
+                                            팔로잉
+                                        </button>
+                                    ) : (
+                                        <button
+                                            className="feed-user-follow"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleFollow(writerId);
+                                            }}
+                                        >
+                                            팔로우
+                                        </button>
+                                    ))}
+                            </div>
+                            <div className="feed-location">
+                                <span>{post.location}</span>
                             </div>
                         </div>
-
-                        {profileInfo.email !== post.email &&
-                            writerId &&
-                            (isFollowing(writerId) ? (
-                                <button
-                                    className="feed-user-following"
-                                    onClick={(e) => {
-                                        e.stopPropagation(); // 상위 div의 onClick 이벤트 전파를 막기 위해 사용
-                                        handleUnfollow(writerId);
-                                    }}
-                                >
-                                    팔로잉
-                                </button>
-                            ) : (
-                                <button
-                                    className="feed-user-follow"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleFollow(writerId);
-                                    }}
-                                >
-                                    팔로우
-                                </button>
-                            ))}
                     </div>
-
                     <div className="feed-more">
                         <button
                             className="feed-more-btn"
@@ -265,6 +266,7 @@ const FeedItem = ({
                         )}
                     </div>
                 </div>
+
                 {post.imageList && post.imageList.length > 0 && (
                     <div className="feed-post-photos">
                         {post.imageList.map((image, index) => (

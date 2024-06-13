@@ -10,6 +10,7 @@ import Loading from "../ui/Loading";
 import DeleteConfirm from "../ui/DeleteConfirm";
 import EmojiPicker from "../ui/EmojiPicker";
 import WebcamComponent from "../../utils/WebcamComponent";
+import KakaoMapModal from "../ui/kakaomap/KakaoMapModal";
 
 const UploadTakeCamera = ({ onClose }) => {
     const { isLoggedIn, profileInfo } = useUser();
@@ -21,6 +22,7 @@ const UploadTakeCamera = ({ onClose }) => {
     const fileInputRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [text, setText] = useState("");
+    const [selectedAddress, setSelectedAddress] = useState("");
     const maxTextLength = 2200;
 
     const handleFileChange = (e) => {
@@ -72,7 +74,7 @@ const UploadTakeCamera = ({ onClose }) => {
             );
 
             if (file) {
-                const breed = await PostService.classifyImage(file); 
+                const breed = await PostService.classifyImage(file);
 
                 formData.append("breed", breed);
                 formData.append("file", file);
@@ -185,7 +187,10 @@ const UploadTakeCamera = ({ onClose }) => {
                                 <EmojiPicker onEmojiClick={handleEmojiClick} />
                             )}
                         </div>
-                        <PostOptions />
+                        <PostOptions
+                            openModal={openModal}
+                            selectedAddress={selectedAddress}
+                        />
                     </div>
                 </div>
             </div>
@@ -195,22 +200,43 @@ const UploadTakeCamera = ({ onClose }) => {
             {isModalOpen("webcam") && (
                 <WebcamComponent onCapture={handleCapture} />
             )}
+            {isModalOpen("kakaoMap") && (
+                <KakaoMapModal
+                    onClose={() => closeModal("kakaoMap")}
+                    setSelectedAddress={setSelectedAddress} // 주소 설정 함수 전달
+                />
+            )}
         </div>
     );
 };
 
-const PostOptions = () => (
+const PostOptions = ({ openModal, selectedAddress }) => (
     <div className="post-options">
         {[
             {
-                label: "위치 추가",
+                label: "위치 ",
                 icon: "../src/assets/postmodal/location.png",
+                onClick: () => openModal("kakaoMap"),
+                showAddress: true, // 주소를 표시할 항목에 플래그 추가
             },
-            { label: "접근성", icon: "../src/assets/postmodal/under.png" },
-            { label: "고급 설정", icon: "../src/assets/postmodal/under.png" },
+            {
+                label: "접근성",
+                icon: "../src/assets/postmodal/under.png",
+                showAddress: false,
+            },
+            {
+                label: "고급 설정",
+                icon: "../src/assets/postmodal/under.png",
+                showAddress: false,
+            },
         ].map((option, index) => (
-            <div className="post-option" key={index}>
-                <div className="post-text-wrapper-6">{option.label}</div>
+            <div className="post-option" key={index} onClick={option.onClick}>
+                <div className="post-text-wrapper-6">
+                    {option.label}
+                    {option.showAddress && (
+                        <span className="post-address"> {selectedAddress}</span>
+                    )}
+                </div>
                 <img className="post-icon" alt="Frame" src={option.icon} />
             </div>
         ))}

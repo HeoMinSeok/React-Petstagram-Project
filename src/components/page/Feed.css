@@ -31,13 +31,14 @@
     align-items: center;
     cursor: pointer;
     justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .feed-user-info {
     display: flex;
     align-items: center;
     flex-grow: 1;
-    gap: 10px; /* 요소들 사이에 15px 간격 추가 */
+    gap: 20px; 
 }
 
 .feed-profile-img {
@@ -46,8 +47,13 @@
     height: 40px;
     width: 40px;
 }
-
-.feed-writer-name {
+.feed-writer-div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.feed-writer-name,
+.feed-writer-date {
     color: #000000;
     font-family: "Inter-Bold", Helvetica;
     font-size: 16px;
@@ -55,30 +61,15 @@
     letter-spacing: 0;
     line-height: normal;
     white-space: nowrap;
-    margin-bottom: 20px;
 }
 
 .feed-writer-date {
     color: rgb(115, 115, 115);
-    font-family: "Inter-Bold", Helvetica;
     font-size: 15px;
     font-weight: 500;
-    letter-spacing: 0;
-    line-height: normal;
-    white-space: nowrap;
-    margin-bottom: 20px;
 }
 
-.feed-user-follow {
-    font-family: "Inter-Bold", Helvetica;
-    width: auto;
-    border: none;
-    background-color: white;
-    color: #00a3ff;
-    font-size: 15px;
-    margin-bottom: 20px;
-}
-
+.feed-user-follow,
 .feed-user-following {
     font-family: "Inter-Bold", Helvetica;
     width: auto;
@@ -86,11 +77,17 @@
     background-color: white;
     color: #00a3ff;
     font-size: 15px;
-    margin-bottom: 20px;
+}
+.feed-location {
+    color: rgb(115, 115, 115);
+    font-family: "Inter", Helvetica;
+    font-size: 13px;
+    font-weight: 400;
+    white-space: nowrap;
 }
 
 .feed-more {
-    margin-bottom: 10px;
+    margin-bottom: 0px;
 }
 
 .feed-more-btn {   
@@ -102,7 +99,6 @@
 .feed-more-img {
     height: 30px;
     width: 30px;
-    border-radius: 50%;
 }
 
 .feed-active {

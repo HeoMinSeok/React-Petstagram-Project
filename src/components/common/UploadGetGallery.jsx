@@ -11,6 +11,7 @@ import DeleteConfirm from "../ui/DeleteConfirm";
 import EmojiPicker from "../ui/EmojiPicker";
 
 import * as mobilenet from "@tensorflow-models/mobilenet";
+import KakaoMapModal from "../ui/kakaomap/KakaoMapModal";
 
 const UploadGetGallery = ({ onClose }) => {
     const { isLoggedIn, profileInfo } = useUser();
@@ -22,6 +23,7 @@ const UploadGetGallery = ({ onClose }) => {
     const fileInputRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [text, setText] = useState("");
+    const [selectedAddress, setSelectedAddress] = useState("");
     const maxTextLength = 2200;
 
     useEffect(() => {
@@ -58,7 +60,7 @@ const UploadGetGallery = ({ onClose }) => {
         try {
             openModal("loading");
             const file = fileInputRef.current?.files[0];
-            const postData = { postContent: text };
+            const postData = { postContent: text, location: selectedAddress };
             const formData = new FormData();
             formData.append(
                 "post",
@@ -68,7 +70,7 @@ const UploadGetGallery = ({ onClose }) => {
             );
 
             if (file) {
-                const breed = await PostService.classifyImage(file); // 변경된 부분
+                const breed = await PostService.classifyImage(file);
                 console.log("Predictions: ", breed);
 
                 formData.append("breed", breed);
@@ -182,29 +184,53 @@ const UploadGetGallery = ({ onClose }) => {
                                 <EmojiPicker onEmojiClick={handleEmojiClick} />
                             )}
                         </div>
-                        <PostOptions />
+                        <PostOptions
+                            openModal={openModal}
+                            selectedAddress={selectedAddress}
+                        />
                     </div>
                 </div>
             </div>
             {isModalOpen("deleteConfirm") && (
                 <DeleteConfirm closeModal={closeModal} onClose={onClose} />
             )}
+            {isModalOpen("kakaoMap") && (
+                <KakaoMapModal
+                    onClose={() => closeModal("kakaoMap")}
+                    setSelectedAddress={setSelectedAddress} // 주소 설정 함수 전달
+                />
+            )}
         </div>
     );
 };
 
-const PostOptions = () => (
+const PostOptions = ({ openModal, selectedAddress }) => (
     <div className="post-options">
         {[
             {
-                label: "위치 추가",
+                label: "위치 ",
                 icon: "../src/assets/postmodal/location.png",
+                onClick: () => openModal("kakaoMap"),
+                showAddress: true, // 주소를 표시할 항목에 플래그 추가
             },
-            { label: "접근성", icon: "../src/assets/postmodal/under.png" },
-            { label: "고급 설정", icon: "../src/assets/postmodal/under.png" },
+            {
+                label: "접근성",
+                icon: "../src/assets/postmodal/under.png",
+                showAddress: false,
+            },
+            {
+                label: "고급 설정",
+                icon: "../src/assets/postmodal/under.png",
+                showAddress: false,
+            },
         ].map((option, index) => (
-            <div className="post-option" key={index}>
-                <div className="post-text-wrapper-6">{option.label}</div>
+            <div className="post-option" key={index} onClick={option.onClick}>
+                <div className="post-text-wrapper-6">
+                    {option.label}
+                    {option.showAddress && (
+                        <span className="post-address"> {selectedAddress}</span>
+                    )}
+                </div>
                 <img className="post-icon" alt="Frame" src={option.icon} />
             </div>
         ))}
