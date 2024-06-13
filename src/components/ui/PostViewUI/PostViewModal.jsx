@@ -13,12 +13,15 @@ import MoreModal from "../MoreModal";
 
 import PostViewComment from "./PostViewComment";
 import PostViewFooter from "./PostViewFooter";
+import useFollow from "../../hook/useFollow";
+import BanReportModal from "../BanReportModal";
 
 const PostViewModal = ({ post, deletePost, onClose, modalType }) => {
     const { allUserProfiles } = useAllUser();
     const { openModal, closeModal, isModalOpen, toggleModal } = useModal();
     const { postLiked, postLikesCount, handleLikeClick, likedUsers } =
         useLikeStatus(post.id);
+    const { isFollowing, handleFollow, handleUnfollow } = useFollow();
 
     const [currentPost, setCurrentPost] = useState(post);
     const [commentText, setCommentText] = useState("");
@@ -66,6 +69,49 @@ const PostViewModal = ({ post, deletePost, onClose, modalType }) => {
                     ...commonOptions,
                 ];
             case "feed":
+                return [
+                    {
+                        label: "신고",
+                        className: "moreoption-report",
+                        onClick: () => {
+                            openModal("ban-report");
+                            closeModal("more");
+                        },
+                    },
+                    {
+                        label: "이 계정 정보",
+                        className: "moreoption-account",
+                        onClick: () => {
+                            console.log("이 계정 정보");
+                            closeModal("more");
+                        },
+                    },
+                    {
+                        label: "공유",
+                        className: "moreoption-share",
+                        onClick: () => {
+                            console.log("카카오톡 api 공유 추후 작성");
+                            closeModal("more");
+                        },
+                    },
+                    {
+                        label: isFollowing(post.userId)
+                            ? "팔로우 취소"
+                            : `${post.email}님 팔로우`,
+                        className: isFollowing(post.userId)
+                            ? "moreoption-unfollow"
+                            : "moreoption-follow",
+                        onClick: async () => {
+                            if (isFollowing(post.userId)) {
+                                await handleUnfollow(post.userId);
+                            } else {
+                                await handleFollow(post.userId);
+                            }
+                            closeModal("more");
+                        },
+                    },
+                    ...commonOptions,
+                ];
             case "explorefeed":
                 return [
                     {
@@ -275,6 +321,10 @@ const PostViewModal = ({ post, deletePost, onClose, modalType }) => {
                     post={currentPost}
                     setCurrentPost={setCurrentPost}
                 />
+            )}
+
+            {isModalOpen("ban-report") && (
+                <BanReportModal onClose={() => closeModal("ban-report")} reportedUserId={currentPost.userId} bannedUser={currentPost.email}/>
             )}
         </>
     );

@@ -346,6 +346,7 @@ const FeedItem = ({
                         setIsBanReportModalOpen(false);
                     }}
                     reportedUserId={getUserIdByEmail(post.email)}
+                    bannedUser={post.email}
                 />
             )}
         </div>

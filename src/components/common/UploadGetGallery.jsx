@@ -111,7 +111,7 @@ const UploadGetGallery = ({ onClose }) => {
                 <div className="post-content">
                     <div className="post-image-section">
                         {selectedImage ? (
-                            <div className="img_section">
+                            <div className="post-image-section">
                                 <img
                                     src={selectedImage}
                                     alt="Selected"
@@ -119,7 +119,7 @@ const UploadGetGallery = ({ onClose }) => {
                                 />
                             </div>
                         ) : (
-                            <div className="img_section">
+                            <div className="post-image-pull">
                                 <img
                                     className="image_file"
                                     src="../src/assets/postmodal/photo.png"

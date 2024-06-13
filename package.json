@@ -39,7 +39,9 @@
         "react-webcam": "^7.2.0",
         "serve-static": "^1.15.0",
         "slick-carousel": "^1.8.1",
-        "styled-components": "^6.1.11"
+        "styled-components": "^6.1.11",
+        "sweetalert2": "^11.11.1",
+        "sweetalert2-react-content": "^5.0.7"
     },
     "devDependencies": {
         "@types/react": "^18.2.66",

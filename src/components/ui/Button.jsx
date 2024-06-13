@@ -4,7 +4,7 @@ import styled from "styled-components";
 const StyledButton = styled.button`
     width: ${(props) => props.width || "100%"};
     padding: ${(props) => props.padding || '10px'};
-    background-color: ${(props) => props.backgroundColor || "#7ab3f4"};
+    background-color: ${(props) => props.bgColor || "#7ab3f4"};
     color: ${(props) => props.color || "#fff"}; 
     border: ${(props) => props.borderStyle || "none"} ${(props) => props.borderColor || "transparent"};
     border-radius: 5px;
@@ -14,7 +14,7 @@ const StyledButton = styled.button`
 const Button = ({
     children,
     onClick,
-    backgroundColor,
+    bgColor,
     color,
     borderStyle,
     borderColor,
@@ -24,7 +24,7 @@ const Button = ({
     return (
         <StyledButton
             onClick={onClick}
-            backgroundColor={backgroundColor}
+            backgroundColor={bgColor}
             color={color}
             borderStyle={borderStyle}
             borderColor={borderColor}

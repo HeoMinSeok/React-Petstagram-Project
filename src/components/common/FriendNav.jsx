@@ -16,7 +16,7 @@ const FriendNav = () => {
     const { fetchAllUsers } = useAllUser();
     const { openModal, closeModal, isModalOpen } = useModal();
     const { bannedUsers } = useReporting();
-    const { isFollowing, handleFollow, handleUnfollow } = useFollow();
+    const { isFollowing, handleFollow, handleUnfollow, fetchFollowingList } = useFollow();
     const navigate = useNavigate();
     const [selectedUser, setSelectedUser] = useState(null);
 
@@ -54,10 +54,10 @@ const FriendNav = () => {
             />
             {selectedUser && isModalOpen("followCancel") && (
                 <FollowCancelModal
-                    isOpen={isModalOpen("followCancel")}
-                    onClose={() => closeModal("followcancel")}
+                    onClose={closeFollowCancelModal}
                     user={selectedUser}
-                    onUnfollow={handleUnfollow}
+                    onButtonClick={handleUnfollow}
+                    fetchFollowList={fetchFollowingList}
                 />
             )}
         </div>

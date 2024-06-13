@@ -31,7 +31,6 @@ const MyFeed = () => {
         useFollowCounts(profileInfo.id);
 
     const [selectedPost, setSelectedPost] = useState(null);
-    
 
     useEffect(() => {
         fetchUserPosts(profileInfo.id);
@@ -191,14 +190,20 @@ const EmptyFeed = ({ onUploadModalOpen }) => (
     </div>
 );
 
-const ImageGrid = ({ getImageUrl, posts, onImageClick }) => (
-    <div className="myfeed-grid-container">
-        {posts.map((post, index) => (
-            <div key={index} className="myfeed-grid-item" onClick={() => onImageClick(post)}>
-                <img src={getImageUrl(post.imageList[0])} alt={`grid-${index}`} />
-            </div>
-        ))}
-    </div>
-);
+const ImageGrid = ({ getImageUrl, posts, onImageClick }) => {
+    /* 게시글 등록 날짜 최신 순으로 정렬 */
+    const sortedPosts = [...posts].sort((a, b) => new Date(b.regTime) - new Date(a.regTime));
+
+    return (
+        <div className="myfeed-grid-container">
+            {sortedPosts.map((post, index) => (
+                <div key={index} className="myfeed-grid-item" onClick={() => onImageClick(post)}>
+                    <img src={getImageUrl(post.imageList[0])} alt={`grid-${index}`} />
+                </div>
+            ))}
+        </div>
+    );
+};
+
 
 export default MyFeed;
