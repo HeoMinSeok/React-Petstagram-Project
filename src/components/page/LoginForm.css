@@ -27,8 +27,8 @@
     margin-bottom: 20px;
 }
 
-input[type="text"],
-input[type="password"] {
+.login-input-email,
+.login-input-password{
     width: 100%;
     max-width: 320px;
     padding: 10px;
@@ -48,6 +48,13 @@ input[type="password"] {
     cursor: pointer;
     box-sizing: border-box;
     background-color: #7ab3f4;
+}
+
+.login-error-message{
+    margin-top: 10px;
+    text-align: center;
+    font-size: 15px;
+    color: #ff0000;
 }
 
 .or-separator {

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import "./MyFeed.css";
 
@@ -43,6 +44,7 @@ const MyFeed = () => {
 
     const handleFollowButtonClick = async (userId, action) => {
         await action(userId);
+        await fetchFollowCounts(); 
     };
 
     const getImageUrl = (image) =>

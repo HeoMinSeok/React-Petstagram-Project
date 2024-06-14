@@ -25,7 +25,7 @@ const LoginForm = ({ setIsLoggedIn }) => {
             }
         } catch (error) {
             console.log(error);
-            setError("로그인 실패", error.message);
+            setError("아이디 또는 비밀번호가 잘못되었습니다.", error.message);
             setTimeout(() => {
                 setError("");
             }, 5000);
@@ -44,6 +44,7 @@ const LoginForm = ({ setIsLoggedIn }) => {
                                 placeholder="전화번호, 사용자 이름 또는 이메일"
                                 value={email}
                                 onChange={(e) => setUserEmail(e.target.value)}
+                                className="login-input-email"
                             />
                         </div>
                         <div className="form-group">
@@ -52,13 +53,15 @@ const LoginForm = ({ setIsLoggedIn }) => {
                                 placeholder="비밀번호"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                className="login-input-password"
                             />
                         </div>
-                        {error && <p className="error-message">{error}</p>}
+
                         <button type="submit" className="login-submit">
                             로그인
                         </button>
                     </form>
+                    {error && <p className="login-error-message">{error}</p>}
                     <div className="or-separator">
                         <div className="line"></div>
                         <div className="or-text">또는</div>

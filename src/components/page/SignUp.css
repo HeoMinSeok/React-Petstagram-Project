@@ -18,28 +18,33 @@
 .signup-info {
     margin-bottom: 20px;
     text-align: center;
-    margin-bottom: 30px;
+}
+
+.signup-info h1{
+    margin-bottom: 20px;
 }
 
 .form-group {
     margin-bottom: 20px;
 }
 
-input[type="text"].error,
-input[type="password"].error,
-input[type="phone"].error {
-    border: 1px solid #ff0000;
-    box-sizing: border-box;
-}
-
-input[type="text"],
-input[type="password"],
-input[type="phone"] {
+.signup-input-email,
+.signup-input-name,
+.signup-input-phone,
+.signup-input-password {
     width: 100%;
     max-width: 320px;
     padding: 10px;
     border: 1px solid #dbdbdb;
     border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.signup-input-email.error,
+.signup-input-name.error,
+.signup-input-phone.error,
+.signup-input-password.error {
+    border: 1px solid #ff0000;
     box-sizing: border-box;
 }
 
@@ -97,10 +102,10 @@ a {
     margin-right: 5px;
 }
 
-.forgot-password {
-    font-size: 13px;
+.error-message {
+    font-size: 18px;
     margin-top: 25px;
-    margin-bottom: -5px;
+    color: #ff0000;
     text-align: center;
 }
 

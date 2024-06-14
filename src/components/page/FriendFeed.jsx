@@ -103,8 +103,10 @@ const FriendFeed = () => {
     const handleFollowClick = async () => {
         if (isFollowing(friendProfile.id)) {
             await handleUnfollow(friendProfile.id);
+            await fetchUserFollowerList(friendProfile.id);
         } else {
             await handleFollow(friendProfile.id);
+            await fetchUserFollowerList(friendProfile.id);
         }
         fetchFollowCounts();
     };

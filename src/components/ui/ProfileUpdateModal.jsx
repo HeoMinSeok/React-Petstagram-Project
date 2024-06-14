@@ -110,12 +110,11 @@ const ProfileUpdateModal = ({
 
         try {
             const token = localStorage.getItem("token");
-            await UserService.updateUser(profileInfo.id, formData, token);
+            await UserService.editUser(profileInfo.id, formData, token);
             await fetchProfileInfo();
             onClose();
         } catch (error) {
             console.error("Error updating user:", error);
-            alert("프로필 업데이트 중 오류가 발생했습니다. 다시 시도해주세요.");
         }
     };
 

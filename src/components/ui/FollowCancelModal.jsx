@@ -20,7 +20,6 @@ const FollowCancelModal = ({
             await onButtonClick(user.id);
             if (title === "팔로워") {
                 await fetchFollowCounts();
-                
             }
             await fetchFollowList();
         } catch (error) {

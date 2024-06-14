@@ -14,26 +14,45 @@ const SignUp = () => {
         phone: "",
         password: "",
     });
+    const [errors, setErrors] = useState({
+        email: false,
+        name: false,
+        phone: false,
+        password: false,
+    });
+    const [touched, setTouched] = useState({
+        email: false,
+        name: false,
+        phone: false,
+        password: false,
+    });
 
     useEffect(() => {
-        if (
-            userData.email.trim() !== "" &&
-            userData.name.trim() !== "" &&
-            userData.phone.trim() !== "" &&
-            userData.password.trim() !== ""
-        ) {
-            setIsButtonEnabled(true);
-        } else {
-            setIsButtonEnabled(false);
-        }
-    }, [userData.email, userData.name, userData.phone, userData.password]);
+        const isValid = (value) => value.trim() !== "";
+        const newErrors = {
+            email: touched.email && !isValid(userData.email),
+            name: touched.name && !isValid(userData.name),
+            phone: touched.phone && !isValid(userData.phone),
+            password: touched.password && !isValid(userData.password),
+        };
+        setErrors(newErrors);
+        setIsButtonEnabled(!Object.values(newErrors).some(Boolean));
+    }, [userData, touched]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+        setUserData({ ...userData, [name]: value });
+        setTouched({ ...touched, [name]: true });
+        
         if (name === "phone") {
             setUserData({ ...userData, [name]: formatPhoneNumber(value) });
         } else {
             setUserData({ ...userData, [name]: value });
+        }
+
+        if (errors[name]) {
+            setErrors({ ...errors, [name]: false });
+            setErrorMessage("");
         }
     };
 
@@ -57,7 +76,18 @@ const SignUp = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(userData);
+        const newTouched = {
+            email: true,
+            name: true,
+            phone: true,
+            password: true,
+        };
+        setTouched(newTouched);
+        const isValid = Object.values(userData).every(value => value.trim() !== "");
+        if (!isValid) {
+            setErrorMessage("모든 필드를 채워주세요.");
+            return;
+        }
         try {
             await UserService.signup(userData);
             setUserData({
@@ -66,10 +96,14 @@ const SignUp = () => {
                 phone: "",
                 password: "",
             });
+            /* SweetAlert 커스텀 하기 */
             alert("회원가입 완료");
             navigate("/");
         } catch (error) {
             setErrorMessage(error.response?.data || "회원가입에 실패했습니다.");
+            if (error.response?.data?.includes("이메일")) {
+                setErrors({ ...errors, email: true });
+            }
         }
     };
 
@@ -99,6 +133,7 @@ const SignUp = () => {
                                 placeholder="이메일 주소"
                                 value={userData.email}
                                 onChange={handleInputChange}
+                                className={`signup-input-email ${errors.email ? "error" : ""}`}
                                 required
                             />
                         </div>
@@ -109,6 +144,7 @@ const SignUp = () => {
                                 placeholder="사용자 이름"
                                 value={userData.name}
                                 onChange={handleInputChange}
+                                className={`signup-input-name ${errors.name ? "error" : ""}`}
                                 required
                             />
                         </div>
@@ -119,6 +155,7 @@ const SignUp = () => {
                                 placeholder="휴대폰 번호"
                                 value={userData.phone}
                                 onChange={handleInputChange}
+                                className={`signup-input-phone ${errors.phone ? "error" : ""}`}
                                 required
                             />
                         </div>
@@ -129,14 +166,13 @@ const SignUp = () => {
                                 placeholder="비밀번호"
                                 value={userData.password}
                                 onChange={handleInputChange}
+                                className={`signup-input-password ${errors.password ? "error" : ""}`}
                                 required
                             />
                         </div>
                         <button
                             type="submit"
-                            className={`signup-submit ${
-                                isButtonEnabled ? "enabled" : "disabled"
-                            }`}
+                            className={`signup-submit ${isButtonEnabled ? "enabled" : "disabled"}`}
                         >
                             가입
                         </button>
