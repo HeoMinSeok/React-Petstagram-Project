@@ -13,6 +13,7 @@ import useModal from "../hook/useModal";
 import PostViewModal from "../ui/PostViewUI/PostViewModal";
 import MoreModal from "../ui/MoreModal";
 import BanReportModal from "../ui/BanReportModal";
+import KakaoShare from "../ui/kakaoshare/KakaoShare";
 
 import icons from "../../assets/ImageList";
 import GetRelativeTime from "../../utils/GetRelativeTime";
@@ -175,7 +176,6 @@ const FeedItem = ({
                     label: "공유",
                     className: "moreoption-share",
                     onClick: () => {
-                        console.log("카카오톡 api 공유 추후 작성");
                         setIsMoreModalOpen(false);
                     },
                 },
@@ -291,11 +291,8 @@ const FeedItem = ({
                             }
                             onClick={handleLikeClick}
                         />
-                        <img
-                            className="share_img"
-                            alt="공유"
-                            src={icons.postShareIcon}
-                        />
+                        
+                        <KakaoShare post={post}/>
                         <img
                             className="comment_img"
                             alt="댓글"

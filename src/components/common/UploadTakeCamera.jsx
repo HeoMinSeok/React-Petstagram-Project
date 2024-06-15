@@ -116,11 +116,11 @@ const UploadTakeCamera = ({ onClose }) => {
                 <div className="post-content">
                     <div className="post-image-section">
                         {selectedImage ? (
-                            <div className="post-img_section">
+                            <div className="post-img-section">
                                 <img
                                     src={selectedImage}
                                     alt="Selected"
-                                    className="selected-image"
+                                    className="post-selected-image"
                                 />
                             </div>
                         ) : (

@@ -75,7 +75,7 @@
     height: calc(100% - 69px);
 }
 
-.post-frame .post-image-section {
+.post-image-section {
     background-color: #d9d9d9;
     width: 90%;  
     height: 100%;
@@ -89,13 +89,13 @@
     border-right: 1px solid #d9d9d9; 
 }
 
-.post-img_section img {
+.post-selected-image {
     object-fit: cover;
     width: 100%;
     height: 100%;
 }
 
-.post-img_section {
+.post-img-section {
     width: 100%;
     height: 100%;
 }
@@ -127,7 +127,7 @@
 
 .post-frame .post-details-section {
     background-color: #ffffff;
-    width: 40%;  /* 텍스트 섹션의 너비를 40%로 늘림 */
+    width: 40%;  
     display: flex;
     flex-direction: column;
     box-sizing: border-box;

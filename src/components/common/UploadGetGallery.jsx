@@ -113,11 +113,11 @@ const UploadGetGallery = ({ onClose }) => {
                 <div className="post-content">
                     <div className="post-image-section">
                         {selectedImage ? (
-                            <div className="post-image-section">
+                            <div className="post-img-section">
                                 <img
                                     src={selectedImage}
                                     alt="Selected"
-                                    className="selected-image"
+                                    className="post-selected-image"
                                 />
                             </div>
                         ) : (
@@ -148,6 +148,7 @@ const UploadGetGallery = ({ onClose }) => {
                                 ref={fileInputRef}
                                 style={{ display: "none" }}
                                 onChange={handleFileChange}
+                                multiple
                             />
                         </div>
                     </div>
