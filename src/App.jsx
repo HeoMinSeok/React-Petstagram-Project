@@ -15,7 +15,7 @@ import { NavProvider } from "./contexts/NavContext";
 import { ModalProvider } from "./contexts/ModalContext";
 import { FollowProvider } from "./contexts/FollowContext";
 import { CommentProvider } from "./contexts/CommentContext";
-import { ThemeProvider } from "./contexts/ThemeContext";
+import { ChatRoomProvider } from "./contexts/ChatRoomContext";
 
 /* 컴포넌트 */
 import LoginForm from "./components/page/LoginForm";
@@ -183,7 +183,27 @@ const AppContent = () => {
                         )
                     }
                 />
-                
+                <Route
+                    path="/messages/:ChatRoomId"
+                    element={
+                        isLoggedIn ? (
+                            <div className="app">
+                                <div className="div">
+                                    <Message />
+                                    <div className="main-container">
+                                        <HomeNav />
+                                        {navState.search && <SearchNav />}
+                                        {navState.notification && (
+                                            <NotificationNav />
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <Navigate to="/login" />
+                        )
+                    }
+                />
             </Routes>
         </Router>
     );
@@ -197,9 +217,9 @@ const App = () => (
                     <CommentProvider>
                         <FollowProvider>
                             <ModalProvider>
-                                <ThemeProvider>
+                                <ChatRoomProvider>
                                     <AppContent />
-                                </ThemeProvider>
+                                </ChatRoomProvider>
                             </ModalProvider>
                         </FollowProvider>
                     </CommentProvider>

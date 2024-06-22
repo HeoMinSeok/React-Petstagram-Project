@@ -8,9 +8,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 899;
+    z-index: 999;
     padding: 20px;
-    
 }
 
 .post-close-modal {
@@ -96,6 +95,7 @@
 }
 
 .post-img-section {
+    
     width: 100%;
     height: 100%;
 }

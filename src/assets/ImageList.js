@@ -48,6 +48,18 @@ import underArrowIcon from "./postmodal/under.png";
 /* FindPassword */
 import lockIcon from "./find-password.png";
 
+/* Message DM */
+import messageInfoIcon from "./message/message-info.png";
+import messageImageInputIcon from "./message/message-input.png";
+import messageSmileIcon from "./message/message-smile.png";
+import messageMicIcon from "./message/message-mic.png";
+import messageImageInputIcon2 from "./message/message-input2.png";
+import messageWrite from "./message/message-write.png";
+import messageWriteClose from "./message/message-close.png";
+import messageAudioClose from "./message/message-close2.png";
+import messagePauseIcon from "./message/message-pause.png";
+import messagePlayIcon from "./message/message-play.png";
+
 const icons = {
     // HomeNav
     homeIcon,
@@ -98,6 +110,18 @@ const icons = {
 
     // FindPassword
     lockIcon,
+
+    // Message DM
+    messageInfoIcon,
+    messageImageInputIcon,
+    messageSmileIcon,
+    messageMicIcon,
+    messageImageInputIcon2,
+    messageWrite,
+    messageWriteClose,
+    messageAudioClose,
+    messagePauseIcon,
+    messagePlayIcon,
 };
 
 export default icons;

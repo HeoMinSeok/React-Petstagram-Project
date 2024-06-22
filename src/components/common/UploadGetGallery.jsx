@@ -12,6 +12,8 @@ import EmojiPicker from "../ui/EmojiPicker";
 
 import * as mobilenet from "@tensorflow-models/mobilenet";
 import KakaoMapModal from "../ui/kakaomap/KakaoMapModal";
+import Slider from "react-slick";
+
 
 const UploadGetGallery = ({ onClose }) => {
     const { isLoggedIn, profileInfo } = useUser();
@@ -21,7 +23,7 @@ const UploadGetGallery = ({ onClose }) => {
     );
     const { openModal, closeModal, isModalOpen } = useModal();
     const fileInputRef = useRef(null);
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedImages, setSelectedImages] = useState([]);
     const [text, setText] = useState("");
     const [selectedAddress, setSelectedAddress] = useState("");
     const maxTextLength = 2200;
@@ -34,14 +36,14 @@ const UploadGetGallery = ({ onClose }) => {
     }, []);
 
     const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
+        const files = Array.from(e.target.files);
+        const images = files.map((file) => {
             const reader = new FileReader();
             reader.onload = () => {
-                setSelectedImage(reader.result);
+                setSelectedImages((prev) => [...prev, reader.result]);
             };
             reader.readAsDataURL(file);
-        }
+        });
     };
 
     const handleTextChange = (e) => {
@@ -94,6 +96,14 @@ const UploadGetGallery = ({ onClose }) => {
         }
     };
 
+    const settings = {
+        dots: true,
+        infinite: false,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+    };
+
     return (
         <div className="post-frame-container">
             {isModalOpen("loading") && <Loading />}
@@ -112,14 +122,14 @@ const UploadGetGallery = ({ onClose }) => {
                 </div>
                 <div className="post-content">
                     <div className="post-image-section">
-                        {selectedImage ? (
-                            <div className="post-img-section">
-                                <img
-                                    src={selectedImage}
-                                    alt="Selected"
-                                    className="post-selected-image"
-                                />
-                            </div>
+                    {selectedImages.length > 0 ? (
+                            <Slider {...settings}>
+                                {selectedImages.map((image, index) => (
+                                    <div key={index}>
+                                        <img src={image} alt={`Selected ${index}`} className="post-selected-image"/>
+                                    </div>
+                                ))}
+                            </Slider>
                         ) : (
                             <div className="post-image-pull">
                                 <img
@@ -134,7 +144,7 @@ const UploadGetGallery = ({ onClose }) => {
                         <div
                             className="post-file-div"
                             style={{
-                                display: selectedImage ? "none" : "block",
+                                display: selectedImages.length > 0 ? "none" : "block",
                             }}
                         >
                             <div
