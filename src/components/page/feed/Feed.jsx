@@ -1,22 +1,26 @@
 import "./Feed.css";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import FeedStoryList from "./FeedStoryList";
+import { useState, useRef, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
-import useUser from "../hook/useUser";
-import useAllUser from "../hook/useAllUser";
-import usePost from "../hook/usePost";
-import useLikeStatus from "../hook/useLikeStatus";
-import useFollow from "../hook/useFollow";
-import useComment from "../hook/useComment";
-import useModal from "../hook/useModal";
+import useUser from "../../hook/useUser";
+import useAllUser from "../../hook/useAllUser";
+import usePost from "../../hook/usePost";
+import useLikeStatus from "../../hook/useLikeStatus";
+import useFollow from "../../hook/useFollow";
+import useComment from "../../hook/useComment";
+import useModal from "../../hook/useModal";
 
-import PostViewModal from "../ui/PostViewUI/PostViewModal";
-import MoreModal from "../ui/MoreModal";
-import BanReportModal from "../ui/BanReportModal";
-import KakaoShare from "../ui/kakaoshare/KakaoShare";
+import PostViewModal from "../../ui/PostViewUI/PostViewModal";
+import MoreModal from "../../ui/MoreModal";
+import BanReportModal from "../../ui/BanReportModal";
+import KakaoShare from "../../ui/kakaoshare/KakaoShare";
 
-import icons from "../../assets/ImageList";
-import GetRelativeTime from "../../utils/GetRelativeTime";
+import icons from "../../../assets/ImageList";
+import GetRelativeTime from "../../../utils/GetRelativeTime";
 
 const Feed = () => {
     const { profileInfo } = useUser();
@@ -27,6 +31,13 @@ const Feed = () => {
     const [selectedPost, setSelectedPost] = useState(postList);
     const [modalType, setModalType] = useState("feed");
 
+    /* Mock */
+    const stories = [
+        { username: 'user1', profileImage: 'profile1.jpg' },
+        { username: 'user2', profileImage: 'profile2.jpg' },
+        { username: 'user3', profileImage: 'profile3.jpg' },
+    ];
+
     const handlePostViewClick = (post) => {
         setSelectedPost(post);
         setModalType(profileInfo.email === post.email ? "myfeed" : "feed");
@@ -34,7 +45,10 @@ const Feed = () => {
     };
 
     return (
-        <div>
+        <div className="feed-container">
+            <div className="story-container">
+                <FeedStoryList stories={stories} />
+            </div>
             {postList.map((post) => {
                 const postComments =
                     commentList.find((c) => c.postId === post?.id)?.comments ||
@@ -88,6 +102,10 @@ const FeedItem = ({
 
     const getImageUrl = (image) => {
         return `http://localhost:8088/uploads/${image.imageUrl}`;
+    };
+
+    const getVideoUrl = (video) => {
+        return `http://localhost:8088/uploads/${video.videoUrl}`;
     };
 
     const getProfileImageUrlForWriter = (email) => {
@@ -200,6 +218,50 @@ const FeedItem = ({
         }
     };
 
+    const sliderSettings = {
+        dots: true,
+        infinite: false,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        afterChange: (current) => adjustImageSizes(current),
+    };
+
+    const imgRef = useRef([]);
+    const videoRef = useRef([]);
+
+    const adjustImageSizes = () => {
+        imgRef.current.forEach((img) => {
+            if (img.naturalWidth > img.naturalHeight * 1.3) {
+                img.style.height = "auto";
+                img.style.width = "100%";
+            } else {
+                img.style.height = "624px";
+                img.style.width = "100%";
+            }
+            img.style.backgroundColor = "black";
+            img.style.objectFit = "cover";
+        });
+
+        videoRef.current.forEach((video) => {
+            video.onloadedmetadata = () => {
+                if (video.videoWidth > video.videoHeight * 1.2) {
+                    video.style.height = "auto";
+                    video.style.width = "100%";
+                } else {
+                    video.style.height = "624px";
+                    video.style.width = "100%";
+                }
+                video.style.backgroundColor = "black";
+                video.style.objectFit = "cover";
+            };
+        });
+    };
+
+    useEffect(() => {
+        adjustImageSizes();
+    }, [post.imageList, post.videoList]);
+
     return (
         <div className="feed">
             <div className="feed-frame">
@@ -224,7 +286,7 @@ const FeedItem = ({
                                         <button
                                             className="feed-user-following"
                                             onClick={(e) => {
-                                                e.stopPropagation(); // 상위 div의 onClick 이벤트 전파를 막기 위해 사용
+                                                e.stopPropagation();
                                                 handleUnfollow(writerId);
                                             }}
                                         >
@@ -269,16 +331,36 @@ const FeedItem = ({
 
                 {post.imageList && post.imageList.length > 0 && (
                     <div className="feed-post-photos">
-                        {post.imageList.map((image, index) => (
-                            <img
+                        <Slider {...sliderSettings}>
+                            {post.imageList.map((image, index) => (
+                                <div key={index}>
+                                    <img
+                                        className="feed-post-photo"
+                                        src={getImageUrl(image)}
+                                        alt={`Post ${index + 1}`}
+                                        ref={(el) =>
+                                            (imgRef.current[index] = el)
+                                        }
+                                    />
+                                </div>
+                            ))}
+                        </Slider>
+                    </div>
+                )}
+                {post.videoList && post.videoList.length > 0 && (
+                    <div className="feed-post-videos">
+                        {post.videoList.map((video, index) => (
+                            <video
                                 key={index}
-                                className="feed-post-photo"
-                                src={getImageUrl(image)}
-                                alt={`Post ${index + 1}`}
+                                className="feed-post-video"
+                                controls
+                                src={getVideoUrl(video)}
+                                ref={(el) => (videoRef.current[index] = el)}
                             />
                         ))}
                     </div>
                 )}
+
                 <div className="feed-active">
                     <div className="feed-active-btn">
                         <img
@@ -291,8 +373,8 @@ const FeedItem = ({
                             }
                             onClick={handleLikeClick}
                         />
-                        
-                        <KakaoShare post={post}/>
+
+                        <KakaoShare post={post} />
                         <img
                             className="comment_img"
                             alt="댓글"

@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./PostViewModal.css";
 import GetRelativeTime from "../../../utils/GetRelativeTime";
 import icons from "../../../assets/ImageList";
+
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 import useLikeStatus from "../../hook/useLikeStatus";
 import useComment from "../../hook/useComment";
@@ -28,6 +32,9 @@ const PostViewModal = ({ post, deletePost, onClose, modalType }) => {
     const [replyingToCommentId, setReplyingToCommentId] = useState(null);
     const [replyingToEmail, setReplyingToEmail] = useState("");
     const [showReplies, setShowReplies] = useState({});
+
+    const [currentSlide, setCurrentSlide] = useState(0);
+    const sliderRef = useRef(null);
 
     const {
         commentList,
@@ -177,8 +184,36 @@ const PostViewModal = ({ post, deletePost, onClose, modalType }) => {
         return user ? user.profileImageUrl : "";
     };
 
+    const getImageUrl = (image) =>
+        `http://localhost:8088/uploads/${image.imageUrl}`;
+
+    const getVideoUrl = (video) =>
+        `http://localhost:8088/uploads/${video.videoUrl}`;
+
     const postComments =
         commentList.find((c) => c.postId === currentPost.id)?.comments || [];
+
+    const sliderSettings = {
+        dots: true,
+        infinite: false,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        beforeChange: (current, next) => setCurrentSlide(next),
+        adaptiveHeight: true,
+    };
+
+    const next = () => {
+        if (sliderRef.current) {
+            sliderRef.current.slickNext();
+        }
+    };
+
+    const previous = () => {
+        if (sliderRef.current) {
+            sliderRef.current.slickPrev();
+        }
+    };
 
     if (!currentPost) return null;
 
@@ -191,14 +226,44 @@ const PostViewModal = ({ post, deletePost, onClose, modalType }) => {
                 >
                     <div className="postview-content">
                         <div className="postview-img-section">
-                            {currentPost.imageList &&
-                                currentPost.imageList[0] && (
-                                    <img
-                                        src={`http://localhost:8088/uploads/${
-                                            currentPost.imageList[0].imageUrl
-                                        }?${new Date().getTime()}`}
-                                        alt=""
-                                        className="postview-image"
+                            <Slider {...sliderSettings} ref={sliderRef}>
+                                {currentPost.imageList.map((image, index) => (
+                                    <div key={index} className="postview-slide">
+                                        <img
+                                            className="postview-image"
+                                            src={getImageUrl(image)}
+                                            alt={`Post ${index + 1}`}
+                                        />
+                                    </div>
+                                ))}
+                            </Slider>
+                            {currentSlide > 0 && (
+                                <button
+                                    className="slider-button slider-button-left"
+                                    onClick={previous}
+                                >
+                                    {"<"}
+                                </button>
+                            )}
+                            {currentSlide <
+                                currentPost.imageList.length - 1 && (
+                                <button
+                                    className="slider-button slider-button-right"
+                                    onClick={next}
+                                >
+                                    {">"}
+                                </button>
+                            )}
+
+                            {currentPost.videoList &&
+                                currentPost.videoList[0] && (
+                                    <video
+                                        controls
+                                        src={getVideoUrl(
+                                            currentPost.videoList[0]
+                                        )}
+                                        alt="동영상"
+                                        className="postview-video"
                                     />
                                 )}
                         </div>
@@ -324,7 +389,11 @@ const PostViewModal = ({ post, deletePost, onClose, modalType }) => {
             )}
 
             {isModalOpen("ban-report") && (
-                <BanReportModal onClose={() => closeModal("ban-report")} reportedUserId={currentPost.userId} bannedUser={currentPost.email}/>
+                <BanReportModal
+                    onClose={() => closeModal("ban-report")}
+                    reportedUserId={currentPost.userId}
+                    bannedUser={currentPost.email}
+                />
             )}
         </>
     );

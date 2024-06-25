@@ -16,7 +16,8 @@ const FriendNav = () => {
     const { fetchAllUsers } = useAllUser();
     const { openModal, closeModal, isModalOpen } = useModal();
     const { bannedUsers } = useReporting();
-    const { isFollowing, handleFollow, handleUnfollow, fetchFollowingList } = useFollow();
+    const { isFollowing, handleFollow, handleUnfollow, fetchFollowingList } =
+        useFollow();
     const navigate = useNavigate();
     const [selectedUser, setSelectedUser] = useState(null);
 
@@ -103,7 +104,7 @@ const Recommendation = ({
     const { profileInfo } = useUser();
     const { allUserProfiles } = useAllUser();
 
-    const bannedUserIds = bannedUsers.map(user => user.reportedUserId);
+    const bannedUserIds = bannedUsers.map((user) => user.reportedUserId);
 
     return (
         <div>

@@ -24,6 +24,8 @@ import BasicImage from "./basic-profile.jpeg";
 
 /* MyFeed */
 import shareIcon from "/src/assets/myfeed/myfeed-share.png";
+import videoIcon from "/src/assets/myfeed/myfeed-video.png";
+import imgaeIcon from "/src/assets/myfeed/myfeed-image.png";
 
 /* Webcam */
 import transform from "/src/assets/camera/transform.png";
@@ -41,6 +43,7 @@ import moreIcon2 from "./postviewmodal/postview-comment-more.png";
 import lineIcon from "./postviewmodal/postview-line.png";
 
 /* PostModal */
+import photoIcon from "./postmodal/photo.png";
 import smileIcon from "./postmodal/smile.png";
 import locationIcon from "./postmodal/location.png";
 import underArrowIcon from "./postmodal/under.png";
@@ -87,6 +90,8 @@ const icons = {
 
     // Myfeed
     shareIcon,
+    videoIcon,
+    imgaeIcon,
 
     // Webcam
     transform,
@@ -104,6 +109,7 @@ const icons = {
     lineIcon,
 
     // PostModal
+    photoIcon,
     smileIcon,
     locationIcon,
     underArrowIcon,

@@ -5,28 +5,45 @@
     margin: 0 auto;
     position: relative;
     height: auto;
+    padding-bottom: 30px; 
+}
+.story-container {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 700px; 
+    margin: 30px;
+    margin-left: -70px;
 }
 
 .feed-frame {
-    left: 50px;
     position: relative;
-    top: 30px;
-    width: 560px;
-    height: 1000px;
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+    height: auto;
 }
 
-.feed-post-photo {
-    background-color: #d9d9d9;
-    height: 624px;
-    left: 0;
-    position: absolute;
-    top: 64px;
-    width: 560px;
+.feed-post-photo,
+.feed-post-video {
+    background-color: black;
+    width: 100%;
+    object-fit: cover;
 }
+
+.feed-post-photo.tall,
+.feed-post-video.tall {
+    height: 624px;
+}
+
+.feed-post-photo.wide,
+.feed-post-video.wide {
+    height: auto;
+}
+
 
 .feed-info {
-    position: absolute;
-    width: 560px;
+    width: 100%;
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -38,7 +55,7 @@
     display: flex;
     align-items: center;
     flex-grow: 1;
-    gap: 20px; 
+    gap: 20px;
 }
 
 .feed-profile-img {
@@ -47,11 +64,13 @@
     height: 40px;
     width: 40px;
 }
+
 .feed-writer-div {
     display: flex;
     align-items: center;
     gap: 5px;
 }
+
 .feed-writer-name,
 .feed-writer-date {
     color: #000000;
@@ -78,6 +97,7 @@
     color: #00a3ff;
     font-size: 15px;
 }
+
 .feed-location {
     color: rgb(115, 115, 115);
     font-family: "Inter", Helvetica;
@@ -103,43 +123,36 @@
 
 .feed-active {
     height: 54px;
-    left: 0;
-    position: absolute;
-    top: 688px;
-    width: 502px;
+    width: 100%;
+    padding: 16px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .feed-active-btn {
-    align-items: flex-start;
-    display: inline-flex;
+    display: flex;
     gap: 17px;
-    left: 0;
-    position: absolute;
-    top: 15px;
 }
 
 .bookmark-img {
     height: 24px;
-    left: 536px;
-    position: absolute;
-    top: 16px;
     width: 24px;
+    cursor: pointer;
+    margin-left: auto;
 }
 
 .heart_img.liked {
     width: 24px;
-    height: 24px; 
+    height: 24px;
 }
 
 .feed-post-info {
-    align-items: flex-start;
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
     gap: 7px;
-    left: 0;
-    position: absolute;
-    top: 742px;
-    width: 560px;
+    width: 100%;
+    padding: 16px 0;
 }
 
 .feed-heart-count {
@@ -150,7 +163,6 @@
     letter-spacing: 0;
     line-height: normal;
     margin-top: -1px;
-    position: relative;
     width: fit-content;
 }
 
@@ -158,11 +170,9 @@
     color: #000000;
     font-family: "Inter", Helvetica;
     font-size: 13.8px;
-    height: auto;
     letter-spacing: 0;
     line-height: normal;
-    position: relative;
-    width: 560px;
+    width: 100%;
 }
 
 .feed-post-more {
@@ -176,9 +186,8 @@
     font-weight: 700;
     letter-spacing: 0;
     line-height: normal;
-    position: relative;
-    width: auto;
     margin-bottom: -10px;
+    cursor: pointer;
 }
 
 .feed-comment {
@@ -186,6 +195,7 @@
     width: 100%;
     display: flex;
     justify-content: space-between !important;
+    padding: 8px 0;
 }
 
 .feed-comment-input {
@@ -195,11 +205,10 @@
     font-weight: 400;
     letter-spacing: 0;
     line-height: normal;
-    position: relative;
     cursor: pointer;
     border: none !important;
     outline: none !important;
-    width: 100% !important;
+    width: 90%;
 }
 
 .feed-comment-regi {
@@ -220,3 +229,4 @@
         transform: translateX(-50%);
     }
 }
+

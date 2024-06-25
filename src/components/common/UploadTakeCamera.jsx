@@ -12,13 +12,15 @@ import EmojiPicker from "../ui/EmojiPicker";
 import WebcamComponent from "../../utils/WebcamComponent";
 import KakaoMapModal from "../ui/kakaomap/KakaoMapModal";
 
+import icons from "../../assets/ImageList";
+
 const UploadTakeCamera = ({ onClose }) => {
     const { isLoggedIn, profileInfo } = useUser();
     const { postList, setPostList, setPostSuccess } = usePost(
         isLoggedIn,
         profileInfo
     );
-    const { openModal, closeModal, isModalOpen } = useModal();
+    const { openModal, closeModal, isModalOpen, toggleModal } = useModal();
     const fileInputRef = useRef(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [text, setText] = useState("");
@@ -108,15 +110,15 @@ const UploadTakeCamera = ({ onClose }) => {
             </button>
             <div className="post-frame">
                 <div className="post-header">
-                    <div className="post-text-wrapper">새 게시물 만들기</div>
-                    <div className="post-text-wrapper-2" onClick={handleSubmit}>
+                    <div className="post-header-title">새 게시물 만들기</div>
+                    <div className="post-header-upload" onClick={handleSubmit}>
                         공유하기
                     </div>
                 </div>
                 <div className="post-content">
                     <div className="post-image-section">
                         {selectedImage ? (
-                            <div className="post-img-section">
+                            <div className="post-image-wrapper">
                                 <img
                                     src={selectedImage}
                                     alt="Selected"
@@ -124,10 +126,10 @@ const UploadTakeCamera = ({ onClose }) => {
                                 />
                             </div>
                         ) : (
-                            <div className="post-image-pull">
+                            <div>
                                 <img
-                                    className="image_file"
-                                    src="../src/assets/postmodal/photo.png"
+                                    className="post-image-icon"
+                                    src={icons.photoIcon}
                                     alt="포스트 모달 이미지"
                                 />
                                 <br />
@@ -141,7 +143,7 @@ const UploadTakeCamera = ({ onClose }) => {
                             }}
                         >
                             <div
-                                className="camera-section"
+                                className="post-take-picture"
                                 onClick={() => openModal("webcam")}
                             >
                                 촬영
@@ -157,29 +159,29 @@ const UploadTakeCamera = ({ onClose }) => {
                     <div className="post-details-section">
                         <div className="post-user-info">
                             <img
-                                className="post-ellipse"
+                                className="post-user-profile-image"
                                 src={profileInfo.profileImageUrl}
                                 alt="User Profile"
                             />
-                            <div className="post-text-wrapper-3">
+                            <div className="post-user-email">
                                 {profileInfo.email}
                             </div>
                         </div>
                         <div className="post-textarea-section">
                             <textarea
-                                className="post-input-wrapper"
+                                className="post-textarea-content"
                                 placeholder="문구를 입력하세요..."
                                 value={text}
                                 onChange={handleTextChange}
                             />
-                            <div className="post-counter">
+                            <div className="post-etc-section">
                                 <img
-                                    className="post-uil-smile"
-                                    alt="Uil smile"
-                                    src="../src/assets/postmodal/smile.png"
-                                    onClick={() => openModal("emojiPicker")}
+                                    className="post-smile-icon"
+                                    alt="smile"
+                                    src={icons.smileIcon}
+                                    onClick={() => toggleModal("emojiPicker")}
                                 />
-                                <div className="post-text-wrapper-5">
+                                <div className="post-content-count">
                                     {text.length}/{maxTextLength}
                                 </div>
                             </div>
@@ -215,23 +217,23 @@ const PostOptions = ({ openModal, selectedAddress }) => (
         {[
             {
                 label: "위치 ",
-                icon: "../src/assets/postmodal/location.png",
+                icon: icons.locationIcon,
                 onClick: () => openModal("kakaoMap"),
-                showAddress: true, // 주소를 표시할 항목에 플래그 추가
+                showAddress: true, 
             },
             {
                 label: "접근성",
-                icon: "../src/assets/postmodal/under.png",
+                icon: icons.underArrowIcon,
                 showAddress: false,
             },
             {
                 label: "고급 설정",
-                icon: "../src/assets/postmodal/under.png",
+                icon: icons.underArrowIcon,
                 showAddress: false,
             },
         ].map((option, index) => (
             <div className="post-option" key={index} onClick={option.onClick}>
-                <div className="post-text-wrapper-6">
+                <div className="post-options-text">
                     {option.label}
                     {option.showAddress && (
                         <span className="post-address"> {selectedAddress}</span>
