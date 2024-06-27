@@ -1,84 +1,19 @@
-import "./Feed.css";
-import FeedStoryList from "./FeedStoryList";
-import { useState, useRef, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import useUser from "../../hook/useUser";
 import useAllUser from "../../hook/useAllUser";
-import usePost from "../../hook/usePost";
 import useLikeStatus from "../../hook/useLikeStatus";
 import useFollow from "../../hook/useFollow";
-import useComment from "../../hook/useComment";
 import useModal from "../../hook/useModal";
 
-import PostViewModal from "../../ui/PostViewUI/PostViewModal";
 import MoreModal from "../../ui/MoreModal";
 import BanReportModal from "../../ui/BanReportModal";
 import KakaoShare from "../../ui/kakaoshare/KakaoShare";
-
 import icons from "../../../assets/ImageList";
 import GetRelativeTime from "../../../utils/GetRelativeTime";
-
-const Feed = () => {
-    const { profileInfo } = useUser();
-    const { postList = [], deletePost } = usePost();
-    const { commentList, submitComment } = useComment();
-    const { openModal, closeModal, isModalOpen } = useModal();
-
-    const [selectedPost, setSelectedPost] = useState(postList);
-    const [modalType, setModalType] = useState("feed");
-
-    /* Mock */
-    const stories = [
-        { username: "user1", profileImage: "profile1.jpg" },
-        { username: "user2", profileImage: "profile2.jpg" },
-        { username: "user3", profileImage: "profile3.jpg" },
-    ];
-
-    const handlePostViewClick = (post) => {
-        setSelectedPost(post);
-        setModalType(profileInfo.email === post.email ? "myfeed" : "feed");
-        openModal("postview");
-    };
-
-    return (
-        <div className="feed-container">
-            <div className="story-container">
-                <FeedStoryList stories={stories} />
-            </div>
-            {postList.map((post) => {
-                const postComments =
-                    commentList.find((c) => c.postId === post?.id)?.comments ||
-                    [];
-                return (
-                    post &&
-                    post.id && (
-                        <FeedItem
-                            key={post.id}
-                            post={post}
-                            comments={postComments}
-                            submitComment={submitComment}
-                            handlePostViewClick={handlePostViewClick}
-                            deletePost={deletePost}
-                            profileInfo={profileInfo}
-                        />
-                    )
-                );
-            })}
-            {isModalOpen("postview") && selectedPost && (
-                <PostViewModal
-                    post={selectedPost}
-                    deletePost={deletePost}
-                    onClose={() => closeModal("postview")}
-                    modalType={modalType}
-                />
-            )}
-        </div>
-    );
-};
 
 const FeedItem = ({
     post,
@@ -103,28 +38,24 @@ const FeedItem = ({
     const [isBanReportModalOpen, setIsBanReportModalOpen] = useState(false);
     const [showFullText, setShowFullText] = useState(false);
 
-    // 게시글 내용을 줄바꿈에 따라 처리
     const formatContent = () => {
         const contentOnly = post.postContent;
-        const hashtags = post.hashtags.join(" "); // 해시태그를 하나의 문자열로 결합
+        const hashtags = post.hashtags.join(" ");
         const fullContent = `${contentOnly} ${hashtags}`;
-        const lines = contentOnly.split("\n"); // 줄바꿈으로 내용 분리
+        const lines = contentOnly.split("\n");
         const firstLine = lines[0];
         let displayText = firstLine;
-        let needMore = false; // "더 보기"가 필요한지 여부
+        let needMore = false;
 
-        // 첫 줄 길이 판단 (내용 자체)
         if (firstLine.length > 15) {
-            displayText = firstLine.slice(0, 15); // 첫 줄에서 15자 초과시 처리
-            needMore = true; // "더 보기" 필요
+            displayText = firstLine.slice(0, 15);
+            needMore = true;
         }
 
-        // 전체 내용 길이 판단 (내용 + 해시태그)
         if (fullContent.length > 15 && !needMore) {
-            needMore = true; // 내용은 15자 이내지만 전체 길이가 15자 초과일 경우
+            needMore = true;
         }
 
-        // 렌더링 조건
         if (!showFullText) {
             return (
                 <span>
@@ -150,7 +81,7 @@ const FeedItem = ({
                         </span>
                     )}
                 </span>
-            ); // '더 보기' 클릭 시 전체 내용 표시
+            );
         }
     };
 
@@ -498,4 +429,4 @@ const FeedItem = ({
     );
 };
 
-export default Feed;
+export default FeedItem;

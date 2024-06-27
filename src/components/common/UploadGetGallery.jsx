@@ -15,7 +15,7 @@ import Loading from "../ui/Loading";
 import DeleteConfirm from "../ui/DeleteConfirm";
 import EmojiPicker from "../ui/EmojiPicker";
 import KakaoMapModal from "../ui/kakaomap/KakaoMapModal";
-
+import HashTagsModal from "../ui/HashTagsModal";
 
 import icons from "../../assets/ImageList";
 
@@ -35,6 +35,8 @@ const UploadGetGallery = ({ onClose }) => {
     const [mediaType, setMediaType] = useState("");
     const [text, setText] = useState("");
     const [currentSlide, setCurrentSlide] = useState(0);
+    const [hashtags, setHashtags] = useState([]);
+
     const maxTextLength = 2200;
 
     useEffect(() => {
@@ -116,6 +118,8 @@ const UploadGetGallery = ({ onClose }) => {
                 })
             );
 
+            formData.append("hashtags", JSON.stringify(hashtags));
+
             if (selectedMedia && selectedMedia.length > 0) {
                 if (mediaType === "image") {
                     for (let media of selectedMedia) {
@@ -131,7 +135,7 @@ const UploadGetGallery = ({ onClose }) => {
                     setTimeout(() => {
                         formData.append("file", selectedMedia[0].file);
                         completeSubmit(formData);
-                    }, 3000); 
+                    }, 3000);
                     return;
                 }
             } else {
@@ -179,6 +183,10 @@ const UploadGetGallery = ({ onClose }) => {
         sliderRef.current.slickPrev();
     };
 
+    const handleAddHashtag = (hashtag) => {
+        setHashtags([...hashtags, hashtag]);
+    };
+
     return (
         <div className="post-frame-container">
             {isModalOpen("loading") && <Loading />}
@@ -200,10 +208,7 @@ const UploadGetGallery = ({ onClose }) => {
                     <div className="post-image-section">
                         {selectedMedia ? (
                             <div className="slider-container">
-                                <Slider
-                                    ref={sliderRef}
-                                    {...sliderSettings}
-                                >
+                                <Slider ref={sliderRef} {...sliderSettings}>
                                     {selectedMedia.map((media, index) => (
                                         <div key={index}>
                                             {mediaType === "image" ? (
@@ -293,6 +298,7 @@ const UploadGetGallery = ({ onClose }) => {
                                 value={text}
                                 onChange={handleTextChange}
                             />
+
                             <div className="post-etc-section">
                                 <img
                                     className="post-smile-icon"
@@ -308,6 +314,30 @@ const UploadGetGallery = ({ onClose }) => {
                                 <EmojiPicker onEmojiClick={handleEmojiClick} />
                             )}
                         </div>
+                        <div className="post-hashtag-container">
+                            <img
+                                className="post-hashtag-icon"
+                                alt="hashtag icon"
+                                src={icons.addHashTagIcon}
+                                onClick={() => openModal("addHashtag")}
+                            />
+                            <div className="post-hashtag-wrapper">
+                                {hashtags.length === 0 ? (
+                                    <div className="post-hashtags-empty">
+                                        #해시태그
+                                    </div>
+                                ) : (
+                                    hashtags.map((hashtag, index) => (
+                                        <div
+                                            key={index}
+                                            className="post-hashtags"
+                                        >
+                                            {hashtag}
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        </div>
                         <PostOptions
                             openModal={openModal}
                             selectedAddress={selectedAddress}
@@ -322,6 +352,12 @@ const UploadGetGallery = ({ onClose }) => {
                 <KakaoMapModal
                     onClose={() => closeModal("kakaoMap")}
                     setSelectedAddress={setSelectedAddress}
+                />
+            )}
+            {isModalOpen("addHashtag") && (
+                <HashTagsModal
+                    onClose={() => closeModal("addHashtag")}
+                    onAddHashtag={handleAddHashtag}
                 />
             )}
         </div>

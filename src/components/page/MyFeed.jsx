@@ -11,6 +11,7 @@ import ProfileUpdateModal from "../ui/ProfileUpdateModal";
 import FollowListModal from "../ui/FollowListModal";
 import SelectUpload from "../ui/SelectUpload";
 import PostViewModal from "../ui/PostViewUI/PostViewModal";
+import SettingModal from "../ui/settingUI/SettingModal";
 
 import icons from "../../assets/ImageList";
 
@@ -76,6 +77,7 @@ const MyFeed = () => {
                 onFollowerModalOpen={() => openModal("followerList")}
                 onFollowingModalOpen={() => openModal("followingList")}
                 onUploadModalOpen={() => openModal("upload")}
+                onSettingModalOpen={() => openModal("setting")}
             />
             <div className="myfeed-container">
                 {images.length === 0 && videos.length === 0 ? (
@@ -131,6 +133,12 @@ const MyFeed = () => {
                     modalType="myfeed"
                 />
             )}
+            {isModalOpen("setting") && ( 
+                <SettingModal
+                    onClose={() => closeModal("setting")}
+                    profileInfo={profileInfo}
+                />
+            )}
         </div>
     );
 };
@@ -143,6 +151,7 @@ const UserProfile = ({
     onProfileModalOpen,
     onFollowerModalOpen,
     onFollowingModalOpen,
+    onSettingModalOpen,
 }) => (
     <div className="myfeed-user-info">
         <div className="myfeed-user-avatar">
@@ -162,7 +171,7 @@ const UserProfile = ({
                         보관된 스토리 보기
                     </button>
                     <button className="myfeed-settings-btn">
-                        <span>⚙️</span>
+                        <span onClick={onSettingModalOpen}>⚙️</span>
                     </button>
                 </div>
             </div>

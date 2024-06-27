@@ -9,7 +9,7 @@ import useFollow from "../hook/useFollow";
 const SearchNav = () => {
     const { profileInfo } = useUser();
     const { allUserProfiles } = useAllUser();
-    const { followingList, fetchFollowingList } = useFollow();
+    const { fetchFollowingList } = useFollow();
     const [searchText, setSearchText] = useState("");
     const [recentSearches, setRecentSearches] = useState([]);
     const navigate = useNavigate();
