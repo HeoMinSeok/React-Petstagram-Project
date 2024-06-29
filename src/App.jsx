@@ -37,6 +37,7 @@ import useNav from "./components/hook/useNav";
 
 /* Utils */
 import DogCursor from "./utils/DogCursor";
+import FeedStoryUpload from "./components/page/feed/FeedStoryUpload";
 
 const AppContent = () => {
     const { isLoggedIn, setIsLoggedIn } = useUser();
@@ -78,7 +79,7 @@ const AppContent = () => {
                     element={
                         isLoggedIn ? (
                             <div className="app">
-                                <div className="div">
+                                <div className="app-main-wrapper">
                                     {!navState.explore && (
                                         <>
                                             <div className="feed-container">
@@ -108,7 +109,7 @@ const AppContent = () => {
                     element={
                         isLoggedIn ? (
                             <div className="app">
-                                <div className="div">
+                                <div className="app-main-wrapper">
                                     <div className="feed-container">
                                         <ExploreFeed />{" "}
                                     </div>
@@ -131,7 +132,7 @@ const AppContent = () => {
                     element={
                         isLoggedIn ? (
                             <div className="app">
-                                <div className="div">
+                                <div className="app-main-wrapper">
                                     <Message />
                                     <div className="main-container">
                                         <HomeNav />
@@ -152,7 +153,7 @@ const AppContent = () => {
                     element={
                         isLoggedIn ? (
                             <div className="app">
-                                <div className="div">
+                                <div className="app-main-wrapper">
                                     <div className="myfeed-container">
                                         <MyFeed />{" "}
                                     </div>
@@ -175,7 +176,7 @@ const AppContent = () => {
                     element={
                         isLoggedIn ? (
                             <div className="app">
-                                <div className="div">
+                                <div className="app-main-wrapper">
                                     <div className="friendfeed-container">
                                         <FriendFeed />
                                     </div>
@@ -198,7 +199,7 @@ const AppContent = () => {
                     element={
                         isLoggedIn ? (
                             <div className="app">
-                                <div className="div">
+                                <div className="app-main-wrapper">
                                     <Message />
                                     <div className="main-container">
                                         <HomeNav />
@@ -208,6 +209,18 @@ const AppContent = () => {
                                         )}
                                     </div>
                                 </div>
+                            </div>
+                        ) : (
+                            <Navigate to="/login" />
+                        )
+                    }
+                />
+                <Route
+                    path="/story-upload"
+                    element={
+                        isLoggedIn ? (
+                            <div className="app">
+                                <FeedStoryUpload />
                             </div>
                         ) : (
                             <Navigate to="/login" />

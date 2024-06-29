@@ -75,6 +75,14 @@ import settingUserProfileIcon from "./settingmodal/setting-user-profile.png";
 /* HashTags Modal */
 import hashTagsIcon from "./hashtag/hashtag-icon.png";
 
+/* Story */
+import storyCameraBtn from "./story/story-camera-button.png";
+import storyGallery from "./story/story-gallery.png";
+import storyText from "./story/story-text.png";
+import storyHashtag from "./story/story-hashtag.png";
+import storyUpload from "./story/story-upload.png";
+import storyClose from "./story/story-close-button.png";
+
 const icons = {
     // HomeNav
     homeIcon,
@@ -152,6 +160,14 @@ const icons = {
 
     // HashTags Modal
     hashTagsIcon,
+
+    /* Story */
+    storyCameraBtn,
+    storyGallery,
+    storyText,
+    storyHashtag,
+    storyUpload,
+    storyClose,
 };
 
 export default icons;

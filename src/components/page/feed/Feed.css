@@ -24,21 +24,39 @@
     height: auto;
 }
 
+.feed-post-videos {
+    background-color: black;
+}
+
 .feed-post-photo,
 .feed-post-video {
-    background-color: black;
     width: 100%;
-    object-fit: cover;
+    height: 624px;
+    display: block;
+    margin: 0 auto;
+    object-fit: contain;
+    background-color: black;
 }
 
 .feed-post-photo.tall,
 .feed-post-video.tall {
-    height: 624px;
+    object-fit: cover;
+    background-color: black;
 }
 
 .feed-post-photo.wide,
 .feed-post-video.wide {
+    object-fit: contain;
+    background-color: black;
+}
+
+.feed-post-video.wide {
     height: auto;
+}
+
+.feed-post-video.tall {
+    width: auto;
+    height: 624px;
 }
 
 .feed-info {

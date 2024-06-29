@@ -24,7 +24,7 @@ const FeedItem = ({
     profileInfo,
 }) => {
     const { allUserProfiles } = useAllUser();
-    const { openModal, closeModal, isModalOpen } = useModal();
+    const { openModal } = useModal();
     const { postLiked, postLikesCount, handleLikeClick } = useLikeStatus(
         post.id
     );
@@ -221,28 +221,24 @@ const FeedItem = ({
 
     const adjustImageSizes = () => {
         imgRef.current.forEach((img) => {
-            if (img.naturalWidth > img.naturalHeight * 1.3) {
-                img.style.height = "auto";
-                img.style.width = "100%";
+            if (img.naturalWidth > img.naturalHeight * 1.2) {
+                img.classList.add("wide");
+                img.classList.remove("tall");
             } else {
-                img.style.height = "624px";
-                img.style.width = "100%";
+                img.classList.add("tall");
+                img.classList.remove("wide");
             }
-            img.style.backgroundColor = "black";
-            img.style.objectFit = "cover";
         });
 
         videoRef.current.forEach((video) => {
             video.onloadedmetadata = () => {
                 if (video.videoWidth > video.videoHeight * 1.2) {
-                    video.style.height = "auto";
-                    video.style.width = "100%";
+                    video.classList.add("wide");
+                    video.classList.remove("tall");
                 } else {
-                    video.style.height = "624px";
-                    video.style.width = "100%";
+                    video.classList.add("tall");
+                    video.classList.remove("wide");
                 }
-                video.style.backgroundColor = "black";
-                video.style.objectFit = "cover";
             };
         });
     };
