@@ -1,7 +1,6 @@
 import React from "react";
 import "./FeedStoryList.css";
 import useUser from "../../hook/useUser";
-import useModal from "../../hook/useModal";
 import { useNavigate } from "react-router-dom";
 
 const FeedStoryList = ({ stories }) => {
@@ -22,7 +21,11 @@ const FeedStoryList = ({ stories }) => {
                 <button className="feed-story-upload-btn">+</button>
             </div>
             {stories.map((story, index) => (
-                <div key={index} className="feed-story-item">
+                <div
+                    key={index}
+                    className="feed-story-item"
+                    onClick={() => navigate(`/story-detail/${index}`)}
+                >
                     <img
                         src={story.profileImage}
                         alt="스토리"
@@ -33,12 +36,6 @@ const FeedStoryList = ({ stories }) => {
                     </span>
                 </div>
             ))}
-            {/* {isModalOpen("story-upload") && (
-                <FeedStoryUpload
-                    isOpen={isModalOpen("story-upload")}
-                    onRequestClose={() => closeModal("story-upload")}
-                />
-            )} */}
         </div>
     );
 };

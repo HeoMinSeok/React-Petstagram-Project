@@ -4,7 +4,7 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-color: #000;
+    background-color: rgb(26, 26, 26);
     color: #fff;
     position: relative;
 }

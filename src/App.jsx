@@ -26,6 +26,7 @@ import FriendFeed from "./components/page/FriendFeed";
 import ExploreFeed from "./components/page/ExploreFeed";
 import MyFeed from "./components/page/MyFeed";
 import Message from "./components/page/Message";
+import StoryView from "./components/page/StoryView";
 import HomeNav from "./components/common/HomeNav";
 import FriendNav from "./components/common/FriendNav";
 import SearchNav from "./components/common/SearchNav";
@@ -38,6 +39,15 @@ import useNav from "./components/hook/useNav";
 /* Utils */
 import DogCursor from "./utils/DogCursor";
 import FeedStoryUpload from "./components/page/feed/FeedStoryUpload";
+
+const mockStories = [
+    { type: "video", content: "/mock/mock1.MP4", username: "user1" },
+    { type: "video", content: "/mock/mock2.mp4", username: "user2" },
+    { type: "image", content: "/mock/mock3.jpeg", username: "user3" },
+    { type: "image", content: "/mock/mock4.jpeg", username: "user4" },
+    { type: "video", content: "/mock/mock5.MP4", username: "user5" },
+    { type: "video", content: "/mock/mock5.MP4", username: "user5" },
+];
 
 const AppContent = () => {
     const { isLoggedIn, setIsLoggedIn } = useUser();
@@ -83,7 +93,7 @@ const AppContent = () => {
                                     {!navState.explore && (
                                         <>
                                             <div className="feed-container">
-                                                <Feed />
+                                                <Feed stories={mockStories} />
                                             </div>
                                             <div className="friend-nav-container">
                                                 <FriendNav />
@@ -222,6 +232,16 @@ const AppContent = () => {
                             <div className="app">
                                 <FeedStoryUpload />
                             </div>
+                        ) : (
+                            <Navigate to="/login" />
+                        )
+                    }
+                />
+                <Route
+                    path="/story-detail/:id"
+                    element={
+                        isLoggedIn ? (
+                            <StoryView stories={mockStories} />
                         ) : (
                             <Navigate to="/login" />
                         )

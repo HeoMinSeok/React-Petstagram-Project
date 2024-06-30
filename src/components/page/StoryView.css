@@ -1,0 +1,69 @@
+.story-view-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: rgb(26, 26, 26);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+.story-slide.slick-center {
+    transform: scale(1);
+    padding: 0 250px;
+}
+
+.story-slide:not(.slick-center){
+    transform: scale(0.4);
+    opacity: 0.5;
+}
+
+.story-media-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 600px;
+    height: 1000px;
+    overflow: hidden;
+    background-color: black;
+    border-radius: 10px;
+    margin: 0 -150px;
+}
+
+.story-media {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.story-username {
+    font-size: 16px;
+    color: #fff;
+    margin-top: 10px;
+}
+
+/* Slick slider button styles */
+.slick-next, .slick-prev {
+    font-size: 24px;
+    color: white;
+    opacity: 0.75;
+    width: 50px;
+    height: 50px;
+}
+
+.slick-next:hover, .slick-prev:hover {
+    color: white;
+    opacity: 1;
+}
+
+.slick-next:before, .slick-prev:before {
+    font-size: 24px;
+    color: white;
+}
+
+.custom-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}

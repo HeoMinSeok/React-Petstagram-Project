@@ -10,7 +10,7 @@ import useModal from "../../hook/useModal";
 
 import PostViewModal from "../../ui/PostViewUI/PostViewModal";
 
-const Feed = () => {
+const Feed = ({ stories }) => {
     const { profileInfo } = useUser();
     const { postList = [], deletePost } = usePost();
     const { commentList, submitComment } = useComment();
@@ -18,13 +18,6 @@ const Feed = () => {
 
     const [selectedPost, setSelectedPost] = useState(postList);
     const [modalType, setModalType] = useState("feed");
-
-    /* Mock */
-    const stories = [
-        { username: "user1", profileImage: "profile1.jpg" },
-        { username: "user2", profileImage: "profile2.jpg" },
-        { username: "user3", profileImage: "profile3.jpg" },
-    ];
 
     const handlePostViewClick = (post) => {
         setSelectedPost(post);

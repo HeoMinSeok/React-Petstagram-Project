@@ -20,7 +20,7 @@ const FeedStoryUpload = () => {
     const navigate = useNavigate();
 
     const [mediaUrl, setMediaUrl] = useState(null);
-    const [text, setText] = useState("Your Text Here");
+    const [text, setText] = useState("");
     const [recording, setRecording] = useState(false);
     const [capturedChunks, setCapturedChunks] = useState([]);
     const [showTextBox, setShowTextBox] = useState(false);
@@ -161,6 +161,10 @@ const FeedStoryUpload = () => {
     const handleStopDrag = (e, data) => {
         setTextPosition({ x: data.x, y: data.y });
     };
+
+    const handleUploadClick = async () => {
+        
+    }
 
     useEffect(() => {
         const context = canvasRef.current
@@ -345,6 +349,7 @@ const FeedStoryUpload = () => {
                         src={icons.storyUpload}
                         alt="upload"
                         className="story-upload-header-icon"
+                        onClick={handleUploadClick}
                     />
                 </div>
             </div>
