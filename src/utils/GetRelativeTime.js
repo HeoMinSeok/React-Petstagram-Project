@@ -5,13 +5,13 @@ const GetRelativeTime = (date) => {
     if (diff < 1) {
         return "지금";
     } else if (diff < 60) {
-        return `${Math.floor(diff)}초 전`;
+        return `${Math.floor(diff)}초`;
     } else if (diff < 3600) {
-        return `${Math.floor(diff / 60)}분 전`;
+        return `${Math.floor(diff / 60)}분`;
     } else if (diff < 86400) {
-        return `${Math.floor(diff / 3600)}시간 전`;
+        return `${Math.floor(diff / 3600)}시간`;
     } else {
-        return `${Math.floor(diff / 86400)}일 전`;
+        return `${Math.floor(diff / 86400)}일`;
     }
 };
 

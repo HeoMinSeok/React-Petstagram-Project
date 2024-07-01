@@ -16,6 +16,7 @@ import { ModalProvider } from "./contexts/ModalContext";
 import { FollowProvider } from "./contexts/FollowContext";
 import { CommentProvider } from "./contexts/CommentContext";
 import { ChatRoomProvider } from "./contexts/ChatRoomContext";
+import { StoryProvider } from "./contexts/StoryContext";
 
 /* 컴포넌트 */
 import LoginForm from "./components/page/LoginForm";
@@ -35,22 +36,15 @@ import NotificationNav from "./components/common/NotificationNav";
 /* Hook */
 import useUser from "./components/hook/useUser";
 import useNav from "./components/hook/useNav";
+import useStory from "./components/hook/useStory";
 
 /* Utils */
 import DogCursor from "./utils/DogCursor";
 import FeedStoryUpload from "./components/page/feed/FeedStoryUpload";
 
-const mockStories = [
-    { type: "video", content: "/mock/mock1.MP4", username: "user1" },
-    { type: "video", content: "/mock/mock2.mp4", username: "user2" },
-    { type: "image", content: "/mock/mock3.jpeg", username: "user3" },
-    { type: "image", content: "/mock/mock4.jpeg", username: "user4" },
-    { type: "video", content: "/mock/mock5.MP4", username: "user5" },
-    { type: "video", content: "/mock/mock5.MP4", username: "user5" },
-];
-
 const AppContent = () => {
     const { isLoggedIn, setIsLoggedIn } = useUser();
+    const { stories } = useStory();
     const { navState } = useNav();
 
     return (
@@ -93,7 +87,7 @@ const AppContent = () => {
                                     {!navState.explore && (
                                         <>
                                             <div className="feed-container">
-                                                <Feed stories={mockStories} />
+                                                <Feed />
                                             </div>
                                             <div className="friend-nav-container">
                                                 <FriendNav />
@@ -241,7 +235,7 @@ const AppContent = () => {
                     path="/story-detail/:id"
                     element={
                         isLoggedIn ? (
-                            <StoryView stories={mockStories} />
+                            <StoryView stories={stories} />
                         ) : (
                             <Navigate to="/login" />
                         )
@@ -261,7 +255,9 @@ const App = () => (
                         <FollowProvider>
                             <ModalProvider>
                                 <ChatRoomProvider>
-                                    <AppContent />
+                                    <StoryProvider>
+                                        <AppContent />
+                                    </StoryProvider>
                                 </ChatRoomProvider>
                             </ModalProvider>
                         </FollowProvider>

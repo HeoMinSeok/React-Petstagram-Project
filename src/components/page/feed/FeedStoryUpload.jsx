@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./FeedStoryUpload.css";
 import Draggable from "react-draggable";
 import icons from "../../../assets/ImageList";
-
+import StoryService from "../../service/StoryService";
 const videoConstraints = {
     width: 600,
     height: 900,
@@ -163,8 +163,36 @@ const FeedStoryUpload = () => {
     };
 
     const handleUploadClick = async () => {
-        
-    }
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.error("No token found");
+            return;
+        }
+    
+        if (!mediaUrl) {
+            alert("업로드할 미디어가 없습니다.");
+            return;
+        }
+    
+        const formData = new FormData();
+        const blob = await fetch(mediaUrl).then((r) => r.blob());
+        const file = new File([blob], "media", { type: blob.type });
+    
+        formData.append("file", file);
+        formData.append("story", new Blob([JSON.stringify({ storyText: text, storyType: isImageCapture ? "image" : "video" })], {
+            type: "application/json"
+        }));
+    
+        try {
+            const response = await StoryService.uploadStory(formData);
+            alert("스토리가 업로드 되었습니다.");
+            navigate("/"); // 업로드 완료 후 홈으로 이동
+        } catch (error) {
+            console.error("Failed to upload story", error);
+            alert("스토리 업로드에 실패했습니다.");
+        }
+    };
+    
 
     useEffect(() => {
         const context = canvasRef.current
